@@ -11,10 +11,8 @@ struct LandingView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(
-                    destination: MatrixSolveView()
-                ) {
-                    Text("Matrix")
+                NavigationLink(destination: MatrixSolveView()) {
+                    Text("Matrices")
                 }
             }
         }
