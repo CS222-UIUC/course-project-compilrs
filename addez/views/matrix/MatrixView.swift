@@ -8,19 +8,25 @@
 import SwiftUI
 
 struct MatrixView: View {
-    var matrix: Matrix?
-    init(_ matrix: Matrix?) {
+    var matrix: Matrix
+    init(_ matrix: Matrix) {
         self.matrix = matrix
     }
     var body: some View {
-        Grid {
-            
+        VStack {
+            ForEach(0..<matrix.count, id: \.self) { row in
+                HStack {
+                    ForEach(0..<matrix[row].count, id: \.self) { col in
+                        Text("\(matrix[row][col])")
+                    }
+                }
+            }
         }
     }
 }
 
 struct MatrixView_Previews: PreviewProvider {
     static var previews: some View {
-        MatrixView(Matrix([[]]))
+        MatrixView(Matrix([[0, 1], [1, 0]]))
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C943F9AD29A70F0200155AB6 /* MatrixEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */; };
+		C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AE29A7237000155AB6 /* SolutionView.swift */; };
 		C94A68D229A6C12C00F04851 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* AppModel.swift */; };
 		C94A68D629A6C17000F04851 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D529A6C17000F04851 /* LandingView.swift */; };
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEditor.swift; sourceTree = "<group>"; };
+		C943F9AE29A7237000155AB6 /* SolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolutionView.swift; sourceTree = "<group>"; };
 		C94A68D129A6C12C00F04851 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		C94A68D529A6C17000F04851 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		C94A68D929A6C2F000F04851 /* MatrixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixView.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 			children = (
 				C94A68D929A6C2F000F04851 /* MatrixView.swift */,
 				C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */,
+				C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */,
+				C943F9AE29A7237000155AB6 /* SolutionView.swift */,
 			);
 			path = matrix;
 			sourceTree = "<group>";
@@ -305,8 +311,10 @@
 			files = (
 				C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */,
 				C94A68D629A6C17000F04851 /* LandingView.swift in Sources */,
+				C943F9AD29A70F0200155AB6 /* MatrixEditor.swift in Sources */,
 				C973A22C298AF56000E26513 /* ContentView.swift in Sources */,
 				C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */,
+				C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */,
 				C94A68D229A6C12C00F04851 /* AppModel.swift in Sources */,
 				C973A22A298AF56000E26513 /* addezApp.swift in Sources */,
 			);
@@ -378,6 +386,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -436,6 +445,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -460,8 +470,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = addez/addez.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"addez/Preview Content\"";
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -498,8 +510,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = addez/addez.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"addez/Preview Content\"";
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -537,6 +551,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -560,6 +575,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -582,6 +598,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -604,6 +621,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;

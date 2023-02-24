@@ -10,7 +10,7 @@ import Neumorphic
 
 struct MatrixSolveView: View {
     @State var matrixFunction: MatrixFunctions = .solve
-    @State var matrix = Matrix()
+    @State var matrix: Matrix = [[0, 0], [0, 0]]
     @State var steps = [Step]()
     @State var solution: SolutionType?
     var body: some View {
@@ -21,7 +21,8 @@ struct MatrixSolveView: View {
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            MatrixView(matrix)
+            MatrixEditor(matrix)
+                .padding(10)
             MatrixView(steps.last?.0 ?? Matrix())
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
