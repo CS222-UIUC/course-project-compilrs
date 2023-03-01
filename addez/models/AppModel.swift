@@ -75,6 +75,30 @@ func genMatrix(matrix: Matrix, col: Int) -> Matrix {
     return returny
 }
 
+func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
+    // row1 <-> row2
+    var returny = matrix
+    for i in 0..<matrix[0].count {
+        let temp = returny[row1][i]
+        returny[row1][i] = returny[row2][i]
+        returny[row2][i] = temp
+    }
+    return returny
+}
+
+func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
+    // row = scale * row
+    var returny = matrix
+    for i in 0..<matrix[0].count { returny[row][i] *= scale }
+    return returny
+}
+
+func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
+    // row2 = row2 + scale * row1
+    var returny = matrix
+    for i in 0..<matrix[0].count { returny[row2][i] += scale * returny[row1][i] }
+    return returny
+}
 
 extension MatrixFunctions {
     func getFunc() -> (Matrix) -> ReturnType? {
