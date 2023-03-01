@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C62E06A629A8023A00B5472C /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E06A529A8023A00B5472C /* Tools.swift */; };
-		C94A68D229A6C12C00F04851 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* AppModel.swift */; };
 		C94A68D629A6C17000F04851 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D529A6C17000F04851 /* LandingView.swift */; };
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
 		C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */; };
@@ -20,6 +19,9 @@
 		C973A23C298AF56400E26513 /* addezTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A23B298AF56400E26513 /* addezTests.swift */; };
 		C973A246298AF56400E26513 /* addezUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A245298AF56400E26513 /* addezUITests.swift */; };
 		C973A248298AF56400E26513 /* addezUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A247298AF56400E26513 /* addezUITestsLaunchTests.swift */; };
+		C977EFB029AFF53300C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* AppModel.swift */; };
+		C977EFB629AFF5FF00C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB429AFF5FF00C60DFC /* AppModel.swift */; };
+		C977EFB729AFF5FF00C60DFC /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB529AFF5FF00C60DFC /* Tools.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		C973A241298AF56400E26513 /* addezUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = addezUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C973A245298AF56400E26513 /* addezUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addezUITests.swift; sourceTree = "<group>"; };
 		C973A247298AF56400E26513 /* addezUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addezUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C977EFB429AFF5FF00C60DFC /* AppModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		C977EFB529AFF5FF00C60DFC /* Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +160,7 @@
 		C973A23A298AF56400E26513 /* addezTests */ = {
 			isa = PBXGroup;
 			children = (
+				C977EFB329AFF5FF00C60DFC /* models */,
 				C973A23B298AF56400E26513 /* addezTests.swift */,
 			);
 			path = addezTests;
@@ -169,6 +174,16 @@
 			);
 			path = addezUITests;
 			sourceTree = "<group>";
+		};
+		C977EFB329AFF5FF00C60DFC /* models */ = {
+			isa = PBXGroup;
+			children = (
+				C977EFB429AFF5FF00C60DFC /* AppModel.swift */,
+				C977EFB529AFF5FF00C60DFC /* Tools.swift */,
+			);
+			name = models;
+			path = addez/models;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -306,12 +321,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C977EFB029AFF53300C60DFC /* AppModel.swift in Sources */,
 				C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */,
 				C94A68D629A6C17000F04851 /* LandingView.swift in Sources */,
 				C973A22C298AF56000E26513 /* ContentView.swift in Sources */,
 				C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */,
 				C62E06A629A8023A00B5472C /* Tools.swift in Sources */,
-				C94A68D229A6C12C00F04851 /* AppModel.swift in Sources */,
 				C973A22A298AF56000E26513 /* addezApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,7 +335,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C977EFB729AFF5FF00C60DFC /* Tools.swift in Sources */,
 				C973A23C298AF56400E26513 /* addezTests.swift in Sources */,
+				C977EFB629AFF5FF00C60DFC /* AppModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,7 +563,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nubuddies.addezTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -569,7 +586,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nubuddies.addezTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -591,7 +608,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nubuddies.addezUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -613,7 +630,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nubuddies.addezUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
