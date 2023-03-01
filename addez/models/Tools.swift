@@ -18,9 +18,3 @@ extension Double {
         Int(self)
     }
 }
-
-extension Decimal {
-    func toDouble() -> Double {
-        Double(self)
-    }
-}

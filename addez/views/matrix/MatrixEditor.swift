@@ -37,6 +37,6 @@ struct MatrixEditor: View {
 
 struct MatrixEditor_Previews: PreviewProvider {
     static var previews: some View {
-        MatrixEditor([[0, 1, 2], [0, 1, 3], [0, 1, 5]])
+        MatrixEditor(getMatrix(width: 8, height: 8))
     }
 }
