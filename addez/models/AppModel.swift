@@ -54,10 +54,14 @@ func getDetHelper(_ matrix: Matrix) -> Double {
         default:
         var output = 0.0
         for i in 0..<matrix.count {
-            output += pow(-1, i).toDouble() * matrix[0][i] * getDetHelper(genMatrix(matrix: matrix, col: i))
+            output += pow(-1, i.toDouble()) * matrix[0][i] * getDetHelper(genMatrix(matrix: matrix, col: i))
         }
         return output
     }
+}
+
+func getMatrix(width: Int, height: Int) -> Matrix {
+    Array(repeating: Array(repeating: 0.0, count: width), count: height)
 }
 
 func genMatrix(matrix: Matrix, col: Int) -> Matrix {

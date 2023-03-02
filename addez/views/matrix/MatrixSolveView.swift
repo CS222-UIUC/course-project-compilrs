@@ -10,8 +10,8 @@ import Neumorphic
 
 struct MatrixSolveView: View {
     @State var matrixFunction: MatrixFunctions = .solve
-    @State var matrix = Matrix()
-    @State var steps = [Step]()
+    @State var matrix: Matrix = [[0, 0], [0, 0]]
+    @State var steps: [Step]?
     @State var solution: SolutionType?
     var body: some View {
         VStack {
@@ -21,17 +21,63 @@ struct MatrixSolveView: View {
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            MatrixView(matrix)
-            MatrixView(steps.last?.0 ?? Matrix())
+            HStack {
+                Button(action: {
+                    matrix = matrix.map {
+                        $0.dropLast()
+                    }
+                }) {
+                    Image(systemName: "minus")
+                        .imageScale(.small)
+                }
+                .softButtonStyle(Capsule())
+                .padding(5)
+                VStack {
+                    Button(action: {
+                        matrix = matrix.map {
+                            $0.dropLast()
+                        }
+                    }) {
+                        Image(systemName: "minus")
+                            .imageScale(.small)
+                    }
+                    .softButtonStyle(Capsule())
+                    .padding(5)
+                    MatrixEditor(matrix)
+                    Button(action: {
+                        matrix = matrix.map {
+                            $0.dropLast()
+                        }
+                    }) {
+                        Image(systemName: "plus")
+                            .imageScale(.small)
+                    }
+                    .softButtonStyle(Capsule())
+                    .padding(5)
+                }
+                Button(action: {
+                    matrix = matrix.map {
+                        $0 + [0]
+                    }
+                }) {
+                    Image(systemName: "plus")
+                        .imageScale(.small)
+                }
+                .softButtonStyle(Capsule())
+                .padding(5)
+            }
+                .padding(10)
+            MatrixView(steps?.last?.0 ?? Matrix())
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
-                steps = sol.0
-                solution = sol.1
+                steps = sol?.0
+                solution = sol?.1
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
             .fontWeight(.bold)
         }
         .navigationTitle("Matrix Solver")
+        .background(Color("BackgroundColor"))
     }
 }
 
