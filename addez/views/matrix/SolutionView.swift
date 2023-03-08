@@ -18,7 +18,7 @@ struct SolutionView: View {
     func getView() -> AnyView {
         switch solution {
         case .matrix(let matrix): return AnyView(MatrixView(matrix))
-        case .double(let num): return AnyView(Text("\(num.rounded())"))
+        case .double(let num): return AnyView(Text("\(num, specifier: "%.2f")"))
         default: return AnyView(Text(""))
         }
     }

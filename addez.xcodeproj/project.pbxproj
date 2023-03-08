@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C62E06A629A8023A00B5472C /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E06A529A8023A00B5472C /* Tools.swift */; };
 		C943F9AD29A70F0200155AB6 /* MatrixEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */; };
 		C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AE29A7237000155AB6 /* SolutionView.swift */; };
-		C62E06A629A8023A00B5472C /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E06A529A8023A00B5472C /* Tools.swift */; };
 		C94A68D629A6C17000F04851 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D529A6C17000F04851 /* LandingView.swift */; };
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
 		C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */; };
@@ -24,6 +24,9 @@
 		C977EFB029AFF53300C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* AppModel.swift */; };
 		C977EFB629AFF5FF00C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB429AFF5FF00C60DFC /* AppModel.swift */; };
 		C977EFB729AFF5FF00C60DFC /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB529AFF5FF00C60DFC /* Tools.swift */; };
+		C9CD668629B9164F0040848A /* StepsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CD668529B9164F0040848A /* StepsList.swift */; };
+		C9CD668729B9164F0040848A /* StepsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CD668529B9164F0040848A /* StepsList.swift */; };
+		C9CD668A29B91DC40040848A /* LaTeXSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9CD668929B91DC40040848A /* LaTeXSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,9 +47,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C62E06A529A8023A00B5472C /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEditor.swift; sourceTree = "<group>"; };
 		C943F9AE29A7237000155AB6 /* SolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolutionView.swift; sourceTree = "<group>"; };
-		C62E06A529A8023A00B5472C /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		C94A68D129A6C12C00F04851 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		C94A68D529A6C17000F04851 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		C94A68D929A6C2F000F04851 /* MatrixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixView.swift; sourceTree = "<group>"; };
@@ -64,6 +67,7 @@
 		C973A247298AF56400E26513 /* addezUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addezUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C977EFB429AFF5FF00C60DFC /* AppModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		C977EFB529AFF5FF00C60DFC /* Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
+		C9CD668529B9164F0040848A /* StepsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +76,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */,
+				C9CD668A29B91DC40040848A /* LaTeXSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +122,7 @@
 				C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */,
 				C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */,
 				C943F9AE29A7237000155AB6 /* SolutionView.swift */,
+				C9CD668529B9164F0040848A /* StepsList.swift */,
 			);
 			path = matrix;
 			sourceTree = "<group>";
@@ -209,6 +215,7 @@
 			name = addez;
 			packageProductDependencies = (
 				C94A68E129A6CEBC00F04851 /* Neumorphic */,
+				C9CD668929B91DC40040848A /* LaTeXSwiftUI */,
 			);
 			productName = addez;
 			productReference = C973A226298AF56000E26513 /* addez.app */;
@@ -284,6 +291,7 @@
 			mainGroup = C973A21D298AF56000E26513;
 			packageReferences = (
 				C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */,
+				C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */,
 			);
 			productRefGroup = C973A227298AF56000E26513 /* Products */;
 			projectDirPath = "";
@@ -334,6 +342,7 @@
 				C973A22C298AF56000E26513 /* ContentView.swift in Sources */,
 				C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */,
 				C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */,
+				C9CD668629B9164F0040848A /* StepsList.swift in Sources */,
 				C62E06A629A8023A00B5472C /* Tools.swift in Sources */,
 				C973A22A298AF56000E26513 /* addezApp.swift in Sources */,
 			);
@@ -355,6 +364,7 @@
 			files = (
 				C973A246298AF56400E26513 /* addezUITests.swift in Sources */,
 				C973A248298AF56400E26513 /* addezUITestsLaunchTests.swift in Sources */,
+				C9CD668729B9164F0040848A /* StepsList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -709,6 +719,14 @@
 				kind = branch;
 			};
 		};
+		C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/colinc86/LaTeXSwiftUI.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -716,6 +734,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */;
 			productName = Neumorphic;
+		};
+		C9CD668929B91DC40040848A /* LaTeXSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */;
+			productName = LaTeXSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
