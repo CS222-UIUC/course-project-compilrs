@@ -104,6 +104,39 @@ func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     return returny
 }
 
+func rowEchelon(matrix: Matrix) -> Matrix {
+    // convert the given matrix in to row echelon form
+    var returny = matrix
+    // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
+    if (returny[0][0] == 0) {
+        for i in 1..<returny.count {
+            if (returny[i][0] != 0) {
+                returny = swapRows(matrix: returny, row1: 0, row2: i)
+                break
+            }
+        }
+    }
+    // apply the scaleRow and addRows functions to the matrix to eliminate elements in the first column
+    for i in 1..<returny.count {
+        if (returny[i][0] != 0) {
+            returny = addRows(matrix: returny, row1: 0, row2: i, scale: -returny[i][0] / returny[0][0])
+        }
+    }
+    // apply the scaleRow and addRows functions to the matrix to eliminate elements in further columns
+    for i in 1..<returny.count {
+        for j in 1..<returny[0].count {
+            if (returny[i][j] != 0) {
+                returny = addRows(matrix: returny, row1: j, row2: i, scale: -returny[i][j] / returny[j][j])
+            }
+        }
+    }
+    // apply the scaleRow function to the matrix to make the diagonal elements 1
+    for i in 0..<returny.count {
+        returny = scaleRow(matrix: returny, row: i, scale: 1 / returny[i][i])
+    }
+    return returny
+}
+
 extension MatrixFunctions {
     func getFunc() -> (Matrix) -> ReturnType? {
         switch self {
