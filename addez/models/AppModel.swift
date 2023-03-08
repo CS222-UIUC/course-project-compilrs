@@ -11,7 +11,10 @@ typealias Matrix = [[Double]]
 
 typealias NTuple = [String]
 
-typealias Step = (Matrix, String)
+struct Step {
+    let matrix: Matrix
+    let stepDescription: String
+}
 
 typealias ReturnType = ([Step], SolutionType?)
 
