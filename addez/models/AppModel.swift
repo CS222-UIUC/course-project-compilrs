@@ -11,9 +11,15 @@ typealias Matrix = [[Double]]
 
 typealias NTuple = [String]
 
-struct Step {
+struct Step: Identifiable {
+    var id: UUID
     let matrix: Matrix
     let stepDescription: String
+    init(matrix: Matrix, stepDescription: String) {
+        self.id = UUID()
+        self.matrix = matrix
+        self.stepDescription = stepDescription
+    }
 }
 
 typealias ReturnType = ([Step], SolutionType?)

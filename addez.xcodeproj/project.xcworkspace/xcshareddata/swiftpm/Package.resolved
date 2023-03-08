@@ -1,12 +1,57 @@
 {
   "pins" : [
     {
+      "identity" : "latexswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/colinc86/LaTeXSwiftUI.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "edc4c2df645c2f07901ed06bb4a5c3d73a6d67b9"
+      }
+    },
+    {
+      "identity" : "mathjaxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/colinc86/MathJaxSwift",
+      "state" : {
+        "revision" : "2870e25f9992946a558466f3fa4d6982bc94760a",
+        "version" : "3.2.2"
+      }
+    },
+    {
       "identity" : "neumorphic",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/costachung/neumorphic/",
       "state" : {
         "branch" : "master",
         "revision" : "03c6f7b3d27bfb28a082db2e9ffae45fbc69cb8b"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke",
+      "state" : {
+        "revision" : "33f7e93be5d4ec027d42af77a8ec4680d1862ad2",
+        "version" : "11.6.4"
+      }
+    },
+    {
+      "identity" : "svgview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/exyte/SVGView",
+      "state" : {
+        "revision" : "18bf73efc2f2dede5dfa73f517ddf4e054061294",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swift-html-entities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/swift-html-entities",
+      "state" : {
+        "revision" : "d8ca73197f59ce260c71bd6d7f6eb8bbdccf508b",
+        "version" : "4.0.1"
       }
     }
   ],

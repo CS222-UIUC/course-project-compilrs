@@ -16,68 +16,30 @@ struct MatrixSolveView: View {
     var body: some View {
         VStack {
             Picker(selection: $matrixFunction, label: Text("Picker")) {
-                ForEach(MatrixFunctions.allCases, id:\.rawValue) { fun in
-                    Text(fun.rawValue).tag(fun)
+                ForEach(MatrixFunctions.allCases, id:\.rawValue) {
+                    Text($0.rawValue).tag($0)
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            HStack {
-                Button(action: {
-                    matrix = matrix.map {
-                        $0.dropLast()
-                    }
-                }) {
-                    Image(systemName: "minus")
-                        .imageScale(.small)
-                }
-                .softButtonStyle(Capsule())
-                .padding(5)
-                VStack {
-                    Button(action: {
-                        matrix = matrix.map {
-                            $0.dropLast()
-                        }
-                    }) {
-                        Image(systemName: "minus")
-                            .imageScale(.small)
-                    }
-                    .softButtonStyle(Capsule())
-                    .padding(5)
-                    MatrixEditor(matrix)
-                    Button(action: {
-                        matrix = matrix.map {
-                            $0.dropLast()
-                        }
-                    }) {
-                        Image(systemName: "plus")
-                            .imageScale(.small)
-                    }
-                    .softButtonStyle(Capsule())
-                    .padding(5)
-                }
-                Button(action: {
-                    matrix = matrix.map {
-                        $0 + [0]
-                    }
-                }) {
-                    Image(systemName: "plus")
-                        .imageScale(.small)
-                }
-                .softButtonStyle(Capsule())
-                .padding(5)
+            MatrixEditor(matrix)
+            NavigationLink(destination: StepsList(steps ?? [])) {
+                Text("Show Steps")
             }
-                .padding(10)
-            MatrixView(steps?.last?.0 ?? Matrix())
+            AnyView(solView())
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
                 steps = sol?.0
                 solution = sol?.1
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
-            .fontWeight(.bold)
+                .fontWeight(.bold)
         }
         .navigationTitle("Matrix Solver")
-        .background(Color("BackgroundColor"))
+    }
+    
+    func solView() -> any View {
+        guard let sol = solution else { return EmptyView() }
+        return SolutionView(sol)
     }
 }
 
