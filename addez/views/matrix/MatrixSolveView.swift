@@ -22,9 +22,8 @@ struct MatrixSolveView: View {
             }
             .pickerStyle(MenuPickerStyle())
             MatrixEditor(matrix)
-            NavigationLink(destination: StepsList(steps ?? [])) {
-                Text("Show Steps")
-            }
+            Text("Show Steps")
+                .navLink(StepsList(steps ?? []))
             AnyView(solView())
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
@@ -34,7 +33,7 @@ struct MatrixSolveView: View {
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
                 .fontWeight(.bold)
         }
-        .navigationTitle("Matrix Solver")
+        .navigationBarTitle("Matrix Solver")
     }
     
     func solView() -> any View {
