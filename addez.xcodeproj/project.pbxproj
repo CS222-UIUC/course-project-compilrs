@@ -10,6 +10,8 @@
 		C62E06A629A8023A00B5472C /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E06A529A8023A00B5472C /* Tools.swift */; };
 		C943F9AD29A70F0200155AB6 /* MatrixEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */; };
 		C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943F9AE29A7237000155AB6 /* SolutionView.swift */; };
+		C944C21629BA542A009050EB /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C944C21529BA542A009050EB /* CardView.swift */; };
+		C944C21C29BA55CA009050EB /* UITools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C944C21B29BA55CA009050EB /* UITools.swift */; };
 		C94A68D629A6C17000F04851 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D529A6C17000F04851 /* LandingView.swift */; };
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
 		C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */; };
@@ -50,6 +52,8 @@
 		C62E06A529A8023A00B5472C /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		C943F9AC29A70F0200155AB6 /* MatrixEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixEditor.swift; sourceTree = "<group>"; };
 		C943F9AE29A7237000155AB6 /* SolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolutionView.swift; sourceTree = "<group>"; };
+		C944C21529BA542A009050EB /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		C944C21B29BA55CA009050EB /* UITools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITools.swift; sourceTree = "<group>"; };
 		C94A68D129A6C12C00F04851 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		C94A68D529A6C17000F04851 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		C94A68D929A6C2F000F04851 /* MatrixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixView.swift; sourceTree = "<group>"; };
@@ -97,9 +101,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C944C21329BA5408009050EB /* components */ = {
+			isa = PBXGroup;
+			children = (
+				C944C21529BA542A009050EB /* CardView.swift */,
+				C944C21B29BA55CA009050EB /* UITools.swift */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
 		C94A68CF29A6C09400F04851 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				C944C21329BA5408009050EB /* components */,
 				C94A68D829A6C2E200F04851 /* matrix */,
 				C94A68D529A6C17000F04851 /* LandingView.swift */,
 			);
@@ -342,8 +356,10 @@
 				C973A22C298AF56000E26513 /* ContentView.swift in Sources */,
 				C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */,
 				C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */,
+				C944C21C29BA55CA009050EB /* UITools.swift in Sources */,
 				C9CD668629B9164F0040848A /* StepsList.swift in Sources */,
 				C62E06A629A8023A00B5472C /* Tools.swift in Sources */,
+				C944C21629BA542A009050EB /* CardView.swift in Sources */,
 				C973A22A298AF56000E26513 /* addezApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,12 +11,11 @@ struct LandingView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(destination: MatrixSolveView()) {
-                    Text("Matrices")
-                }
+                Text("Matrices")
+                    .navLink(MatrixSolveView())
             }
         }
-        .navigationTitle("Home")
+        .navigationBarTitle("Home")
     }
 }
 
