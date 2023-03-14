@@ -24,7 +24,7 @@ struct MatrixSolveView: View {
             MatrixEditor(matrix)
             Text("Show Steps")
                 .navLink(StepsList(steps ?? []))
-            AnyView(solView())
+            solView().format()
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
                 steps = sol?.0
