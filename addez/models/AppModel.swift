@@ -7,6 +7,13 @@
 
 import Foundation
 
+class MatrixObject : ObservableObject {
+    var matrix: Matrix
+    init(_ matrix: Matrix) {
+        self.matrix = matrix
+    }
+}
+
 typealias Matrix = [[Double]]
 
 typealias NTuple = [String]
