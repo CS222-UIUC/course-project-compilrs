@@ -14,13 +14,20 @@ struct StepsList: View {
         self.steps = steps
     }
     var body: some View {
-        List {
+        ScrollView {
             ForEach (steps) { step in
-                HStack {
-                    LaTeX(step.stepDescription)
-                    Spacer()
-                    MatrixView(step.matrix)
+                GeometryReader { geometry in
+                    CardView() {
+                        HStack {
+                            LaTeX(step.stepDescription)
+                            Spacer()
+                            MatrixView(step.matrix)
+                        }
+                        .padding(15)
+                    }
+                    .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 20) / -50.0), axis: (x: 5.0, y: 0.0, z: 10))
                 }
+                .frame(height: 300)
             }
         }
     }

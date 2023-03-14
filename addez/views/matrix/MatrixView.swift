@@ -18,6 +18,9 @@ struct MatrixView: View {
                 HStack {
                     ForEach(0..<matrix[row].count, id: \.self) { col in
                         Text("\(matrix[row][col], specifier: "%.2f")")
+                            .padding(3)
+                            .overlay(RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.matrixCell, lineWidth: 2))
                     }
                 }
             }
