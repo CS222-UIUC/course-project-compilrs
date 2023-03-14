@@ -28,8 +28,8 @@ struct MatrixSolveView: View {
             AnyView(solView())
             Button("Solve") {
                 let sol = matrixFunction.getFunc()(matrix)
-                steps = sol?.0
-                solution = sol?.1
+                steps = sol?.steps
+                solution = sol?.solution
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
                 .fontWeight(.bold)
