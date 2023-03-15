@@ -116,7 +116,7 @@ func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    for i in 0..<matrix[0].count { returny[row2][i] += scale * returny[row1][i] }
+    for col in 0..<returny[0].count { returny[row2][col] += scale * returny[row1][col] }
     return returny
 }
 
@@ -132,23 +132,38 @@ func rowEchelon(matrix: Matrix) -> Matrix {
             }
         }
     }
-    // apply the scaleRow and addRows functions to the matrix to eliminate elements in the first column
-    for i in 1..<returny.count {
-        if (returny[i][0] != 0) {
-            returny = addRows(matrix: returny, row1: 0, row2: i, scale: -returny[i][0] / returny[0][0])
-        }
-    }
-    // apply the scaleRow and addRows functions to the matrix to eliminate elements in further columns
-    for i in 1..<returny.count {
-        for j in 1..<returny[0].count {
-            if (returny[i][j] != 0) {
-                returny = addRows(matrix: returny, row1: j, row2: i, scale: -returny[i][j] / returny[j][j])
+    
+    for col in 0..<returny[0].count {
+        if (col + 1 < returny.count) { 
+            for row in col+1..<returny.count {
+                if (returny[row][col] != 0) {
+                    returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
+                }
             }
         }
     }
-    // apply the scaleRow function to the matrix to make the diagonal elements 1
-    for i in 0..<returny.count {
-        returny = scaleRow(matrix: returny, row: i, scale: 1 / returny[i][i])
+    return returny
+}
+
+func reducedRowEchelon(matrix: Matrix) -> Matrix {
+    var returny = rowEchelon(matrix: matrix)
+    // divide each each row by its pivot value
+    for row in 0..<returny.count {
+        // find the first non-zero value in the row and divide the row by that value
+        for col in 0..<returny[0].count {
+            if (returny[row][col] != 0) {
+                returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
+                break
+            }
+        }
+    }
+    
+    for col in 0..<returny[0].count {
+        for row in 0..<col {
+            if (returny[row][col] != 0 && col < returny.count) {
+                returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
+            }
+        }
     }
     return returny
 }
