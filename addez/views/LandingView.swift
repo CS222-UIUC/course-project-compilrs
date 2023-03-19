@@ -12,7 +12,10 @@ struct LandingView: View {
         NavigationView {
             List {
                 Text("Matrices")
-                    .navLink(MatrixSolveView())
+                    .navLink {
+                        MatrixSolveView()
+                            .environmentObject(MatrixObject([[0, 0], [0, 0]]))
+                    }
             }
         }
         .navigationBarTitle("Home")

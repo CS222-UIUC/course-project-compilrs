@@ -8,7 +8,7 @@
 import Foundation
 
 class MatrixObject : ObservableObject {
-    var matrix: Matrix
+    @Published var matrix: Matrix
     init(_ matrix: Matrix) {
         self.matrix = matrix
     }
@@ -121,6 +121,14 @@ func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
 }
 
 extension MatrixFunctions {
+    var compute: (Matrix) -> ReturnType? {
+        switch self {
+        case .solve: return solveMatrix
+        case .det: return getDeterminant
+        default: return solveMatrix
+        }
+    }
+    
     func getFunc() -> (Matrix) -> ReturnType? {
         switch self {
         case .solve: return solveMatrix

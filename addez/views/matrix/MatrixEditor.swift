@@ -8,48 +8,42 @@
 import SwiftUI
 
 struct MatrixEditor: View {
-    @State var matrix: Matrix
-    init(_ matrix: Matrix) {
-        self.matrix = matrix
-    }
+    @EnvironmentObject var model: MatrixObject
     var body: some View {
         HStack {
             Button(action: {
-                guard matrix[0].count > 1 else {
-                    return
-                }
-                matrix = matrix.map {
-                    $0.dropLast()
-                }
+                guard model.matrix[0].count > 1 else { return }
+                model.matrix = model.matrix.map { $0.dropLast() }
             }) {
                 Image(systemName: "minus")
                     .imageScale(.small)
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(matrix[0].count <= 1)
+            .disabled(model.matrix[0].count <= 1)
             VStack {
                 Button(action: {
-                    guard matrix.count > 1 else {
+                    guard model.matrix.count > 1 else {
                         return
                     }
-                    matrix = matrix.dropLast()
+                    model.matrix = model.matrix.dropLast()
                 }) {
                     Image(systemName: "minus")
                         .imageScale(.small)
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(matrix.count <= 1)
+                .disabled(model.matrix.count <= 1)
                 VStack {
-                    ForEach(0..<matrix.count, id: \.self) { row in
+                    ForEach(0..<model.matrix.count, id: \.self) { row in
                         HStack {
-                            ForEach(0..<matrix[row].count, id: \.self) { col in
+                            ForEach(0..<model.matrix[row].count, id: \.self) { col in
                                 TextField(
                                     "0",
-                                    value: Binding<Double>(get: { matrix[row][col]
+                                    value: Binding<Double>(get: {
+                                        model.matrix[row][col]
                                     }, set: { value in
-                                        matrix[row][col] = value
+                                        model.matrix[row][col] = value
                                     }),
                                     formatter: NumberFormatter()
                                 )
@@ -60,17 +54,17 @@ struct MatrixEditor: View {
                         }
                     }
                 }
-                Button(action: { matrix.append(Array(repeating: 0, count: matrix[0].count))
+                Button(action: { model.matrix.append(Array(repeating: 0, count: model.matrix[0].count))
                 }) {
                     Image(systemName: "plus")
                         .imageScale(.small)
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(matrix.count >= 8)
+                .disabled(model.matrix.count >= 8)
             }
             Button(action: {
-                matrix = matrix.map {
+                model.matrix = model.matrix.map {
                     $0 + [0]
                 }
             }) {
@@ -79,7 +73,7 @@ struct MatrixEditor: View {
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(matrix[0].count >= 8)
+            .disabled(model.matrix[0].count >= 8)
         }
         .padding(10)
     }
@@ -87,6 +81,7 @@ struct MatrixEditor: View {
 
 struct MatrixEditor_Previews: PreviewProvider {
     static var previews: some View {
-        MatrixEditor(getMatrix(width: 8, height: 8))
+        MatrixEditor()
+            .environmentObject(MatrixObject(getMatrix(width: 8, height: 8)))
     }
 }
