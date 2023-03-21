@@ -39,7 +39,7 @@ struct MatrixSolveView: View {
     
     func solView() -> any View {
         guard let sol = solution else { return EmptyView() }
-        return SolutionView(sol)
+        return SolutionView(sol).cardView()
     }
 }
 

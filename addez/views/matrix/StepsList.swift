@@ -27,7 +27,7 @@ struct StepsList: View {
                     }
                     .padding(15)
                     .shadow(radius: 10)
-                    .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / -50.0), axis: (x: 270.0, y: 0.0, z: 0))
+                    .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 50.0), axis: (x: 10.0, y: 0.0, z: 0))
                 }
                 .frame(height: 300)
             }
