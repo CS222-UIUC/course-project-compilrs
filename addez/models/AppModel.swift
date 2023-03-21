@@ -31,7 +31,7 @@ struct Step: Identifiable {
     }
 }
 
-typealias ReturnType = (steps: [Step], solution: SolutionType?)
+typealias ReturnType = (steps: [Step]?, solution: SolutionType?)
 
 enum SolutionType {
     case ntuple(NTuple)
@@ -42,6 +42,7 @@ enum SolutionType {
 
 enum MatrixFunctions: String, CaseIterable {
     case solve = "Solve"
+    case rref = "Reduced Row Echelon"
     case ludecomp = "LU Decomposition"
     case inv = "Inverse"
     case det = "Determinant"
@@ -49,8 +50,8 @@ enum MatrixFunctions: String, CaseIterable {
     case eigenvec = "Eigenvector"
 }
 
-func solveMatrix(matrix: Matrix) -> ReturnType {
-    ([Step](), .double(1.0))
+func solveMatrix(matrix: Matrix) -> ReturnType? {
+    .none
 }
 
 func getDeterminant(matrix: Matrix) -> ReturnType? {
@@ -59,10 +60,8 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // int output = for each int in the first row:
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
-    guard matrix.count != 0 && matrix[0].count != 0 else {
-        return .none
-    }
-    return ([Step](), .double(getDetHelper(matrix)))
+    guard matrix.rows != 0 && matrix.cols != 0 && matrix.rows == matrix.cols else { return .none }
+    return (.none, .double(getDetHelper(matrix)))
 }
 
 func getDetHelper(_ matrix: Matrix) -> Double {
@@ -72,7 +71,7 @@ func getDetHelper(_ matrix: Matrix) -> Double {
     default:
         var output = 0.0
         for i in 0..<matrix.count {
-            output += pow(-1, i.toDouble()) * matrix[0][i] * getDetHelper(genMatrix(matrix: matrix, col: i))
+            output += pow(-1, i.toDouble()) * matrix[0][i] * getDetHelper(matrix.withoutColumn(at: i))
         }
         return output
     }
@@ -82,37 +81,16 @@ func getMatrix(width: Int, height: Int) -> Matrix {
     Array(repeating: Array(repeating: 0.0, count: width), count: height)
 }
 
-func genMatrix(matrix: Matrix, col: Int) -> Matrix {
-    var returny = Array(repeating: Array(repeating: 0.0, count: matrix[0].count - 1), count: matrix.count - 1)
-    for i in 1..<matrix.count {
-        for j in 0..<matrix.count {
-            if (j < col) {
-                returny[i-1][j] = matrix[i][j]
-            }
-            if (j > col) {
-                returny[i-1][j-1] = matrix[i][j]
-            }
-        }
-    }
-    return returny
-}
-
 func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
     // row1 <-> row2
     var returny = matrix
-    for i in 0..<matrix[0].count {
-        let temp = returny[row1][i]
-        returny[row1][i] = returny[row2][i]
-        returny[row2][i] = temp
-    }
+    returny.swapAt(row1, row2)
     return returny
 }
 
 func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
     // row = scale * row
-    var returny = matrix
-    for i in 0..<matrix[0].count { returny[row][i] *= scale }
-    return returny
+    matrix.mapAt(row: row) { $0 * scale }
 }
 
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
@@ -147,10 +125,10 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     return returny
 }
 
-func reducedRowEchelon(matrix: Matrix) -> Matrix {
+func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     var returny = rowEchelon(matrix: matrix)
     // divide each each row by its pivot value
-    for row in 0..<returny.count {
+    for row in 0..<returny.rows {
         // find the first non-zero value in the row and divide the row by that value
         for col in 0..<returny[0].count {
             if (returny[row][col] != 0) {
@@ -160,14 +138,14 @@ func reducedRowEchelon(matrix: Matrix) -> Matrix {
         }
     }
     
-    for col in 0..<returny[0].count {
+    for col in 0..<returny.cols {
         for row in 0..<col {
-            if (returny[row][col] != 0 && col < returny.count) {
+            if (returny[row][col] != 0 && col < returny.rows) {
                 returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
             }
         }
     }
-    return returny
+    return (.none, .matrix(returny))
 }
 
 extension MatrixFunctions {
@@ -175,22 +153,57 @@ extension MatrixFunctions {
         switch self {
         case .solve: return solveMatrix
         case .det: return getDeterminant
+        case .rref: return reducedRowEchelon
         default: return solveMatrix
         }
     }
     
-    func getFunc() -> (Matrix) -> ReturnType? {
-        switch self {
-        case .solve: return solveMatrix
-        case .det: return getDeterminant
-        default: return solveMatrix
-        }
-    }
-    
-    func getMaxDimensions() -> (rows: Double, cols: Double) {
+    var maxDimensions: (rows: Double, cols: Double) {
         switch self {
         case .det: return (8, 8)
         default: return (10, 10)
         }
+    }
+}
+
+extension Matrix {
+    var rows: Int { self.count }
+    var cols: Int { self[0].count }
+    
+    static let maxDimensions = (rows: 6, cols: 6)
+    
+    static let validDimensions = (rows: 1...6, cols: 1...6)
+    
+    func withoutColumn(at column: Int) -> Matrix {
+        guard column > 0 && column < count else { return self }
+        return self.map { $0.removeItem(at: column) }
+    }
+    
+    func getColumn(at column: Int) -> [Double] {
+        guard column > 0 && column < cols else { return [] }
+        return self.map { $0[column] }
+    }
+    
+    func getRow(at row: Int) -> [Double] {
+        guard row > 0 && row < rows else { return [] }
+        return self[row]
+    }
+    
+    func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
+        var returny = self
+        for i in 0..<returny.cols { returny[row][i] = transform(returny[row][i]) }
+        return returny
+    }
+    
+    func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
+        var returny = self
+        for i in 0..<returny.rows { returny[i][col] = transform(returny[i][col]) }
+        return returny
+    }
+}
+
+extension Array where Element == Double {
+    func removeItem(at index: Int) -> [Double] {
+        self.enumerated().compactMap { $0 == index ? nil : $1 }
     }
 }
