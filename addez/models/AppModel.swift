@@ -8,7 +8,9 @@
 import Foundation
 
 class MatrixObject : ObservableObject {
-    var matrix: Matrix
+    @Published var matrix: Matrix
+    var rows: Int { matrix.count }
+    var cols: Int { matrix[0].count }
     init(_ matrix: Matrix) {
         self.matrix = matrix
     }
@@ -169,6 +171,14 @@ func reducedRowEchelon(matrix: Matrix) -> Matrix {
 }
 
 extension MatrixFunctions {
+    var compute: (Matrix) -> ReturnType? {
+        switch self {
+        case .solve: return solveMatrix
+        case .det: return getDeterminant
+        default: return solveMatrix
+        }
+    }
+    
     func getFunc() -> (Matrix) -> ReturnType? {
         switch self {
         case .solve: return solveMatrix
