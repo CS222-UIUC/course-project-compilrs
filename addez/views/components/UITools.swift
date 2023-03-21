@@ -35,8 +35,10 @@ extension View {
     
     func celled() -> some View {
         self
-            .padding(3)
-            .overlay(RoundedRectangle(cornerRadius: 5)
-            .stroke(Color.matrixCell, lineWidth: 2))
+            .padding(1)
+            .overlay(
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(Color.matrixCell, lineWidth: 2)
+            )
     }
 }
