@@ -23,8 +23,9 @@ extension View {
         AnyView(self)
     }
     
-    func navLink(_ destination: () -> some View) -> AnyView {
-        NavigationLink(destination: destination, label: { self })
+    func navLink(_ destination: () -> AnyView?) -> AnyView {
+        guard let destination = destination() else { return self.disabled(true).format() }
+        return NavigationLink(destination: { destination }, label: { self })
             .format()
     }
     
