@@ -8,3 +8,7 @@
 - Determinant
 - Eigenvalue
 - EigenVector
+
+## Calculus Features
+
+- Reimann Sum
