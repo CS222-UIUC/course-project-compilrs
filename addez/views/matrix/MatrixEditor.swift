@@ -47,6 +47,7 @@ struct MatrixEditor: View {
                                     }),
                                     formatter: NumberFormatter()
                                 )
+                                .celled()
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(.roundedBorder)
                                 .multilineTextAlignment(.center)
@@ -55,7 +56,7 @@ struct MatrixEditor: View {
                     }
                 }
                 Button(action: {
-                    guard model.rows < 8 else { return }
+                    guard model.rows < Matrix.maxDimensions.rows else { return }
                     model.matrix.append(Array(repeating: 0, count: model.cols))
                 }) {
                     Image(systemName: "plus")
@@ -63,10 +64,10 @@ struct MatrixEditor: View {
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(model.rows >= 8)
+                .disabled(model.rows >= Matrix.maxDimensions.rows)
             }
             Button(action: {
-                guard model.cols < 8 else { return }
+                guard model.cols < Matrix.maxDimensions.cols else { return }
                 model.matrix = model.matrix.map { $0 + [0] }
             }) {
                 Image(systemName: "plus")
@@ -74,16 +75,16 @@ struct MatrixEditor: View {
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(model.cols >= 8)
+            .disabled(model.cols >= Matrix.maxDimensions.cols)
         }
         .padding(10)
     }
 }
 
 struct MatrixEditor_Previews: PreviewProvider {
-    static var matrix = getMatrix(width: 8, height: 8)
+    static var matrix = getMatrix(width: 6, height: 6)
     static var previews: some View {
         MatrixEditor()
-            .environmentObject(MatrixObject(getMatrix(width: 8, height: 8)))
+            .environmentObject(MatrixObject(matrix))
     }
 }
