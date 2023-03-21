@@ -32,4 +32,11 @@ extension View {
         NavigationLink(destination: { destination }, label: { self })
             .format()
     }
+    
+    func celled() -> some View {
+        self
+            .padding(3)
+            .overlay(RoundedRectangle(cornerRadius: 5)
+            .stroke(Color.matrixCell, lineWidth: 2))
+    }
 }
