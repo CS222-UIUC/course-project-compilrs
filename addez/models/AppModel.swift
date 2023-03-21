@@ -60,7 +60,7 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // int output = for each int in the first row:
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
-    guard matrix.count != 0 && matrix[0].count != 0 else { return .none }
+    guard matrix.rows != 0 && matrix.cols != 0 && matrix.rows == matrix.cols else { return .none }
     return (.none, .double(getDetHelper(matrix)))
 }
 
@@ -79,21 +79,6 @@ func getDetHelper(_ matrix: Matrix) -> Double {
 
 func getMatrix(width: Int, height: Int) -> Matrix {
     Array(repeating: Array(repeating: 0.0, count: width), count: height)
-}
-
-func genMatrix(matrix: Matrix, col: Int) -> Matrix {
-    var returny = Array(repeating: Array(repeating: 0.0, count: matrix[0].count - 1), count: matrix.count - 1)
-    for i in 1..<matrix.count {
-        for j in 0..<matrix.count {
-            if (j < col) {
-                returny[i-1][j] = matrix[i][j]
-            }
-            if (j > col) {
-                returny[i-1][j-1] = matrix[i][j]
-            }
-        }
-    }
-    return returny
 }
 
 func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
