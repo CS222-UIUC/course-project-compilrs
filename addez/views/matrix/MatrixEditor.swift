@@ -12,7 +12,7 @@ struct MatrixEditor: View {
     var body: some View {
         HStack {
             Button(action: {
-                guard model.matrix[0].count > 1 else { return }
+                guard model.cols > 1 else { return }
                 model.matrix = model.matrix.map { $0.dropLast() }
             }) {
                 Image(systemName: "minus")
@@ -20,12 +20,10 @@ struct MatrixEditor: View {
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(model.matrix[0].count <= 1)
+            .disabled(model.cols <= 1)
             VStack {
                 Button(action: {
-                    guard model.matrix.count > 1 else {
-                        return
-                    }
+                    guard model.rows > 1 else { return }
                     model.matrix = model.matrix.dropLast()
                 }) {
                     Image(systemName: "minus")
@@ -33,11 +31,11 @@ struct MatrixEditor: View {
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(model.matrix.count <= 1)
+                .disabled(model.rows <= 1)
                 VStack {
-                    ForEach(0..<model.matrix.count, id: \.self) { row in
+                    ForEach(0..<model.rows, id: \.self) { row in
                         HStack {
-                            ForEach(0..<model.matrix[row].count, id: \.self) { col in
+                            ForEach(0..<model.cols, id: \.self) { col in
                                 TextField(
                                     "0",
                                     value: Binding<Double>(get: {
@@ -54,26 +52,27 @@ struct MatrixEditor: View {
                         }
                     }
                 }
-                Button(action: { model.matrix.append(Array(repeating: 0, count: model.matrix[0].count))
+                Button(action: {
+                    guard model.rows < 8 else { return }
+                    model.matrix.append(Array(repeating: 0, count: model.cols))
                 }) {
                     Image(systemName: "plus")
                         .imageScale(.small)
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(model.matrix.count >= 8)
+                .disabled(model.rows >= 8)
             }
             Button(action: {
-                model.matrix = model.matrix.map {
-                    $0 + [0]
-                }
+                guard model.cols < 8 else { return }
+                model.matrix = model.matrix.map { $0 + [0] }
             }) {
                 Image(systemName: "plus")
                     .imageScale(.small)
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(model.matrix[0].count >= 8)
+            .disabled(model.cols >= 8)
         }
         .padding(10)
     }

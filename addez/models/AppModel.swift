@@ -9,6 +9,8 @@ import Foundation
 
 class MatrixObject : ObservableObject {
     @Published var matrix: Matrix
+    var rows: Int { matrix.count }
+    var cols: Int { matrix[0].count }
     init(_ matrix: Matrix) {
         self.matrix = matrix
     }
