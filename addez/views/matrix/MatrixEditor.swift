@@ -39,8 +39,10 @@ struct MatrixEditor: View {
                                 TextField(
                                     "0",
                                     value: Binding<Double>(get: {
-                                        model.matrix[row][col]
+                                        guard row < model.rows && col < model.cols else { return 0 }
+                                        return model.matrix[row][col]
                                     }, set: { value in
+                                        guard row < model.rows && col < model.cols else { return }
                                         model.matrix[row][col] = value
                                     }),
                                     formatter: NumberFormatter()
@@ -79,6 +81,7 @@ struct MatrixEditor: View {
 }
 
 struct MatrixEditor_Previews: PreviewProvider {
+    static var matrix = getMatrix(width: 8, height: 8)
     static var previews: some View {
         MatrixEditor()
             .environmentObject(MatrixObject(getMatrix(width: 8, height: 8)))

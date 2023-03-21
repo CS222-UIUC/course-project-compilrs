@@ -8,15 +8,11 @@
 import SwiftUI
 
 struct LandingView: View {
-    @ObservedObject var model = MatrixObject([[0, 0], [0, 0]])
     var body: some View {
         NavigationView {
             List {
                 Text("Matrices")
-                    .navLink {
-                        MatrixSolveView()
-                            .environmentObject(model)
-                    }
+                    .navLink(MatrixSolveView())
             }
         }
         .navigationBarTitle("Home")
