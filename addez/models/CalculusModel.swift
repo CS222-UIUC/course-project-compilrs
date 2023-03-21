@@ -44,11 +44,10 @@ func operParser(arg: Character) -> ((Double, Double) -> Double)? {
 
 func isValid(input: String) -> Bool {
     var st = Stack<Character>()
-    for c in input {
+    for c in input { 
         if (c == "(") {
             st.push(c)
-        }
-        else if (c == ")") {
+        } else if (c == ")") {
             st.pop()
         }
     }
@@ -57,24 +56,7 @@ func isValid(input: String) -> Bool {
 
 func parseExpression(arg: String) -> ((Double) -> Double)? {
     // TODO: Implement a recursive solution that reduces the problem size for each parantheses set
-    for i in 0..<arg.count {
-        let index = arg.index(arg.startIndex, offsetBy: i)
-        if arg[index] == "(" {
-            var j = i + 1
-            var count = 1
-            while count > 0 {
-                let index = arg.index(arg.startIndex, offsetBy: j)
-                if arg[index] == "(" { count += 1 }
-                else if arg[index] == ")" { count -= 1 }
-                j += 1
-            }
-            let sub = String(arg[arg.index(arg.startIndex, offsetBy: i + 1)..<arg.index(arg.startIndex, offsetBy: j - 1)])
-            let subFunc = parseExpression(arg: sub)
-            let pre = String(arg[..<arg.index(arg.startIndex, offsetBy: i)])
-            let post = String(arg[arg.index(arg.startIndex, offsetBy: j)...])
-            return parseExpression(arg: pre + String(describing: subFunc) + post)
-        }
-    }
+    .none
 }
 
 func riemannSum(lowerBound: Double, upperBound: Double, _ fun: ((Double) -> Double)?) -> Double? {
