@@ -88,7 +88,7 @@ func isNumeral(_ arg: Substring) -> Bool {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return parseHelper(Substring(arg.filter { $0 != " " }))
+    return parseHelper(Substring(arg.filter { $0 != " " }.lowercased()))
 }
 
 func getPivot(_ arg: Substring) -> Int? {

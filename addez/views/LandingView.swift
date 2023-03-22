@@ -13,6 +13,8 @@ struct LandingView: View {
             List {
                 Text("Matrices")
                     .navLink(MatrixSolveView())
+                Text("Integrals")
+                    .navLink(IntegralSolveView())
             }
         }
         .navigationBarTitle("Home")

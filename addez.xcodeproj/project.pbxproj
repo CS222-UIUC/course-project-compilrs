@@ -20,6 +20,8 @@
 		C96F044A29CA50F200130272 /* CalculusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044829CA50F200130272 /* CalculusModel.swift */; };
 		C96F044C29CA6D3900130272 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044B29CA6D3900130272 /* DataStructures.swift */; };
 		C96F044D29CA6D3900130272 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044B29CA6D3900130272 /* DataStructures.swift */; };
+		C96F045029CAD99900130272 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = C96F044F29CAD99900130272 /* SwiftUICharts */; };
+		C96F045329CAD9CD00130272 /* IntegralSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F045229CAD9CD00130272 /* IntegralSolveView.swift */; };
 		C973A22A298AF56000E26513 /* addezApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A229298AF56000E26513 /* addezApp.swift */; };
 		C973A22C298AF56000E26513 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A22B298AF56000E26513 /* ContentView.swift */; };
 		C973A22E298AF56400E26513 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973A22D298AF56400E26513 /* Assets.xcassets */; };
@@ -54,6 +56,7 @@
 		C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSolveView.swift; sourceTree = "<group>"; };
 		C96F044829CA50F200130272 /* CalculusModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculusModel.swift; sourceTree = "<group>"; };
 		C96F044B29CA6D3900130272 /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
+		C96F045229CAD9CD00130272 /* IntegralSolveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegralSolveView.swift; sourceTree = "<group>"; };
 		C973A226298AF56000E26513 /* addez.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = addez.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C973A229298AF56000E26513 /* addezApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addezApp.swift; sourceTree = "<group>"; };
 		C973A22B298AF56000E26513 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -72,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C96F045029CAD99900130272 /* SwiftUICharts in Frameworks */,
 				C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */,
 				C9CD668A29B91DC40040848A /* LaTeXSwiftUI in Frameworks */,
 			);
@@ -99,6 +103,7 @@
 		C94A68CF29A6C09400F04851 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				C96F045129CAD9B400130272 /* calculus */,
 				C944C21329BA5408009050EB /* components */,
 				C94A68D829A6C2E200F04851 /* matrix */,
 				C94A68D529A6C17000F04851 /* LandingView.swift */,
@@ -127,6 +132,14 @@
 				C9CD668529B9164F0040848A /* StepsList.swift */,
 			);
 			path = matrix;
+			sourceTree = "<group>";
+		};
+		C96F045129CAD9B400130272 /* calculus */ = {
+			isa = PBXGroup;
+			children = (
+				C96F045229CAD9CD00130272 /* IntegralSolveView.swift */,
+			);
+			path = calculus;
 			sourceTree = "<group>";
 		};
 		C973A21D298AF56000E26513 = {
@@ -207,6 +220,7 @@
 			packageProductDependencies = (
 				C94A68E129A6CEBC00F04851 /* Neumorphic */,
 				C9CD668929B91DC40040848A /* LaTeXSwiftUI */,
+				C96F044F29CAD99900130272 /* SwiftUICharts */,
 			);
 			productName = addez;
 			productReference = C973A226298AF56000E26513 /* addez.app */;
@@ -261,6 +275,7 @@
 			packageReferences = (
 				C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */,
 				C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */,
+				C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */,
 			);
 			productRefGroup = C973A227298AF56000E26513 /* Products */;
 			projectDirPath = "";
@@ -305,6 +320,7 @@
 				C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */,
 				C96F044C29CA6D3900130272 /* DataStructures.swift in Sources */,
 				C944C21C29BA55CA009050EB /* UITools.swift in Sources */,
+				C96F045329CAD9CD00130272 /* IntegralSolveView.swift in Sources */,
 				C9CD668629B9164F0040848A /* StepsList.swift in Sources */,
 				C62E06A629A8023A00B5472C /* Tools.swift in Sources */,
 				C96F044929CA50F200130272 /* CalculusModel.swift in Sources */,
@@ -616,6 +632,14 @@
 				kind = branch;
 			};
 		};
+		C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/willdale/SwiftUICharts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/colinc86/LaTeXSwiftUI.git";
@@ -631,6 +655,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */;
 			productName = Neumorphic;
+		};
+		C96F044F29CAD99900130272 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */;
+			productName = SwiftUICharts;
 		};
 		C9CD668929B91DC40040848A /* LaTeXSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
