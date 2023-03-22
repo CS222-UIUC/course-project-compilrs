@@ -1,5 +1,5 @@
 //
-//  AppModel.swift
+//  MatrixModel.swift
 //  addez
 //
 //  Created by Ayush Raman on 2/22/23.

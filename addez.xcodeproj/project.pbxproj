@@ -16,6 +16,9 @@
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
 		C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */; };
 		C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = C94A68E129A6CEBC00F04851 /* Neumorphic */; };
+		C96D403A29CB90360063C243 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403929CB90360063C243 /* Collections */; };
+		C96D403C29CB90360063C243 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403B29CB90360063C243 /* DequeModule */; };
+		C96D403E29CB90360063C243 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403D29CB90360063C243 /* OrderedCollections */; };
 		C96F044929CA50F200130272 /* CalculusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044829CA50F200130272 /* CalculusModel.swift */; };
 		C96F044A29CA50F200130272 /* CalculusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044829CA50F200130272 /* CalculusModel.swift */; };
 		C96F044C29CA6D3900130272 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044B29CA6D3900130272 /* DataStructures.swift */; };
@@ -27,7 +30,7 @@
 		C973A22E298AF56400E26513 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973A22D298AF56400E26513 /* Assets.xcassets */; };
 		C973A232298AF56400E26513 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973A231298AF56400E26513 /* Preview Assets.xcassets */; };
 		C973A23C298AF56400E26513 /* addezTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A23B298AF56400E26513 /* addezTests.swift */; };
-		C977EFB029AFF53300C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* AppModel.swift */; };
+		C977EFB029AFF53300C60DFC /* MatrixModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* MatrixModel.swift */; };
 		C977EFB629AFF5FF00C60DFC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB429AFF5FF00C60DFC /* AppModel.swift */; };
 		C977EFB729AFF5FF00C60DFC /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C977EFB529AFF5FF00C60DFC /* Tools.swift */; };
 		C9CD668629B9164F0040848A /* StepsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CD668529B9164F0040848A /* StepsList.swift */; };
@@ -50,7 +53,7 @@
 		C943F9AE29A7237000155AB6 /* SolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolutionView.swift; sourceTree = "<group>"; };
 		C944C21529BA542A009050EB /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		C944C21B29BA55CA009050EB /* UITools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITools.swift; sourceTree = "<group>"; };
-		C94A68D129A6C12C00F04851 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		C94A68D129A6C12C00F04851 /* MatrixModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixModel.swift; sourceTree = "<group>"; };
 		C94A68D529A6C17000F04851 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		C94A68D929A6C2F000F04851 /* MatrixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixView.swift; sourceTree = "<group>"; };
 		C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSolveView.swift; sourceTree = "<group>"; };
@@ -77,6 +80,9 @@
 			files = (
 				C96F045029CAD99900130272 /* SwiftUICharts in Frameworks */,
 				C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */,
+				C96D403E29CB90360063C243 /* OrderedCollections in Frameworks */,
+				C96D403C29CB90360063C243 /* DequeModule in Frameworks */,
+				C96D403A29CB90360063C243 /* Collections in Frameworks */,
 				C9CD668A29B91DC40040848A /* LaTeXSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -114,7 +120,7 @@
 		C94A68D029A6C0A500F04851 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				C94A68D129A6C12C00F04851 /* AppModel.swift */,
+				C94A68D129A6C12C00F04851 /* MatrixModel.swift */,
 				C62E06A529A8023A00B5472C /* Tools.swift */,
 				C96F044829CA50F200130272 /* CalculusModel.swift */,
 				C96F044B29CA6D3900130272 /* DataStructures.swift */,
@@ -221,6 +227,9 @@
 				C94A68E129A6CEBC00F04851 /* Neumorphic */,
 				C9CD668929B91DC40040848A /* LaTeXSwiftUI */,
 				C96F044F29CAD99900130272 /* SwiftUICharts */,
+				C96D403929CB90360063C243 /* Collections */,
+				C96D403B29CB90360063C243 /* DequeModule */,
+				C96D403D29CB90360063C243 /* OrderedCollections */,
 			);
 			productName = addez;
 			productReference = C973A226298AF56000E26513 /* addez.app */;
@@ -276,6 +285,7 @@
 				C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */,
 				C9CD668829B91DC40040848A /* XCRemoteSwiftPackageReference "LaTeXSwiftUI" */,
 				C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */,
+				C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = C973A227298AF56000E26513 /* Products */;
 			projectDirPath = "";
@@ -311,7 +321,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C977EFB029AFF53300C60DFC /* AppModel.swift in Sources */,
+				C977EFB029AFF53300C60DFC /* MatrixModel.swift in Sources */,
 				C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */,
 				C94A68D629A6C17000F04851 /* LandingView.swift in Sources */,
 				C943F9AD29A70F0200155AB6 /* MatrixEditor.swift in Sources */,
@@ -632,6 +642,14 @@
 				kind = branch;
 			};
 		};
+		C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/willdale/SwiftUICharts";
@@ -655,6 +673,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C94A68E029A6CEBC00F04851 /* XCRemoteSwiftPackageReference "neumorphic" */;
 			productName = Neumorphic;
+		};
+		C96D403929CB90360063C243 /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+		C96D403B29CB90360063C243 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+		C96D403D29CB90360063C243 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
 		};
 		C96F044F29CAD99900130272 /* SwiftUICharts */ = {
 			isa = XCSwiftPackageProductDependency;

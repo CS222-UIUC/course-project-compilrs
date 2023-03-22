@@ -8,6 +8,8 @@
 import SwiftUI
 import SwiftUICharts
 import Neumorphic
+import OrderedCollections
+import LaTeXSwiftUI
 
 struct IntegralSolveView: View {
     @State var userInput = "sin(x)"
@@ -37,12 +39,11 @@ struct IntegralSolveView: View {
         return LineChartData(dataSets: LineDataSet(dataPoints: data))
     }
     func solView() -> AnyView {
-        guard let function = function else { return AnyView(EmptyView()) }
-        return AnyView(
-            VStack {
-                Text("Integral of \(userInput) from 0 to \(x) is \(riemannSum(lowerBound: 0, upperBound: x, function))")
-            }
-        )
+        guard let function = function else { return EmptyView().format() }
+        return VStack {
+            LaTeX("$\\text{Integral of } \(userInput.latexify()) \\text{ from 0 to } \(x) \\text{ is } \(riemannSum(lowerBound: 0, upperBound: x, function))$")
+        }
+        .format()
     }
 }
 

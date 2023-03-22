@@ -24,3 +24,14 @@ struct Stack<T> {
         array.isEmpty
     }
 }
+
+class BinaryTree {
+    var left: BinaryTree?
+    var right: BinaryTree?
+    var data: String
+    init(left: BinaryTree? = .none, right: BinaryTree? = .none, data: String) {
+        self.left = left
+        self.right = right
+        self.data = data
+    }
+}
