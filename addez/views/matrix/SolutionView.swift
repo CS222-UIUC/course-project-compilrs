@@ -15,22 +15,22 @@ struct SolutionView: View {
     }
     var body: some View {
         switch solution {
-        case .matrix(let matrix): return MatrixView(matrix).format()
-        case .double(let num): return Text("\(num, specifier: "%.2f")").format()
+        case .matrix(let matrix): return MatrixView(matrix).cardView()
+        case .double(let num): return Text("\(num, specifier: "%.2f")").cardView()
         case .matrixTuple(let lower, let upper): return HStack {
             MatrixView(lower, title: "Lower")
             Divider()
             MatrixView(upper, title: "Upper")
         }
         .padding(15)
-        .format()
+        .cardView()
         case .ntuple(let ntuple): return VStack {
             ForEach(ntuple, id: \.self) { arg in
                 LaTeX(arg)
                     .celled()
             }
         }
-        .format()
+        .cardView()
         }
     }
 }
