@@ -8,11 +8,11 @@
 import Foundation
 
 struct Stack<T> {
-    var array: [T] = []
+    private var array: [T] = []
     mutating func push(_ element: T) {
         array.append(element)
     }
-    mutating func pop() -> T? {
+    @discardableResult mutating func pop() -> T? {
         guard !array.isEmpty else { return .none }
         return array.removeLast()
     }
