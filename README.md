@@ -11,4 +11,6 @@
 
 ## Calculus Features
 
+- Function Parsing
 - Reimann Sum
+- Derivative at a Point
