@@ -76,6 +76,27 @@ private func numeralParser(_ arg: Substring) -> Double? {
     }
 }
 
+private func refactorCoeffecients(_ arg: Substring) -> Substring {
+    var formatted = ""
+    var prev: Character?
+    for c in arg {
+        if let prev = prev, prev.isNumber, c == "x" {
+            formatted += "*\(c)"
+        } else {
+            formatted += String(c)
+        }
+        prev = c
+    }
+    return Substring(formatted)
+}
+
+private func encapsulateNegatives(_ arg: Substring) -> Substring {
+    // TODO: Implement iterative solution to encapsulate negative numbers
+    // ex: -3 => (-3)
+    arg
+}
+
+
 private func isValid(_ input: String) -> Bool {
     guard !input.isEmpty else { return false }
     var st = Stack<Character>()
@@ -112,14 +133,14 @@ private func getPivot(_ arg: Substring) -> Int? {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() >> parseHelper
+    return arg.filter { $0 != " " }.lowercased().substringify() >> refactorCoeffecients >> encapsulateNegatives >> parseHelper
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
     guard arg.count != 0 else { return { _ in 0 } }
     guard arg != "x" else { return { x in x } }
     guard !isNumeral(arg) else { return { _ in Double(arg) } }
-    if let numeral = numeralParser(arg) { return { _ in numeral } }
+    if let numeral = arg >> numeralParser { return { _ in numeral } }
     guard let pivot = arg >> getPivot else {
         // evaluate as functional component
         guard let parIdx = arg.firstIndex(of: "(") else { return .none }
