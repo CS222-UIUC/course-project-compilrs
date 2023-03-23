@@ -22,6 +22,8 @@ infix operator >>: AdditionPrecedence
 
 infix operator ~>: AdditionPrecedence
 
+postfix operator <>
+
 func >><T, B>(lhs: T, rhs: (T) -> B) -> B {
     rhs(lhs)
 }
@@ -42,17 +44,43 @@ private func orderOfOps(_ arg: Character) -> Int {
     }
 }
 
+private func reflexive(_ x: Double) -> Double { x }
+
+private func zero(_ x: Double) -> Double { 0 }
+
+private postfix func <>(_ x: Double) -> Double {
+    guard x >= 0 else { return .nan }
+    guard x > 0 else { return 1 }
+    return x * (x - 1)<>
+}
+
+func safeLog(_ x: Double) -> Double? {
+    guard x > 0 else { return .none }
+    return log10(x)
+}
+
+func ln(_ x: Double) -> Double? {
+    guard x > 0 else { return .none }
+    return log(x)
+}
+
 private func funcParser(_ arg: Substring) -> Function? {
     switch arg {
-    case "": return { x in x }
-    case "ln": return log
-    case "log": return log10
+    case "": return reflexive
+    case "ln": return ln
+    case "log": return safeLog
     case "sin": return sin
+    case "sinh": return sinh
     case "cos": return cos
+    case "cosh": return cosh
     case "tan": return { x in sin(x) ~/ cos(x) }
+    case "tanh": return tanh
     case "sec": return { x in 1 ~/ cos(x) }
+    case "sech": return { x in 1 ~/ cosh(x) }
     case "csc": return { x in 1 ~/ sin(x) }
+    case "csch": return { x in 1 ~/ sinh(x) }
     case "cot": return { x in cos(x) ~/ sin(x) }
+    case "coth": return { x in 1 ~/ tanh(x) }
     default: return .none
     }
 }
@@ -64,6 +92,13 @@ private func operParser(_ arg: Character) -> Operation? {
     case "*": return (*)
     case "/": return (~/)
     case "^": return pow
+    default: return .none
+    }
+}
+
+private func postfixParser(_ arg: Character?) -> Function? {
+    switch arg {
+    case "!": return (<>)
     default: return .none
     }
 }
@@ -93,6 +128,7 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
 private func encapsulateNegatives(_ arg: Substring) -> Substring {
     // TODO: Implement iterative solution to encapsulate negative numbers
     // ex: -3 => (-3)
+    // Treated as (0-3)
     arg
 }
 
@@ -108,10 +144,6 @@ private func isValid(_ input: String) -> Bool {
         }
     }
     return st.empty();
-}
-
-private func isNumeral(_ arg: Substring) -> Bool {
-    Double(arg) != .none
 }
 
 private func getPivot(_ arg: Substring) -> Int? {
@@ -137,9 +169,16 @@ func parseExpression(_ arg: String) -> Function? {
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
-    guard arg.count != 0 else { return { _ in 0 } }
-    guard arg != "x" else { return { x in x } }
-    guard !isNumeral(arg) else { return { _ in Double(arg) } }
+    guard arg.count != 0 else { return zero }
+    guard arg != "x" else { return reflexive }
+    if let post = arg.last >> postfixParser {
+        // evaluate postfix functions
+        return { x in
+            guard let arg = arg.dropLast() >> parseHelper else { return .none }
+            guard let val = x >> arg else { return .none }
+            return val >> post
+        }
+    }
     if let numeral = arg >> numeralParser { return { _ in numeral } }
     guard let pivot = arg >> getPivot else {
         // evaluate as functional component

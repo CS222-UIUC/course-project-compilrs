@@ -31,8 +31,6 @@ extension String {
         latex = latex.replacingOccurrences(of: "pi", with: "\\pi")
         latex = latex.replacingOccurrences(of: "e", with: "\\e")
         latex = latex.replacingOccurrences(of: "x", with: "x")
-        latex = "$\(latex)$"
-        // \text is used to prevent LaTeX from interpreting the string as math
         return latex
     }
     func substringify() -> Substring {
