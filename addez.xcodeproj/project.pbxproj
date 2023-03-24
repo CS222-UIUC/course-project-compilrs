@@ -29,7 +29,7 @@
 		C973A22C298AF56000E26513 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A22B298AF56000E26513 /* ContentView.swift */; };
 		C973A22E298AF56400E26513 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973A22D298AF56400E26513 /* Assets.xcassets */; };
 		C973A232298AF56400E26513 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973A231298AF56400E26513 /* Preview Assets.xcassets */; };
-		C973A23C298AF56400E26513 /* addezTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A23B298AF56400E26513 /* addezTests.swift */; };
+		C973A23C298AF56400E26513 /* matrixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A23B298AF56400E26513 /* matrixTests.swift */; };
 		C977EFB029AFF53300C60DFC /* MatrixModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D129A6C12C00F04851 /* MatrixModel.swift */; };
 		C9CD668629B9164F0040848A /* StepsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CD668529B9164F0040848A /* StepsList.swift */; };
 		C9CD668A29B91DC40040848A /* LaTeXSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9CD668929B91DC40040848A /* LaTeXSwiftUI */; };
@@ -37,6 +37,7 @@
 		C9F3C44B29CC00B100B2F5EE /* CalculusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F3C44729CC00B100B2F5EE /* CalculusModel.swift */; };
 		C9F3C44C29CC00B100B2F5EE /* MatrixModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F3C44829CC00B100B2F5EE /* MatrixModel.swift */; };
 		C9F3C44D29CC00B100B2F5EE /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F3C44929CC00B100B2F5EE /* Tools.swift */; };
+		C9F6F75B29CE304B00F37AC2 /* integralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F6F75A29CE304B00F37AC2 /* integralTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,12 +70,14 @@
 		C973A22F298AF56400E26513 /* addez.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = addez.entitlements; sourceTree = "<group>"; };
 		C973A231298AF56400E26513 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C973A237298AF56400E26513 /* addezTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = addezTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C973A23B298AF56400E26513 /* addezTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addezTests.swift; sourceTree = "<group>"; };
+		C973A23B298AF56400E26513 /* matrixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matrixTests.swift; sourceTree = "<group>"; };
 		C9CD668529B9164F0040848A /* StepsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsList.swift; sourceTree = "<group>"; };
 		C9F3C44629CC00B100B2F5EE /* DataStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
 		C9F3C44729CC00B100B2F5EE /* CalculusModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculusModel.swift; sourceTree = "<group>"; };
 		C9F3C44829CC00B100B2F5EE /* MatrixModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixModel.swift; sourceTree = "<group>"; };
 		C9F3C44929CC00B100B2F5EE /* Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
+		C9F6F75A29CE304B00F37AC2 /* integralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = integralTests.swift; sourceTree = "<group>"; };
+		C9F6F75C29CE308C00F37AC2 /* ExpressionPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ExpressionPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +131,7 @@
 				C62E06A529A8023A00B5472C /* Tools.swift */,
 				C96F044829CA50F200130272 /* CalculusModel.swift */,
 				C96F044B29CA6D3900130272 /* DataStructures.swift */,
+				C9F6F75C29CE308C00F37AC2 /* ExpressionPlayground.playground */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -196,7 +200,8 @@
 			isa = PBXGroup;
 			children = (
 				C9F3C44529CC00B100B2F5EE /* models */,
-				C973A23B298AF56400E26513 /* addezTests.swift */,
+				C973A23B298AF56400E26513 /* matrixTests.swift */,
+				C9F6F75A29CE304B00F37AC2 /* integralTests.swift */,
 			);
 			path = addezTests;
 			sourceTree = "<group>";
@@ -352,10 +357,11 @@
 				C96F044D29CA6D3900130272 /* DataStructures.swift in Sources */,
 				C9F3C44A29CC00B100B2F5EE /* DataStructures.swift in Sources */,
 				C9F3C44C29CC00B100B2F5EE /* MatrixModel.swift in Sources */,
-				C973A23C298AF56400E26513 /* addezTests.swift in Sources */,
+				C973A23C298AF56400E26513 /* matrixTests.swift in Sources */,
 				C9F3C44D29CC00B100B2F5EE /* Tools.swift in Sources */,
 				C9F3C44B29CC00B100B2F5EE /* CalculusModel.swift in Sources */,
 				C96F044A29CA50F200130272 /* CalculusModel.swift in Sources */,
+				C9F6F75B29CE304B00F37AC2 /* integralTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

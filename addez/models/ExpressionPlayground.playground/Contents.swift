@@ -1,3 +1,6 @@
+import UIKit
+import Foundation
+
 //
 //  CalculusModel.swift
 //  addez
@@ -6,6 +9,24 @@
 //
 
 import Foundation
+
+struct Stack<T> {
+    private var array: [T] = []
+    mutating func push(_ element: T) {
+        array.append(element)
+    }
+    @discardableResult mutating func pop() -> T? {
+        guard !array.isEmpty else { return .none }
+        return array.removeLast()
+    }
+    func peek() -> T? {
+        guard !array.isEmpty else { return .none }
+        return array.last
+    }
+    func empty() -> Bool {
+        array.isEmpty
+    }
+}
 
 typealias Function = (Double) -> Double?
 typealias Operation = (Double, Double) -> Double?
@@ -151,7 +172,7 @@ private func getPivot(_ arg: Substring) -> Int? {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() >> refactorCoeffecients >> encapsulateNegatives >> parseHelper
+    return Substring(arg.filter { $0 != " " }.lowercased()) >> refactorCoeffecients >> encapsulateNegatives >> parseHelper
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
@@ -160,7 +181,10 @@ private func parseHelper(_ arg: Substring) -> Function? {
     if let numeral = arg >> numeralParser { return { _ in numeral } }
     guard let pivot = arg >> getPivot else {
         // evaluate as functional component
-        if let post = arg.last >> postfixParser { return { $0 >> parseHelper(arg.dropLast()) >> post } }
+        if let post = arg.last >> postfixParser {
+            // evaluate postfix functions
+            return { $0 >> parseHelper(arg.dropLast()) >> post }
+        }
         guard let parIdx = arg.firstIndex(of: "(") else { return .none }
         guard let fun = arg[..<parIdx] >> funcParser,
               let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] >> parseHelper else { return .none }
@@ -195,3 +219,18 @@ func derivative(x: Double, _ fun: Function) -> Double? {
 func summation(range: ClosedRange<Int>, _ f: Function) -> Double {
     range.reduce(0.0) { $0 + (f(Double($1)) ?? 0) }
 }
+
+
+func foo(_ arg: String, _ x: Double) {
+    guard let f = parseExpression(arg) else { print("Invalid Expression"); return }
+    guard let y = f(x) else { print("nil"); return }
+    print(y)
+    let integral = riemannSum(lowerBound: 0, upperBound: x, f)
+    print(integral)
+    let sum = summation(range: 0...Int(x), f)
+    print(sum)
+}
+
+
+foo("x^sin(x)", 9)
+
