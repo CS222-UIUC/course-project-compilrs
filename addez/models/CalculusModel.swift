@@ -20,14 +20,8 @@ func ~/(lhs: Double?, rhs: Double?) -> Double? {
 
 infix operator >>: AdditionPrecedence
 
-infix operator ~>: AdditionPrecedence
-
-func >><T, B>(lhs: T, rhs: (T) -> B) -> B {
-    rhs(lhs)
-}
-
-func ~><T, B>(lhs: T?, rhs: (T) -> B) -> B? {
-    guard let lhs = lhs else { return .none }
+func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
+    guard let lhs = lhs, let rhs = rhs else { return .none }
     return rhs(lhs)
 }
 
@@ -90,12 +84,12 @@ private func operParser(_ arg: Character) -> Operation? {
 
 private func postfixParser(_ arg: Character?) -> Function? {
     switch arg {
-    case "!": return tgamma
+    case "!": return { x in tgamma(x+1) }
     default: return .none
     }
 }
 
-private func numeralParser(_ arg: Substring) -> Double? {
+func numeralParser(_ arg: Substring) -> Double? {
     switch arg {
     case "e": return exp(1)
     case "pi", "π": return .pi
@@ -146,7 +140,7 @@ private func getPivot(_ arg: Substring) -> Int? {
         if c == "(" { st.push(c) }
         else if c == ")" { st.pop() }
         if !st.empty() { continue }
-        let order = c >> orderOfOps
+        let order = orderOfOps(c)
         if (order < min) {
             min = order
             minIdx = i
@@ -163,24 +157,17 @@ func parseExpression(_ arg: String) -> Function? {
 private func parseHelper(_ arg: Substring) -> Function? {
     guard arg.count != 0 else { return zero }
     guard arg != "x" else { return reflexive }
-    if let post = arg.last >> postfixParser {
-        // evaluate postfix functions
-        return { x in
-            guard let arg = arg.dropLast() >> parseHelper else { return .none }
-            guard let val = x >> arg else { return .none }
-            return val >> post
-        }
-    }
     if let numeral = arg >> numeralParser { return { _ in numeral } }
     guard let pivot = arg >> getPivot else {
         // evaluate as functional component
+        if let post = arg.last >> postfixParser {
+            // evaluate postfix functions
+            return { $0 >> parseHelper(arg.dropLast()) >> post }
+        }
         guard let parIdx = arg.firstIndex(of: "(") else { return .none }
         guard let fun = arg[..<parIdx] >> funcParser,
               let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] >> parseHelper else { return .none }
-        return { x in
-            guard let args = params(x) else { return .none }
-            return args >> fun
-        }
+        return { $0 >> params >> fun }
     }
     // evaluate operands
     guard let op = arg[arg.index(arg.startIndex, offsetBy: pivot)] >> operParser,
