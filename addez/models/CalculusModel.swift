@@ -194,3 +194,7 @@ func derivative(x: Double, _ fun: Function) -> Double? {
     guard let y1 = fun(x - h), let y2 = fun(x + h) else { return .none }
     return (y2 - y1) / (2 * h)
 }
+
+func summation(range: ClosedRange<Int>, _ f: Function) -> Double {
+    range.reduce(0.0) { $0 + (f(Double($1)) ?? 0) }
+}
