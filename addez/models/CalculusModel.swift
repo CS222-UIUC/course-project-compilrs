@@ -22,8 +22,6 @@ infix operator >>: AdditionPrecedence
 
 infix operator ~>: AdditionPrecedence
 
-postfix operator <>
-
 func >><T, B>(lhs: T, rhs: (T) -> B) -> B {
     rhs(lhs)
 }
@@ -47,12 +45,6 @@ private func orderOfOps(_ arg: Character) -> Int {
 private func reflexive(_ x: Double) -> Double { x }
 
 private func zero(_ x: Double) -> Double { 0 }
-
-private postfix func <>(_ x: Double) -> Double {
-    guard x >= 0 else { return .nan }
-    guard x > 0 else { return 1 }
-    return x * (x - 1)<>
-}
 
 func safeLog(_ x: Double) -> Double? {
     guard x > 0 else { return .none }
@@ -98,7 +90,7 @@ private func operParser(_ arg: Character) -> Operation? {
 
 private func postfixParser(_ arg: Character?) -> Function? {
     switch arg {
-    case "!": return (<>)
+    case "!": return tgamma
     default: return .none
     }
 }
