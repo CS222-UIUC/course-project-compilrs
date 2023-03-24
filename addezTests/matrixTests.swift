@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class addezTests: XCTestCase {
+final class matrixTests: XCTestCase {
     
     func testReducedRowEchelon2x2() {
         let matrix = [[1.0, 3.0], [4.0, 9.0]]

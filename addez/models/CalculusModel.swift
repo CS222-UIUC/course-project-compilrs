@@ -160,10 +160,7 @@ private func parseHelper(_ arg: Substring) -> Function? {
     if let numeral = arg >> numeralParser { return { _ in numeral } }
     guard let pivot = arg >> getPivot else {
         // evaluate as functional component
-        if let post = arg.last >> postfixParser {
-            // evaluate postfix functions
-            return { $0 >> parseHelper(arg.dropLast()) >> post }
-        }
+        if let post = arg.last >> postfixParser { return { $0 >> parseHelper(arg.dropLast()) >> post } }
         guard let parIdx = arg.firstIndex(of: "(") else { return .none }
         guard let fun = arg[..<parIdx] >> funcParser,
               let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] >> parseHelper else { return .none }
