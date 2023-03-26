@@ -44,8 +44,9 @@ struct IntegralSolveView: View {
     func solView() -> AnyView {
         guard let function = function else { return EmptyView().format() }
         return VStack {
-            LaTeX("$\\text{Value :} \(String(describing: function(x)))$")
-            LaTeX("$\\text{Integral of } \(userInput.latexify()) \\text{ from 0 to } \(x) \\text{ is } \(riemannSum(lowerBound: 0, upperBound: x, function))$")
+            LaTeX("$f(\(x)) = \(String(describing: function(x) ?? .nan))$")
+            LaTeX("$\\int_{0}^{\(x)} \(userInput.latexify()) = \(riemannSum(lowerBound: 0, upperBound: x, function))$")
+            LaTeX("$\\sum_0^{\(x)} \(userInput.latexify()) = \(summation(range: 0...Int(x), function))$")
         }
         .format()
     }
