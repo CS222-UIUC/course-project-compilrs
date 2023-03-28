@@ -6,29 +6,89 @@
 //
 
 import SwiftUI
-import SwiftUICharts
 import Neumorphic
 import OrderedCollections
 import LaTeXSwiftUI
+import Charts
+
+struct Point: Identifiable {
+    var id = UUID()
+    let x: Double
+    let y: Double
+    init(id: UUID = UUID(), _ x: Double, _ y: Double) {
+        self.id = id
+        self.x = x
+        self.y = y
+    }
+}
 
 struct IntegralSolveView: View {
     @State var userInput = "sin(x)"
     @State var x = 0.0
     @State var inputX = ""
-    @State var function: Function?
+    @State var f: Function?
+    @State var xRange = -10...10
+    @State var yRange = -10...10
+    @State var points = [Point]()
     var body: some View {
         VStack {
-            LineChart(chartData: generateChartData())
-                .frame(height: 300)
-            TextField("", text: $userInput)
+            Button(action: {
+                yRange = 0...yRange.upperBound+1
+            }) {
+                Image(systemName: "plus")
+                    .imageScale(.small)
+            }
+            .softButtonStyle(Capsule())
+            .padding(5)
+            HStack {
+                Button(action: {
+                    yRange = 0...yRange.upperBound+1
+                }) {
+                    Image(systemName: "minus")
+                        .imageScale(.small)
+                }
+                .softButtonStyle(Capsule())
+                .padding(5)
+                Chart(points.compactMap { yRange.inBounds(element: $0.y) ? $0 : .none }) { point in
+                    LineMark(x: .value("x", point.x), y: .value("f(\(x))", point.y))
+                    PointMark(x: .value("x", x), y: .value("f(\(x))", f?(x) ?? .nan))
+                        .foregroundStyle(.black)
+                }
+                Button(action: {
+                    yRange = 0...yRange.upperBound+1
+                }) {
+                    Image(systemName: "plus")
+                        .imageScale(.small)
+                }
+                .softButtonStyle(Capsule())
+                .padding(5)
+            }
+            Button(action: {
+                yRange = 0...yRange.upperBound+1
+            }) {
+                Image(systemName: "minus")
+                    .imageScale(.small)
+            }
+            .softButtonStyle(Capsule())
+            .padding(5)
+            TextField("f(x)", text: $userInput)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
-            TextField("", value: $x, formatter: NumberFormatter())
+            Slider(value: $x, in: Double(xRange.lowerBound)...Double(xRange.upperBound)) {
+                Text("x")
+            }
+            TextField("x", value: $x, formatter: .numberFormatter)
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.numberPad)
             Button("Evaluate") {
-                function = parseExpression(userInput)
+                f = parseExpression(userInput)
+                guard let f = f else { points = []; return }
+                points = xRange.continuous().compactMap { x in
+                    let x = Double(x)
+                    guard let y = f(Double(x)) else { return .none }
+                    return Point(x, y)
+                }
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
             .fontWeight(.bold)
@@ -36,16 +96,15 @@ struct IntegralSolveView: View {
         }
         .navigationTitle("Integral Solver")
     }
-    func generateChartData() -> LineChartData {
-        guard let function = function else { return LineChartData(dataSets: LineDataSet(dataPoints: [LineChartDataPoint]())) }
-        let data = (0...10).map { x in LineChartDataPoint(value: function(Double(x)) ?? 0) }
-        return LineChartData(dataSets: LineDataSet(dataPoints: data))
+    func generatePoints() {
+       
     }
     func solView() -> AnyView {
-        guard let function = function else { return EmptyView().format() }
+        guard let f = f else { return EmptyView().format() }
         return VStack {
-            LaTeX("$\\text{Value :} \(String(describing: function(x)))$")
-            LaTeX("$\\text{Integral of } \(userInput.latexify()) \\text{ from 0 to } \(x) \\text{ is } \(riemannSum(lowerBound: 0, upperBound: x, function))$")
+            LaTeX("$f(\(x)) = \(String(describing: f(x) ?? .nan))$")
+            LaTeX("$\\int_{0}^{\(x)} \(userInput) = \(riemannSum(lowerBound: 0, upperBound: x, f))$")
+            LaTeX("$\\sum_0^{\(Int(x))} \(userInput) = \(summation(range: 0...Int(x), f))$")
         }
         .format()
     }

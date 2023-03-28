@@ -26,8 +26,7 @@ struct MatrixSolveView: View {
             Text("Show Steps")
                 .navLink {
                     guard let steps = steps else { return .none }
-                    return StepsList(steps)
-                        .format()
+                    return StepsList(steps).format()
                 }
             solView().format()
             Button("Solve") {

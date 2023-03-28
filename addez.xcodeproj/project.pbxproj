@@ -77,7 +77,6 @@
 		C9F3C44829CC00B100B2F5EE /* MatrixModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixModel.swift; sourceTree = "<group>"; };
 		C9F3C44929CC00B100B2F5EE /* Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		C9F6F75A29CE304B00F37AC2 /* integralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = integralTests.swift; sourceTree = "<group>"; };
-		C9F6F75C29CE308C00F37AC2 /* ExpressionPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ExpressionPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +130,6 @@
 				C62E06A529A8023A00B5472C /* Tools.swift */,
 				C96F044829CA50F200130272 /* CalculusModel.swift */,
 				C96F044B29CA6D3900130272 /* DataStructures.swift */,
-				C9F6F75C29CE308C00F37AC2 /* ExpressionPlayground.playground */,
 			);
 			path = models;
 			sourceTree = "<group>";

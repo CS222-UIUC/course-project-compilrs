@@ -45,7 +45,7 @@ struct MatrixEditor: View {
                                         guard row < model.rows && col < model.cols else { return }
                                         model.matrix[row][col] = value
                                     }),
-                                    formatter: NumberFormatter()
+                                    formatter: .numberFormatter
                                 )
                                 .celled()
                                 .keyboardType(.numberPad)
@@ -78,6 +78,7 @@ struct MatrixEditor: View {
             .disabled(model.cols >= Matrix.maxDimensions.cols)
         }
         .padding(10)
+        .animation(.easeInOut(duration: 0.3), value: model.rows + model.cols)
     }
 }
 

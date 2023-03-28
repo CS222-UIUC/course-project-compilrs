@@ -37,3 +37,13 @@ extension String {
         Substring(self)
     }
 }
+
+extension ClosedRange where Element == Int {
+    func inBounds(element x: Double) -> Bool {
+        x >= Double(lowerBound) && x <= Double(upperBound)
+    }
+    
+    func continuous() -> [Double] {
+        stride(from: Double(lowerBound), through: Double(upperBound), by: 0.01).map(identity)
+    }
+}
