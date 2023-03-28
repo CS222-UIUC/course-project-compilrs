@@ -32,7 +32,7 @@ private func orderOfOps(_ arg: Character) -> Int {
     }
 }
 
-private func identity<T>(_ x: T) -> T { x }
+func identity<T>(_ x: T) -> T { x }
 
 private func zero(_ x: Double) -> Double { 0 }
 
@@ -195,12 +195,12 @@ private func parseHelper(_ arg: Substring) -> Function? {
     return { $0 >> params >> f }
 }
 
-func riemannSum(lowerBound: Double, upperBound: Double, _ fun: @escaping Function) -> Double {
+func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function) -> Double {
     let step = (upperBound - lowerBound) / 10000
     return (0..<10000).reduce(0.0) { sum, i in
         let x1 = lowerBound + Double(i) * step
         let x2 = lowerBound + Double(i + 1) * step
-        guard let y1 = fun(x1), let y2 = fun(x2) else { return .nan }
+        guard let y1 = f(x1), let y2 = f(x2) else { return .nan }
         return sum + (y1 + y2) * step / 2
     }
 }

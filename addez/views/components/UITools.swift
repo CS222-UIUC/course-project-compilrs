@@ -43,3 +43,11 @@ extension View {
             )
     }
 }
+
+extension Formatter {
+    static let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+}
