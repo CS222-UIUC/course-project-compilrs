@@ -23,7 +23,7 @@ func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
 
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
-    case "+": return 1
+    case "+": return 0
     case "-": return 1
     case "*": return 2
     case "/": return 2
@@ -99,7 +99,7 @@ private func operParser(_ arg: Character) -> Operation? {
 
 private func postfixParser(_ arg: Character?) -> Function? {
     switch arg {
-    case "!": return { x in tgamma(x+1) }
+    case "!": return { x in tgamma(x + 1) }
     default: return .none
     }
 }
@@ -116,7 +116,7 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
     var formatted = ""
     var prev: Character?
     for c in arg {
-        if let prev = prev, prev.isNumber, c == "x" {
+        if let prev = prev, prev.isNumber, !c.isNumber, c != ")", operParser(c) == nil {
             formatted += "*\(c)"
         } else {
             formatted += String(c)
