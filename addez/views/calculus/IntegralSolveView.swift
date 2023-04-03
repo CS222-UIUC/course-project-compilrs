@@ -85,7 +85,7 @@ struct IntegralSolveView: View {
                 guard let f = f else { points = []; return }
                 points = xRange.continuous().compactMap { x in
                     let x = Double(x)
-                    guard let y = f(Double(x)) else { return .none }
+                    let y = f(Double(x))
                     guard yRange.inBounds(element: y) else { return .none }
                     return Point(x, y)
                 }
@@ -99,7 +99,7 @@ struct IntegralSolveView: View {
     func solView() -> AnyView {
         guard let f = f else { return EmptyView().format() }
         return VStack {
-            LaTeX("$f(\(x)) = \(String(describing: f(x) ?? .nan))$")
+            LaTeX("$f(\(x)) = \(String(describing: f(x)))$")
             LaTeX("$\\int_{0}^{\(x)} \(userInput) = \(riemannSum(lowerBound: 0, upperBound: x, f))$")
             LaTeX("$\\sum_0^{\(Int(x))} \(userInput) = \(summation(range: 0...Int(x), f))$")
         }
