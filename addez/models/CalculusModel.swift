@@ -126,14 +126,6 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
     return Substring(formatted)
 }
 
-private func encapsulateNegatives(_ arg: Substring) -> Substring {
-    // TODO: Implement iterative solution to encapsulate negative numbers
-    // ex: -3 => (-3)
-    // Treated as (0-3)
-    arg
-}
-
-
 private func isValid(_ input: String) -> Bool {
     guard !input.isEmpty else { return false }
     var st = Stack<Character>()
@@ -156,7 +148,7 @@ private func getPivot(_ arg: Substring) -> Int? {
         else if c == ")" { st.pop() }
         if !st.empty() { continue }
         let order = orderOfOps(c)
-        if (order < min) {
+        if order < min {
             min = order
             minIdx = i
         }
@@ -166,7 +158,7 @@ private func getPivot(_ arg: Substring) -> Int? {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() >> refactorCoeffecients >> encapsulateNegatives >> parseHelper
+    return arg.filter { $0 != " " }.lowercased().substringify() >> refactorCoeffecients >> parseHelper
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
@@ -183,6 +175,10 @@ private func parseHelper(_ arg: Substring) -> Function? {
             guard let lhsVal = x >> lhs, let rhsVal = x >> rhs else { return .none }
             return (lhsVal, rhsVal) >> operand
         }
+    }
+    guard arg.first != "x" else {
+        guard let f = parseHelper(arg.dropFirst()) else { return .none }
+        return { $0 * (f($0) ?? .nan) }
     }
     // evaluate postfix functions
     if let post = arg.last >> postfixParser { return { $0 >> parseHelper(arg.dropLast()) >> post } }
