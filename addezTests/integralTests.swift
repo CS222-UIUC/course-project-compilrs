@@ -48,6 +48,10 @@ final class integralTests: XCTestCase {
         XCTAssert(within(f(3), 101.25))
         guard let f = parseExpression("-3x^(3tan(x*pi))") else { XCTAssertNotNil(nil); return }
         XCTAssert(within(f(3), -3))
+        guard let f = parseExpression("xpi") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), 3 * Double.pi))
+        guard let f = parseExpression("xsin(3x + 7cos(2x))") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), 3*sin(3*3 + 7*cos(2*3))))
     }
     
     func testTrig() {
