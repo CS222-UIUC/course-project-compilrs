@@ -52,7 +52,7 @@ func solveMatrix(matrix: Matrix) -> ReturnType {
 }
 
 func inverseMatrix(matrix: Matrix) -> ReturnType? {
-    guard matrix.count != 0 && matrix[0].count != 0 else { return .none }
+    guard matrix.count != 0 || matrix[0].count != 0 else { return .none }
     guard matrix.count == matrix[0].count else { return .none }
     guard getDeterminant(matrix: matrix) != .none else { return .none }
     var returny = getMatrix(width: matrix.count, height: matrix.count)
