@@ -7,10 +7,12 @@
 
 import Foundation
 
-typealias Function = (Double) -> Double?
-typealias Operation = (Double, Double) -> Double?
+typealias Function = (Double) -> Double
+typealias Operation = (Double, Double) -> Double
 
 infix operator >>: AdditionPrecedence
+
+infix operator ~>: AdditionPrecedence
 
 infix operator **: MultiplicationPrecedence
 
@@ -21,9 +23,11 @@ func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
     return rhs(lhs)
 }
 
+func ~><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
+
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
-    case "+": return 1
+    case "+": return 0
     case "-": return 1
     case "*": return 2
     case "/": return 2
@@ -99,7 +103,7 @@ private func operParser(_ arg: Character) -> Operation? {
 
 private func postfixParser(_ arg: Character?) -> Function? {
     switch arg {
-    case "!": return { x in tgamma(x+1) }
+    case "!": return { x in tgamma(x + 1) }
     default: return .none
     }
 }
@@ -116,7 +120,7 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
     var formatted = ""
     var prev: Character?
     for c in arg {
-        if let prev = prev, prev.isNumber, c == "x" {
+        if let prev = prev, prev.isNumber, !c.isNumber, c != ")", operParser(c) == nil {
             formatted += "*\(c)"
         } else {
             formatted += String(c)
@@ -125,14 +129,6 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
     }
     return Substring(formatted)
 }
-
-private func encapsulateNegatives(_ arg: Substring) -> Substring {
-    // TODO: Implement iterative solution to encapsulate negative numbers
-    // ex: -3 => (-3)
-    // Treated as (0-3)
-    arg
-}
-
 
 private func isValid(_ input: String) -> Bool {
     guard !input.isEmpty else { return false }
@@ -156,7 +152,7 @@ private func getPivot(_ arg: Substring) -> Int? {
         else if c == ")" { st.pop() }
         if !st.empty() { continue }
         let order = orderOfOps(c)
-        if (order < min) {
+        if order < min {
             min = order
             minIdx = i
         }
@@ -166,7 +162,7 @@ private func getPivot(_ arg: Substring) -> Int? {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() >> refactorCoeffecients >> encapsulateNegatives >> parseHelper
+    return arg.filter { $0 != " " }.lowercased().substringify() ~> refactorCoeffecients ~> parseHelper
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
@@ -179,20 +175,24 @@ private func parseHelper(_ arg: Substring) -> Function? {
               // recursively evaluate the lhs and rhs around lowest-order operation
               let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] >> parseHelper,
               let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >> parseHelper else { return .none }
-        return { x in
-            guard let lhsVal = x >> lhs, let rhsVal = x >> rhs else { return .none }
-            return (lhsVal, rhsVal) >> operand
-        }
+        return { operand(lhs($0), rhs($0)) }
+    }
+    guard arg.first != "x" else {
+        guard let f = arg.dropFirst() >> parseHelper else { return .none }
+        return { $0 * f($0) }
     }
     // evaluate postfix functions
-    if let post = arg.last >> postfixParser { return { $0 >> parseHelper(arg.dropLast()) >> post } }
+    if let post = arg.last >> postfixParser {
+        guard let f = arg.dropLast() >> parseHelper else { return .none }
+        return { $0 ~> f ~> post }
+    }
     // find index of highest-order function
     guard let parIdx = arg.firstIndex(of: "(") else { return .none }
     // f is the prefix to the paranthesis
     guard let f = arg[..<parIdx] >> funcParser,
           // params are the arguments in between the parantheses
           let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] >> parseHelper else { return .none }
-    return { $0 >> params >> f }
+    return { $0 ~> params ~> f }
 }
 
 func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function) -> Double {
@@ -200,21 +200,18 @@ func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function)
     return (0..<10000).reduce(0.0) { sum, i in
         let x1 = lowerBound + Double(i) * step
         let x2 = lowerBound + Double(i + 1) * step
-        guard let y1 = f(x1), let y2 = f(x2) else { return .nan }
-        return sum + (y1 + y2) * step / 2
+        return sum + (f(x1) + f(x2)) * step / 2
     }
 }
 
 func limit(approaches x: Double, _ f: @escaping Function) -> Double {
     let h = 0.00000000001
-    guard let f1 = f(x - h), let f2 = f(x + h) else { return .nan }
-    return (f2 + f1) / 2
+    return (f(x+h) + f(x - h)) / 2
 }
 
 func derivative(_ f: @escaping Function) -> Function {
     { x in limit(approaches: 0.0) { h in
-        guard let fxh = f(x + h), let fx = f(x) else { return .none }
-        return (fxh - fx) / h
+        return (f(x + h) - f(x)) / h
     } }
 }
 

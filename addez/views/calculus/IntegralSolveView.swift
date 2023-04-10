@@ -49,10 +49,9 @@ struct IntegralSolveView: View {
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                Chart(points.compactMap { yRange.inBounds(element: $0.y) ? $0 : .none }) { point in
+                Chart(points) { point in
                     LineMark(x: .value("x", point.x), y: .value("f(\(x))", point.y))
                     PointMark(x: .value("x", x), y: .value("f(\(x))", f?(x) ?? .nan))
-                        .foregroundStyle(.black)
                 }
                 Button(action: {
                     yRange = 0...yRange.upperBound+1
@@ -86,7 +85,8 @@ struct IntegralSolveView: View {
                 guard let f = f else { points = []; return }
                 points = xRange.continuous().compactMap { x in
                     let x = Double(x)
-                    guard let y = f(Double(x)) else { return .none }
+                    let y = f(Double(x))
+                    guard yRange.inBounds(element: y) else { return .none }
                     return Point(x, y)
                 }
             }
@@ -96,13 +96,10 @@ struct IntegralSolveView: View {
         }
         .navigationTitle("Integral Solver")
     }
-    func generatePoints() {
-       
-    }
     func solView() -> AnyView {
         guard let f = f else { return EmptyView().format() }
         return VStack {
-            LaTeX("$f(\(x)) = \(String(describing: f(x) ?? .nan))$")
+            LaTeX("$f(\(x)) = \(String(describing: f(x)))$")
             LaTeX("$\\int_{0}^{\(x)} \(userInput) = \(riemannSum(lowerBound: 0, upperBound: x, f))$")
             LaTeX("$\\sum_0^{\(Int(x))} \(userInput) = \(summation(range: 0...Int(x), f))$")
         }
