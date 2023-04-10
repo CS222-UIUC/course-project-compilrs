@@ -50,10 +50,12 @@ enum MatrixFunctions: String, CaseIterable {
     case eigenvec = "Eigenvector"
 }
 
+/// Solves a linear system of equations
 func solveMatrix(matrix: Matrix) -> ReturnType? {
     .none
 }
 
+/// Recursively calculates the determinant of a matrix
 func getDeterminant(matrix: Matrix) -> ReturnType? {
     // if (matrix dimension is 1x1 then return the only value
     // if the matrix dimension is 2x2 then return the ad-bc
@@ -64,6 +66,7 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     return (.none, .double(getDetHelper(matrix)))
 }
 
+/// Helper function for `getDeterminant` that recursively calculates the determinant
 func getDetHelper(_ matrix: Matrix) -> Double {
     switch matrix.count {
     case 1: return matrix[0][0]
@@ -77,22 +80,24 @@ func getDetHelper(_ matrix: Matrix) -> Double {
     }
 }
 
+/// Returns a `Matrix` instance with the respective `width` and `height`
 func getMatrix(width: Int, height: Int) -> Matrix {
     Array(repeating: Array(repeating: 0.0, count: width), count: height)
 }
 
+/// Swaps `row1` and `row2`
 func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
-    // row1 <-> row2
     var returny = matrix
     returny.swapAt(row1, row2)
     return returny
 }
 
+/// Scales a `row` of a matrix by `scale`
 func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
-    // row = scale * row
     matrix.mapAt(row: row) { $0 * scale }
 }
 
+/// Adds `row1` with `row2` times `scale`
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
@@ -100,6 +105,7 @@ func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     return returny
 }
 
+/// Converts a given `matrix` into row echelon form
 func rowEchelon(matrix: Matrix) -> Matrix {
     // convert the given matrix in to row echelon form
     var returny = matrix
@@ -125,6 +131,7 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     return returny
 }
 
+/// Converts a given `matrix` into reduced row echelon form
 func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     var returny = rowEchelon(matrix: matrix)
     // divide each each row by its pivot value
@@ -148,6 +155,7 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     return (.none, .matrix(returny))
 }
 
+/// Returns the inverse of a `matrix`
 func inverseMatrix(matrix: Matrix) -> ReturnType? {
     guard matrix.count != 0 && matrix[0].count != 0 else { return .none }
     guard matrix.count == matrix[0].count else { return .none }

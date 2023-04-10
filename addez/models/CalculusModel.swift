@@ -16,13 +16,16 @@ infix operator ~>: AdditionPrecedence
 
 infix operator **: MultiplicationPrecedence
 
+/// Power operator: `lhs`^`rhs`
 func **(lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }
 
+/// Functional plugging operator (weakly typed)
 func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
     guard let lhs = lhs, let rhs = rhs else { return .none }
     return rhs(lhs)
 }
 
+/// Functional plugging operator (strongly typed)
 func ~><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
 
 private func orderOfOps(_ arg: Character) -> Int {
@@ -116,6 +119,7 @@ func numeralParser(_ arg: Substring) -> Double? {
     }
 }
 
+/// Add implicit multiplication for numeral coeffecients
 private func refactorCoeffecients(_ arg: Substring) -> Substring {
     var formatted = ""
     var prev: Character?
@@ -130,6 +134,7 @@ private func refactorCoeffecients(_ arg: Substring) -> Substring {
     return Substring(formatted)
 }
 
+/// Validates the parantheses of a given `input` string
 private func isValid(_ input: String) -> Bool {
     guard !input.isEmpty else { return false }
     var st = Stack<Character>()
@@ -143,6 +148,7 @@ private func isValid(_ input: String) -> Bool {
     return st.empty();
 }
 
+/// Returns the position of lowest order operator (if one exists)
 private func getPivot(_ arg: Substring) -> Int? {
     var min = 4
     var minIdx: Int?
@@ -160,23 +166,26 @@ private func getPivot(_ arg: Substring) -> Int? {
     return minIdx
 }
 
+/// Recursively evaluates `arg` into its base components and returns a parsed function
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
     return arg.filter { $0 != " " }.lowercased().substringify() ~> refactorCoeffecients ~> parseHelper
 }
 
+/// Helper function for `parseExpression` to recursively evaluate `arg` into a function
 private func parseHelper(_ arg: Substring) -> Function? {
     guard arg.count != 0 else { return zero }
     guard arg != "x" else { return identity }
     if let numeral = arg >> numeralParser { return { _ in numeral } }
     if let pivot = arg >> getPivot {
-        // evaluate operands first
+        // evaluate operand first if we find a pivot point
         guard let operand = arg[arg.index(arg.startIndex, offsetBy: pivot)] >> operParser,
               // recursively evaluate the lhs and rhs around lowest-order operation
               let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] >> parseHelper,
               let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >> parseHelper else { return .none }
         return { operand(lhs($0), rhs($0)) }
     }
+    // x as a coeffecient
     guard arg.first != "x" else {
         guard let f = arg.dropFirst() >> parseHelper else { return .none }
         return { $0 * f($0) }
@@ -195,6 +204,7 @@ private func parseHelper(_ arg: Substring) -> Function? {
     return { $0 ~> params ~> f }
 }
 
+/// Evaluates the riemann sum of `f` from `lowerBound` to `upperBound`
 func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function) -> Double {
     let step = (upperBound - lowerBound) / 10000
     return (0..<10000).reduce(0.0) { sum, i in
@@ -204,17 +214,20 @@ func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function)
     }
 }
 
+/// Evaluates the limit of `f` as it approaches `x`
 func limit(approaches x: Double, _ f: @escaping Function) -> Double {
     let h = 0.00000000001
     return (f(x+h) + f(x - h)) / 2
 }
 
+/// Returns the derivative function of `f`
 func derivative(_ f: @escaping Function) -> Function {
     { x in limit(approaches: 0.0) { h in
         return (f(x + h) - f(x)) / h
     } }
 }
 
+/// Returns the summation of `f` for a given `range`
 func summation(range: ClosedRange<Int>, _ f: Function) -> Double {
     range
         .map(Double.init)
