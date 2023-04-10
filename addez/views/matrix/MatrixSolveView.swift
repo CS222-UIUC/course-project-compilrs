@@ -9,7 +9,7 @@ import SwiftUI
 import Neumorphic
 
 struct MatrixSolveView: View {
-    @ObservedObject var model = MatrixObject(getMatrix(width: 2, height: 2))
+    @ObservedObject var model = MatrixObject(getMatrix(cols: 2, rows: 2))
     @State var matrixFunction = MatrixFunctions.solve
     @State var steps: [Step]?
     @State var solution: SolutionType?

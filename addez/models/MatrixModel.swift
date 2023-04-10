@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MatrixObject : ObservableObject {
+class MatrixObject: ObservableObject {
     @Published var matrix: Matrix
     var rows: Int { matrix.rows }
     var cols: Int { matrix.cols }
@@ -65,6 +65,7 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
     guard matrix.rows != 0 && matrix.cols != 0 && matrix.isSquare else { return .none }
+    if let det = matrix.reduceDiag(*), matrix.isLowerTriangular || matrix.isUpperTriangular { return (.none, .double(det)) }
     return (.none, .double(getDetHelper(matrix)))
 }
 
@@ -81,8 +82,8 @@ func getDetHelper(_ matrix: Matrix) -> Double {
     }
 }
 
-func getMatrix(width: Int, height: Int) -> Matrix {
-    Array(repeating: Array(repeating: 0.0, count: width), count: height)
+func getMatrix(cols: Int, rows: Int) -> Matrix {
+    Array(repeating: Array(repeating: 0.0, count: cols), count: rows)
 }
 
 func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
@@ -108,7 +109,7 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     // convert the given matrix in to row echelon form
     var returny = matrix
     // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
-    if (returny[0][0] == 0) {
+    if returny[0][0] == 0 {
         for i in 1..<returny.rows {
             guard returny[i][0] != 0 else { continue }
             returny = swapRows(matrix: returny, row1: 0, row2: i)
@@ -117,7 +118,7 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     }
     
     for col in 0..<returny.cols {
-        if (col + 1 < returny.rows) {
+        if col + 1 < returny.rows {
             for row in col+1..<returny.count {
                 guard returny[row][col] != 0 else { continue }
                 returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
@@ -133,10 +134,9 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     for row in 0..<returny.rows {
         // find the first non-zero value in the row and divide the row by that value
         for col in 0..<returny[0].count {
-            if (returny[row][col] != 0) {
-                returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
-                break
-            }
+            guard returny[row][col] != 0 else { continue }
+            returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
+            break
         }
     }
     
@@ -153,8 +153,12 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
 func inverseMatrix(matrix: Matrix) -> ReturnType? {
     guard matrix.rows != 0 && matrix.cols != 0 else { return .none }
     guard matrix.isSquare else { return .none }
-    guard getDeterminant(matrix: matrix) != nil else { return .none }
-    var returny = getMatrix(width: matrix.count, height: matrix.count)
+    guard let det = getDeterminant(matrix: matrix)?.solution else { return .none }
+    switch det {
+    case .double(let determinant): guard determinant != 0 else { return .none }
+    default: return .none
+    }
+    var returny = getMatrix(cols: matrix.count, rows: matrix.count)
     for i in 0..<matrix.count { returny[i][i] = 1.0 }
     
     var steps = [Step]()
@@ -204,6 +208,33 @@ extension Matrix {
         return self[0].count
     }
     var isSquare: Bool { rows == cols }
+    var isLowerTriangular: Bool {
+        guard isSquare else { return false }
+        for row in 0..<rows {
+            for col in row+1..<cols {
+                guard self[row][col] == 0 else { return false }
+            }
+        }
+        return true
+    }
+    var isUpperTriangular: Bool {
+        guard isSquare else { return false }
+        for row in 0..<rows {
+            for col in 0..<row {
+                guard self[row][col] == 0 else { return false }
+            }
+        }
+        return true
+    }
+    var transpose: Matrix {
+        var returny = getMatrix(cols: rows, rows: cols)
+        for i in 0..<returny.rows {
+            for j in 0..<returny.cols {
+                returny[i][j] = self[j][i]
+            }
+        }
+        return returny
+    }
     
     static let maxDimensions = (rows: 6, cols: 6)
     
@@ -224,6 +255,13 @@ extension Matrix {
         return self[row]
     }
     
+    func getDiagonal() -> [Double] {
+        guard isSquare else { return [] }
+        var returny = self[0]
+        for i in 0..<rows { returny[i] = self[i][i] }
+        return returny
+    }
+    
     func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
         for i in 0..<returny.cols { returny[row][i] = transform(returny[row][i]) }
@@ -236,11 +274,16 @@ extension Matrix {
         return returny
     }
     
-    func mapDiag(_ transform: (Double) -> Double) throws -> Matrix {
-        guard isSquare else { throw ComputationErrors.notSquare }
+    func mapDiag(_ transform: (Double) -> Double) -> Matrix? {
+        guard isSquare else { return .none }
         var returny = self
         for i in 0..<returny.rows { returny[i][i] = transform(returny[i][i]) }
         return returny
+    }
+    
+    func reduceDiag(_ transform: (Double, Double) -> Double) -> Double? {
+        guard isSquare else { return .none }
+        return getDiagonal().reduce(0.0, transform)
     }
 }
 
