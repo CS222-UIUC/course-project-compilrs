@@ -22,8 +22,7 @@ struct CardView: View {
             RoundedRectangle(cornerRadius: 20)
                 .fill(color)
                 .shadow(color: .background, radius: 8)
-            view()
-                .format()
+            view().format()
         }
         .frame(height: 240)
     }

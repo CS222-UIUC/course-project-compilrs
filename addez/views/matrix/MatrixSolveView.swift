@@ -9,8 +9,8 @@ import SwiftUI
 import Neumorphic
 
 struct MatrixSolveView: View {
-    @State var matrixFunction: MatrixFunctions = .solve
-    @State var matrix: Matrix = [[0, 0], [0, 0]]
+    @ObservedObject var model = MatrixObject(getMatrix(width: 2, height: 2))
+    @State var matrixFunction = MatrixFunctions.solve
     @State var steps: [Step]?
     @State var solution: SolutionType?
     var body: some View {
@@ -21,19 +21,23 @@ struct MatrixSolveView: View {
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            MatrixEditor(matrix)
+            MatrixEditor()
+                .environmentObject(model)
             Text("Show Steps")
-                .navLink(StepsList(steps ?? []))
+                .navLink {
+                    guard let steps = steps else { return .none }
+                    return StepsList(steps).format()
+                }
             solView().format()
             Button("Solve") {
-                let sol = matrixFunction.getFunc()(matrix)
+                let sol = matrixFunction.compute(model.matrix)
                 steps = sol?.steps
                 solution = sol?.solution
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
-                .fontWeight(.bold)
+            .fontWeight(.bold)
         }
-        .navigationBarTitle("Matrix Solver")
+        .navigationTitle("Matrix Solver")
     }
     
     func solView() -> any View {

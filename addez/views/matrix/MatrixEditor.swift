@@ -8,51 +8,46 @@
 import SwiftUI
 
 struct MatrixEditor: View {
-    @State var matrix: Matrix
-    init(_ matrix: Matrix) {
-        self.matrix = matrix
-    }
+    @EnvironmentObject var model: MatrixObject
     var body: some View {
         HStack {
             Button(action: {
-                guard matrix[0].count > 1 else {
-                    return
-                }
-                matrix = matrix.map {
-                    $0.dropLast()
-                }
+                guard model.cols > 1 else { return }
+                model.matrix = model.matrix.map { $0.dropLast() }
             }) {
                 Image(systemName: "minus")
                     .imageScale(.small)
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(matrix[0].count <= 1)
+            .disabled(model.cols <= 1)
             VStack {
                 Button(action: {
-                    guard matrix.count > 1 else {
-                        return
-                    }
-                    matrix = matrix.dropLast()
+                    guard model.rows > 1 else { return }
+                    model.matrix = model.matrix.dropLast()
                 }) {
                     Image(systemName: "minus")
                         .imageScale(.small)
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(matrix.count <= 1)
+                .disabled(model.rows <= 1)
                 VStack {
-                    ForEach(0..<matrix.count, id: \.self) { row in
+                    ForEach(0..<model.rows, id: \.self) { row in
                         HStack {
-                            ForEach(0..<matrix[row].count, id: \.self) { col in
+                            ForEach(0..<model.cols, id: \.self) { col in
                                 TextField(
                                     "0",
-                                    value: Binding<Double>(get: { matrix[row][col]
+                                    value: Binding<Double>(get: {
+                                        guard row < model.rows && col < model.cols else { return 0 }
+                                        return model.matrix[row][col]
                                     }, set: { value in
-                                        matrix[row][col] = value
+                                        guard row < model.rows && col < model.cols else { return }
+                                        model.matrix[row][col] = value
                                     }),
-                                    formatter: NumberFormatter()
+                                    formatter: .numberFormatter
                                 )
+                                .celled()
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(.roundedBorder)
                                 .multilineTextAlignment(.center)
@@ -60,33 +55,37 @@ struct MatrixEditor: View {
                         }
                     }
                 }
-                Button(action: { matrix.append(Array(repeating: 0, count: matrix[0].count))
+                Button(action: {
+                    guard model.rows < Matrix.maxDimensions.rows else { return }
+                    model.matrix.append(Array(repeating: 0, count: model.cols))
                 }) {
                     Image(systemName: "plus")
                         .imageScale(.small)
                 }
                 .softButtonStyle(Capsule())
                 .padding(5)
-                .disabled(matrix.count >= 8)
+                .disabled(model.rows >= Matrix.maxDimensions.rows)
             }
             Button(action: {
-                matrix = matrix.map {
-                    $0 + [0]
-                }
+                guard model.cols < Matrix.maxDimensions.cols else { return }
+                model.matrix = model.matrix.map { $0 + [0] }
             }) {
                 Image(systemName: "plus")
                     .imageScale(.small)
             }
             .softButtonStyle(Capsule())
             .padding(5)
-            .disabled(matrix[0].count >= 8)
+            .disabled(model.cols >= Matrix.maxDimensions.cols)
         }
         .padding(10)
+        .animation(.easeInOut(duration: 0.3), value: model.rows + model.cols)
     }
 }
 
 struct MatrixEditor_Previews: PreviewProvider {
+    static var matrix = getMatrix(width: 6, height: 6)
     static var previews: some View {
-        MatrixEditor(getMatrix(width: 8, height: 8))
+        MatrixEditor()
+            .environmentObject(MatrixObject(matrix))
     }
 }

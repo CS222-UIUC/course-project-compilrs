@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LaTeXSwiftUI
 
 struct SolutionView: View {
     var solution: SolutionType
@@ -13,19 +14,47 @@ struct SolutionView: View {
         self.solution = solution
     }
     var body: some View {
-        getView()
-    }
-    func getView() -> AnyView {
         switch solution {
-        case .matrix(let matrix): return AnyView(MatrixView(matrix))
-        case .double(let num): return AnyView(Text("\(num, specifier: "%.2f")"))
-        default: return AnyView(Text(""))
+        case .matrix(let matrix): return MatrixView(matrix).cardView()
+        case .double(let num): return Text("\(num, specifier: "%.2f")").cardView()
+        case .matrixTuple(let lower, let upper): return HStack {
+            MatrixView(lower, title: "Lower")
+            Divider()
+            MatrixView(upper, title: "Upper")
+        }
+        .padding(15)
+        .cardView()
+        case .ntuple(let ntuple): return VStack {
+            ForEach(ntuple, id: \.self) { arg in
+                LaTeX(arg)
+                    .celled()
+            }
+        }
+        .cardView()
         }
     }
 }
 
-struct SolutionView_Previews: PreviewProvider {
+struct MatrixSolutionPreview: PreviewProvider {
     static var previews: some View {
         SolutionView(.matrix([[1, 0], [1, 0]]))
+    }
+}
+
+struct DoubleSolutionPreview: PreviewProvider {
+    static var previews: some View {
+        SolutionView(.double(2.0))
+    }
+}
+
+struct MatrixTupleSolutionPreview: PreviewProvider {
+    static var previews: some View {
+        SolutionView(.matrixTuple(lower: [[1, 0], [1, 0]], upper: [[1, 9], [0, 0]]))
+    }
+}
+
+struct NTupleSolutionPreview: PreviewProvider {
+    static var previews: some View {
+        SolutionView(.ntuple(["x = ss", "y = ss", "z = ss"]))
     }
 }
