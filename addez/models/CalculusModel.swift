@@ -206,7 +206,7 @@ func riemannSum(lowerBound: Double, upperBound: Double, _ f: @escaping Function)
 
 func limit(approaches x: Double, _ f: @escaping Function) -> Double {
     let h = 0.00000000001
-    return (f(x+h) + f(x - h)) / 2
+    return (f(x + h) + f(x - h)) / 2
 }
 
 func derivative(_ f: @escaping Function) -> Function {
@@ -219,5 +219,5 @@ func summation(range: ClosedRange<Int>, _ f: Function) -> Double {
     range
         .map(Double.init)
         .compactMap(f)
-        .reduce(0.0, +)
+        .reduce(0, +)
 }

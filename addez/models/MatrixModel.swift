@@ -65,17 +65,17 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
     guard matrix.rows != 0 && matrix.cols != 0 && matrix.isSquare else { return .none }
-    if let det = matrix.reduceDiag(*), matrix.isLowerTriangular || matrix.isUpperTriangular { return (.none, .double(det)) }
+    if let det = matrix.reduceDiag(1, *), matrix.isLowerTriangular || matrix.isUpperTriangular { return (.none, .double(det)) }
     return (.none, .double(getDetHelper(matrix)))
 }
 
-func getDetHelper(_ matrix: Matrix) -> Double {
-    switch matrix.count {
+private func getDetHelper(_ matrix: Matrix) -> Double {
+    switch matrix.rows {
     case 1: return matrix[0][0]
     case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
     default:
         var output = 0.0
-        for i in 0..<matrix.count {
+        for i in 0..<matrix.rows {
             output += pow(-1, i.toDouble()) * matrix[0][i] * getDetHelper(matrix.withoutColumn(at: i))
         }
         return output
@@ -86,26 +86,26 @@ func getMatrix(cols: Int, rows: Int) -> Matrix {
     Array(repeating: Array(repeating: 0.0, count: cols), count: rows)
 }
 
-func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
+private func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
     // row1 <-> row2
     var returny = matrix
     returny.swapAt(row1, row2)
     return returny
 }
 
-func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
+private func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
     // row = scale * row
     matrix.mapAt(row: row) { $0 * scale }
 }
 
-func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
+private func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
     for col in 0..<returny[0].count { returny[row2][col] += scale * returny[row1][col] }
     return returny
 }
 
-func rowEchelon(matrix: Matrix) -> Matrix {
+private func rowEchelon(matrix: Matrix) -> Matrix {
     // convert the given matrix in to row echelon form
     var returny = matrix
     // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
@@ -281,9 +281,9 @@ extension Matrix {
         return returny
     }
     
-    func reduceDiag(_ transform: (Double, Double) -> Double) -> Double? {
+    func reduceDiag(_ initial: Double, _ transform: (Double, Double) -> Double) -> Double? {
         guard isSquare else { return .none }
-        return getDiagonal().reduce(0.0, transform)
+        return getDiagonal().reduce(initial, transform)
     }
 }
 
