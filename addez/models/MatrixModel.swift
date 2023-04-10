@@ -148,12 +148,42 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     return (.none, .matrix(returny))
 }
 
+func inverseMatrix(matrix: Matrix) -> ReturnType? {
+    guard matrix.count != 0 && matrix[0].count != 0 else { return .none }
+    guard matrix.count == matrix[0].count else { return .none }
+    guard getDeterminant(matrix: matrix) != .none else { return .none }
+    var returny = getMatrix(width: matrix.count, height: matrix.count)
+    for i in 0..<matrix.count { returny[i][i] = 1.0 }
+    
+    var steps = [Step]()
+    var matrix = matrix
+    
+    for i in 0..<matrix.count {
+        let scale = 1.0 / matrix[i][i]
+        matrix = scaleRow(matrix: matrix, row: i, scale: scale)
+        returny = scaleRow(matrix: returny, row: i, scale: scale)
+        steps.append(Step(matrix: matrix, stepDescription: "Scale row \(i) by \(scale)"))
+        steps.append(Step(matrix: returny, stepDescription: "Scale row \(i) by \(scale)"))
+        for j in 0..<matrix.count {
+            if (j != i) {
+                let scale = -1.0 * matrix[j][i]
+                matrix = addRows(matrix: matrix, row1: i, row2: j, scale: scale)
+                returny = addRows(matrix: returny, row1: i, row2: j, scale: scale)
+                steps.append(Step(matrix: matrix, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
+                steps.append(Step(matrix: returny, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
+            }
+        }
+    }
+    return (steps, .matrix(returny))
+}
+
 extension MatrixFunctions {
     var compute: (Matrix) -> ReturnType? {
         switch self {
         case .solve: return solveMatrix
         case .det: return getDeterminant
         case .rref: return reducedRowEchelon
+        case .inv: return inverseMatrix
         default: return solveMatrix
         }
     }
