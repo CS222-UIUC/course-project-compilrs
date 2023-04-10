@@ -9,8 +9,8 @@ import Foundation
 
 class MatrixObject : ObservableObject {
     @Published var matrix: Matrix
-    var rows: Int { matrix.count }
-    var cols: Int { matrix[0].count }
+    var rows: Int { matrix.rows }
+    var cols: Int { matrix.cols }
     init(_ matrix: Matrix) {
         self.matrix = matrix
     }
@@ -50,6 +50,10 @@ enum MatrixFunctions: String, CaseIterable {
     case eigenvec = "Eigenvector"
 }
 
+enum ComputationErrors: Error {
+    case notSquare
+}
+
 func solveMatrix(matrix: Matrix) -> ReturnType? {
     .none
 }
@@ -60,7 +64,7 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // int output = for each int in the first row:
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
-    guard matrix.rows != 0 && matrix.cols != 0 && matrix.rows == matrix.cols else { return .none }
+    guard matrix.rows != 0 && matrix.cols != 0 && matrix.isSquare else { return .none }
     return (.none, .double(getDetHelper(matrix)))
 }
 
@@ -105,20 +109,18 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     var returny = matrix
     // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
     if (returny[0][0] == 0) {
-        for i in 1..<returny.count {
-            if (returny[i][0] != 0) {
-                returny = swapRows(matrix: returny, row1: 0, row2: i)
-                break
-            }
+        for i in 1..<returny.rows {
+            guard returny[i][0] != 0 else { continue }
+            returny = swapRows(matrix: returny, row1: 0, row2: i)
+            break
         }
     }
     
-    for col in 0..<returny[0].count {
-        if (col + 1 < returny.count) { 
+    for col in 0..<returny.cols {
+        if (col + 1 < returny.rows) {
             for row in col+1..<returny.count {
-                if (returny[row][col] != 0) {
-                    returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
-                }
+                guard returny[row][col] != 0 else { continue }
+                returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
             }
         }
     }
@@ -140,17 +142,17 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     
     for col in 0..<returny.cols {
         for row in 0..<col {
-            if (returny[row][col] != 0 && col < returny.rows) {
-                returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
-            }
+            guard returny[row][col] != 0 && col < returny.rows else { continue }
+            returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
         }
     }
+    
     return (.none, .matrix(returny))
 }
 
 func inverseMatrix(matrix: Matrix) -> ReturnType? {
-    guard matrix.count != 0 && matrix[0].count != 0 else { return .none }
-    guard matrix.count == matrix[0].count else { return .none }
+    guard matrix.rows != 0 && matrix.cols != 0 else { return .none }
+    guard matrix.isSquare else { return .none }
     guard getDeterminant(matrix: matrix) != nil else { return .none }
     var returny = getMatrix(width: matrix.count, height: matrix.count)
     for i in 0..<matrix.count { returny[i][i] = 1.0 }
@@ -165,13 +167,12 @@ func inverseMatrix(matrix: Matrix) -> ReturnType? {
         steps.append(Step(matrix: matrix, stepDescription: "Scale row \(i) by \(scale)"))
         steps.append(Step(matrix: returny, stepDescription: "Scale row \(i) by \(scale)"))
         for j in 0..<matrix.count {
-            if (j != i) {
-                let scale = -1.0 * matrix[j][i]
-                matrix = addRows(matrix: matrix, row1: i, row2: j, scale: scale)
-                returny = addRows(matrix: returny, row1: i, row2: j, scale: scale)
-                steps.append(Step(matrix: matrix, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
-                steps.append(Step(matrix: returny, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
-            }
+            guard j != i else { continue }
+            let scale = -1.0 * matrix[j][i]
+            matrix = addRows(matrix: matrix, row1: i, row2: j, scale: scale)
+            returny = addRows(matrix: returny, row1: i, row2: j, scale: scale)
+            steps.append(Step(matrix: matrix, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
+            steps.append(Step(matrix: returny, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
         }
     }
     return (steps, .matrix(returny))
@@ -198,7 +199,11 @@ extension MatrixFunctions {
 
 extension Matrix {
     var rows: Int { self.count }
-    var cols: Int { self[0].count }
+    var cols: Int {
+        guard rows != 0 else { return 0 }
+        return self[0].count
+    }
+    var isSquare: Bool { rows == cols }
     
     static let maxDimensions = (rows: 6, cols: 6)
     
@@ -228,6 +233,13 @@ extension Matrix {
     func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
         for i in 0..<returny.rows { returny[i][col] = transform(returny[i][col]) }
+        return returny
+    }
+    
+    func mapDiag(_ transform: (Double) -> Double) throws -> Matrix {
+        guard isSquare else { throw ComputationErrors.notSquare }
+        var returny = self
+        for i in 0..<returny.rows { returny[i][i] = transform(returny[i][i]) }
         return returny
     }
 }

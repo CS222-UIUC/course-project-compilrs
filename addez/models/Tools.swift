@@ -8,15 +8,11 @@
 import Foundation
 
 extension Int {
-    func toDouble() -> Double {
-        Double(self)
-    }
+    func toDouble() -> Double { Double(self) }
 }
 
 extension Double {
-    func toInt() -> Int {
-        Int(self)
-    }
+    func toInt() -> Int { Int(self) }
 }
 
 extension String {
@@ -39,11 +35,7 @@ extension String {
 }
 
 extension ClosedRange where Element == Int {
-    func inBounds(element x: Double) -> Bool {
-        x >= Double(lowerBound) && x <= Double(upperBound)
-    }
+    func inBounds(element x: Double) -> Bool { x >= Double(lowerBound) && x <= Double(upperBound) }
     
-    func continuous() -> [Double] {
-        stride(from: Double(lowerBound), through: Double(upperBound), by: 0.01).map(identity)
-    }
+    func continuous() -> [Double] { stride(from: Double(lowerBound), through: Double(upperBound), by: 0.01).map(identity) }
 }
