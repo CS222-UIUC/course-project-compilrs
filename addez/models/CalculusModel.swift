@@ -28,6 +28,7 @@ func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
 /// Functional plugging operator (strongly typed)
 func ~><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
 
+/// Order of operations hierarchy
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
     case "+": return 0
@@ -55,6 +56,7 @@ func cot(_ x: Double) -> Double { 1 / tan(x) }
 
 func coth(_ x: Double) -> Double { 1 / tanh(x) }
 
+/// Parses function names into their respective functions
 private func funcParser(_ arg: Substring) -> Function? {
     switch arg {
     case "": return identity
@@ -93,6 +95,7 @@ private func funcParser(_ arg: Substring) -> Function? {
     }
 }
 
+/// Parses character into an operation
 private func operParser(_ arg: Character) -> Operation? {
     switch arg {
     case "+": return (+)
@@ -104,6 +107,7 @@ private func operParser(_ arg: Character) -> Operation? {
     }
 }
 
+/// Parses postfix into a function
 private func postfixParser(_ arg: Character?) -> Function? {
     switch arg {
     case "!": return { x in tgamma(x + 1) }
@@ -111,6 +115,7 @@ private func postfixParser(_ arg: Character?) -> Function? {
     }
 }
 
+/// Parses substring to a numeral
 func numeralParser(_ arg: Substring) -> Double? {
     switch arg {
     case "e": return exp(1)
