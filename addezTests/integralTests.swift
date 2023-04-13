@@ -78,8 +78,11 @@ final class integralTests: XCTestCase {
     
     func testPostfixFunctions() {
         guard let f = parseExpression("x!") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(f(3), 6))
+        XCTAssert(within(f(3), 3<>))
+        XCTAssert(within(f(0), 1))
         guard let f = parseExpression("sin(x)!") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(f(3), 0.93603112948))
+        XCTAssert(within(f(3), sin(3)<>))
+        guard let f = parseExpression("(x^2)!") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), (3**2)<>))
     }
 }
