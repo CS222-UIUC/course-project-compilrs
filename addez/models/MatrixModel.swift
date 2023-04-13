@@ -11,10 +11,16 @@ class MatrixObject: ObservableObject {
     @Published var matrix: Matrix
     var rows: Int { matrix.rows }
     var cols: Int { matrix.cols }
-    init(_ matrix: Matrix) {
-        self.matrix = matrix
-    }
+    init(_ matrix: Matrix) { self.matrix = matrix }
 }
+
+func *(lhs: [Double], rhs: Double) -> [Double] { lhs.map { $0 * rhs } }
+
+func *(lhs: Double, rhs: [Double]) -> [Double] { rhs.map { $0 * lhs } }
+
+func +(lhs: [Double], rhs: [Double]) -> [Double] { lhs.enumerated().map { $1 + rhs[$0] } }
+
+func -(lhs: [Double], rhs: [Double]) -> [Double] { lhs.enumerated().map { $1 - rhs[$0] } }
 
 typealias Matrix = [[Double]]
 
@@ -65,7 +71,7 @@ func getDeterminant(matrix: Matrix) -> ReturnType? {
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
     guard matrix.rows != 0 && matrix.cols != 0 && matrix.isSquare else { return .none }
-    if let det = matrix.reduceDiag(1, *), matrix.isLowerTriangular || matrix.isUpperTriangular { return (.none, .double(det)) }
+    if let det = matrix.getDiagonal()?.reduce(1, *), matrix.isTriangular { return (.none, .double(det)) }
     return (.none, .double(getDetHelper(matrix)))
 }
 
@@ -73,18 +79,13 @@ private func getDetHelper(_ matrix: Matrix) -> Double {
     switch matrix.rows {
     case 1: return matrix[0][0]
     case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
-    default:
-        var output = 0.0
-        for i in 0..<matrix.rows {
-            output += pow(-1, i.toDouble()) * matrix[0][i] * getDetHelper(matrix.withoutColumn(at: i))
-        }
-        return output
+    default: return matrix.first?.enumerated()
+            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutColumn(at: i)) }
+            .reduce(0.0, +) ?? 0.0
     }
 }
 
-func getMatrix(cols: Int, rows: Int) -> Matrix {
-    Array(repeating: Array(repeating: 0.0, count: cols), count: rows)
-}
+func getMatrix(cols: Int, rows: Int) -> Matrix { Array(repeating: Array(repeating: 0.0, count: cols), count: rows) }
 
 private func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
     // row1 <-> row2
@@ -101,7 +102,7 @@ private func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
 private func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    for col in 0..<returny[0].count { returny[row2][col] += scale * returny[row1][col] }
+    returny[row1] += 2 * returny[row2]
     return returny
 }
 
@@ -118,11 +119,10 @@ private func rowEchelon(matrix: Matrix) -> Matrix {
     }
     
     for col in 0..<returny.cols {
-        if col + 1 < returny.rows {
-            for row in col+1..<returny.count {
-                guard returny[row][col] != 0 else { continue }
-                returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
-            }
+        guard col + 1 < returny.rows else { continue }
+        for row in col+1..<returny.count {
+            guard returny[row][col] != 0 else { continue }
+            returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
         }
     }
     return returny
@@ -133,7 +133,7 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
     // divide each each row by its pivot value
     for row in 0..<returny.rows {
         // find the first non-zero value in the row and divide the row by that value
-        for col in 0..<returny[0].count {
+        for col in 0..<returny.cols {
             guard returny[row][col] != 0 else { continue }
             returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
             break
@@ -210,29 +210,18 @@ extension Matrix {
     var isSquare: Bool { rows == cols }
     var isLowerTriangular: Bool {
         guard isSquare else { return false }
-        for row in 0..<rows {
-            for col in row+1..<cols {
-                guard self[row][col] == 0 else { return false }
-            }
-        }
+        for row in 0..<rows { for col in row+1..<cols { guard self[row][col] == 0 else { return false } } }
         return true
     }
     var isUpperTriangular: Bool {
         guard isSquare else { return false }
-        for row in 0..<rows {
-            for col in 0..<row {
-                guard self[row][col] == 0 else { return false }
-            }
-        }
+        for row in 0..<rows { for col in 0..<row { guard self[row][col] == 0 else { return false } } }
         return true
     }
+    var isTriangular: Bool { isUpperTriangular || isLowerTriangular }
     var transpose: Matrix {
         var returny = getMatrix(cols: rows, rows: cols)
-        for i in 0..<returny.rows {
-            for j in 0..<returny.cols {
-                returny[i][j] = self[j][i]
-            }
-        }
+        for row in 0..<returny.rows { for col in 0..<returny.cols { returny[row][col] = self[col][row] } }
         return returny
     }
     
@@ -241,7 +230,7 @@ extension Matrix {
     static let validDimensions = (rows: 1...6, cols: 1...6)
     
     func withoutColumn(at column: Int) -> Matrix {
-        guard column > 0 && column < count else { return self }
+        guard column > 0 && column < rows else { return self }
         return self.map { $0.removeItem(at: column) }
     }
     
@@ -255,40 +244,31 @@ extension Matrix {
         return self[row]
     }
     
-    func getDiagonal() -> [Double] {
-        guard isSquare else { return [] }
-        var returny = self[0]
-        for i in 0..<rows { returny[i] = self[i][i] }
-        return returny
+    func getDiagonal() -> [Double]? {
+        guard isSquare else { return .none }
+        return self.enumerated().map { $1[$0] }
     }
     
     func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
-        for i in 0..<returny.cols { returny[row][i] = transform(returny[row][i]) }
+        for i in 0..<returny.cols { returny[row][i] = returny[row][i] ~> transform }
         return returny
     }
     
     func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
-        for i in 0..<returny.rows { returny[i][col] = transform(returny[i][col]) }
+        for i in 0..<returny.rows { returny[i][col] = returny[i][col] ~> transform }
         return returny
     }
     
     func mapDiag(_ transform: (Double) -> Double) -> Matrix? {
         guard isSquare else { return .none }
         var returny = self
-        for i in 0..<returny.rows { returny[i][i] = transform(returny[i][i]) }
+        for i in 0..<returny.rows { returny[i][i] = returny[i][i] ~> transform }
         return returny
-    }
-    
-    func reduceDiag(_ initial: Double, _ transform: (Double, Double) -> Double) -> Double? {
-        guard isSquare else { return .none }
-        return getDiagonal().reduce(initial, transform)
     }
 }
 
 extension Array where Element == Double {
-    func removeItem(at index: Int) -> [Double] {
-        self.enumerated().compactMap { $0 == index ? nil : $1 }
-    }
+    func removeItem(at index: Int) -> [Double] { self.enumerated().compactMap { $0 == index ? nil : $1 } }
 }
