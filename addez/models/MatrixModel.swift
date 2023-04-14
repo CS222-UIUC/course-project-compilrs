@@ -7,6 +7,12 @@
 
 import Foundation
 
+typealias Matrix = [[Double]]
+
+typealias Vector = [Double]
+
+typealias NTuple = [String]
+
 class MatrixObject: ObservableObject {
     @Published var matrix: Matrix
     var rows: Int { matrix.rows }
@@ -14,9 +20,9 @@ class MatrixObject: ObservableObject {
     init(_ matrix: Matrix) { self.matrix = matrix }
 }
 
-func *(lhs: [Double], rhs: Double) -> [Double] { lhs.map { $0 * rhs } }
+func *(lhs: Vector, rhs: Double) -> [Double] { lhs.map { $0 * rhs } }
 
-func *(lhs: Double, rhs: [Double]) -> [Double] { rhs.map { $0 * lhs } }
+func *(lhs: Double, rhs: Vector) -> [Double] { rhs.map { $0 * lhs } }
 
 func *(lhs: Vector, rhs: Vector) -> Double? {
     guard lhs.count == rhs.count else { return .none }
@@ -32,22 +38,18 @@ infix operator <->: AdditionPrecedence
 infix operator <*>: MultiplicationPrecedence
 
 func <+>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    guard lhs.count == rhs.count else { return .none }
+    guard let lhs = lhs, let rhs = rhs, lhs.count == rhs.count else { return .none }
     return lhs.enumerated().map { $1 + rhs[$0] }
 }
 
 func <->(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    guard lhs.count == rhs.count else { return .none }
+    guard let lhs = lhs, let rhs = rhs, lhs.count == rhs.count else { return .none }
     return lhs.enumerated().map { $1 - rhs[$0] }
 }
 
 func <*>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    guard lhs.count == rhs.count else { return .none }
-    let left = lhs.toMatrix().transpose, right = rhs.toMatrix()
-    guard let product = left * right else { return .none }
+    guard let lhs = lhs?.toMatrix().transpose, let rhs = rhs?.toMatrix(), lhs.rows == rhs.cols else { return .none }
+    guard let product = lhs * rhs else { return .none }
     var returny = Array(repeating: 0.0, count: product.cols + product.rows - 1)
     for i in 0..<product.rows {
         for j in 0..<product.cols {
@@ -69,12 +71,6 @@ func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
     }
     return returny
 }
-
-typealias Matrix = [[Double]]
-
-typealias Vector = [Double]
-
-typealias NTuple = [String]
 
 struct Step: Identifiable {
     var id: UUID
@@ -256,20 +252,26 @@ func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
 
 func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     guard matrix.isSquare else { return .none }
-    return .none
+    let cube = matrix.enumerated().map { i, row in
+        row.enumerated().map { j, element in
+            var arr = Array(repeating: 0.0, count: matrix.count)
+            arr[0] = element
+            if j == 1 { arr[1] = -1 }
+            return arr
+        }
+    }
+    return (.none, getEigHelper(matrix: cube))
 }
 
-func getEigHelper(matrix: [[[Double]]]) -> Vector? {
+func getEigHelper(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
     case 1: return matrix[0][1]
     case 2:
         let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
-        return a <*> d <-> b <*> c
+        guard let det = a <*> d <-> b <*> c else { return [] }
+        return det
     default:
-        return .none
-//        return matrix.first?.enumerated()
-//                .map { i, pivot in (-1 ** i.toDouble()) * pivot * getEigHelper(matrix.withoutRow(at: 0).withoutColumn(at: i)) }
-//                .reduce(0.0, +) ?? 0.0
+        return [1.0, 2.0]
     }
 }
 
