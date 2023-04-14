@@ -34,4 +34,13 @@ final class operationsTests: XCTestCase {
         ]
         XCTAssertEqual(res, expected)
     }
+    func testCoefVectorMultiplication() {
+        let a = [1.0, -1]
+        let b = [3.0, 0]
+        let c = [-2.0, 0]
+        let d = [2, -1.0]
+        let res = a <*> d <-> b <*> c
+        let expected = [8.0, -3, 1]
+        XCTAssertEqual(res, expected)
+    }
 }

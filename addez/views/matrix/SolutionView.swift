@@ -31,6 +31,7 @@ struct SolutionView: View {
             }
         }
         .cardView()
+        case .vector(let vec): return Text("").cardView()
         }
     }
 }

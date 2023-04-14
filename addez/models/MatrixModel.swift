@@ -29,14 +29,32 @@ infix operator <+>: AdditionPrecedence
 
 infix operator <->: AdditionPrecedence
 
-func <+>(lhs: Vector, rhs: Vector) -> Vector? {
+infix operator <*>: MultiplicationPrecedence
+
+func <+>(lhs: Vector?, rhs: Vector?) -> Vector? {
+    guard let lhs = lhs, let rhs = rhs else { return .none }
     guard lhs.count == rhs.count else { return .none }
     return lhs.enumerated().map { $1 + rhs[$0] }
 }
 
-func <->(lhs: Vector, rhs: Vector) -> Vector? {
+func <->(lhs: Vector?, rhs: Vector?) -> Vector? {
+    guard let lhs = lhs, let rhs = rhs else { return .none }
     guard lhs.count == rhs.count else { return .none }
     return lhs.enumerated().map { $1 - rhs[$0] }
+}
+
+func <*>(lhs: Vector?, rhs: Vector?) -> Vector? {
+    guard let lhs = lhs, let rhs = rhs else { return .none }
+    guard lhs.count == rhs.count else { return .none }
+    let left = lhs.toMatrix().transpose, right = rhs.toMatrix()
+    guard let product = left * right else { return .none }
+    var returny = Array(repeating: 0.0, count: product.cols + product.rows - 1)
+    for i in 0..<product.rows {
+        for j in 0..<product.cols {
+            returny[i + j] += product[i][j]
+        }
+    }
+    return returny
 }
 
 func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
@@ -94,12 +112,14 @@ enum SolutionType {
     case matrixTuple(lower: Matrix, upper: Matrix)
     case matrix(Matrix)
     case double(Double)
+    case vector(Vector)
 }
 
 typealias MatrixSolution = (steps: Steps?, solution: Matrix)
 typealias NTupleSolution = (steps: Steps?, solution: NTuple)
 typealias DoubleSolution = (steps: Steps?, solution: Double)
-typealias MatrixTupleSolution = (steps: Steps?, (lower: Matrix, upper: Matrix))
+typealias MatrixTupleSolution = (steps: Steps?, solution: (lower: Matrix, upper: Matrix))
+typealias VectorSolution = (steps: Steps?, solution: Vector)
 
 
 enum MatrixFunctions: String, CaseIterable {
@@ -108,8 +128,8 @@ enum MatrixFunctions: String, CaseIterable {
     case ludecomp = "LU Decomposition"
     case inv = "Inverse"
     case det = "Determinant"
-    case eigenval = "Eigenvalue"
-    case eigenvec = "Eigenvector"
+    case eigenval = "Eigenvalues"
+    case eigenvec = "Eigenvectors"
 }
 
 enum ComputationErrors: Error {
@@ -136,7 +156,7 @@ private func getDetHelper(_ matrix: Matrix) -> Double {
     case 1: return matrix[0][0]
     case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
     default: return matrix.first?.enumerated()
-            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutColumn(at: i)) }
+            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutRow(at: 0).withoutColumn(at: i)) }
             .reduce(0.0, +) ?? 0.0
     }
 }
@@ -158,7 +178,7 @@ func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    returny[row1] = ((returny[row1]) <+> (scale * returny[row2])) ?? []
+    returny[row1] = (returny[row1] <+> scale * returny[row2]) ?? []
     return returny
 }
 
@@ -234,6 +254,25 @@ func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
     return (steps, returny)
 }
 
+func getEigenvalues(matrix: Matrix) -> VectorSolution? {
+    guard matrix.isSquare else { return .none }
+    return .none
+}
+
+func getEigHelper(matrix: [[[Double]]]) -> Vector? {
+    switch matrix.count {
+    case 1: return matrix[0][1]
+    case 2:
+        let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
+        return a <*> d <-> b <*> c
+    default:
+        return .none
+//        return matrix.first?.enumerated()
+//                .map { i, pivot in (-1 ** i.toDouble()) * pivot * getEigHelper(matrix.withoutRow(at: 0).withoutColumn(at: i)) }
+//                .reduce(0.0, +) ?? 0.0
+    }
+}
+
 extension MatrixFunctions {
     var compute: (Matrix) -> ReturnType? { { $0 !>>> functionMapper !>>> typeParser } }
     
@@ -243,6 +282,7 @@ extension MatrixFunctions {
         case .det: return getDeterminant
         case .rref: return reducedRowEchelon
         case .inv: return inverseMatrix
+        case .eigenval: return getEigenvalues
         default: return solveMatrix
         }
     }
@@ -288,6 +328,11 @@ extension Matrix {
         return self.map { $0.removeItem(at: column) }
     }
     
+    func withoutRow(at row: Int) -> Matrix {
+        guard row > 0 && row < rows else { return self }
+        return self.removeItem(at: row)
+    }
+    
     func getColumn(at column: Int) -> [Double] {
         guard column > 0 && column < cols else { return [] }
         return self.map { $0[column] }
@@ -323,6 +368,15 @@ extension Matrix {
     }
 }
 
-extension Array where Element == Double {
-    func removeItem(at index: Int) -> [Double] { self.enumerated().compactMap { $0 == index ? nil : $1 } }
+extension Array {
+    func removeItem(at index: Int) -> [Element] { self.enumerated().compactMap { $0 == index ? nil : $1 } }
+}
+
+extension Vector {
+    func at(_ index: Int) -> Double {
+        guard index < count && index >= 0 else { return 0 }
+        return self[index]
+    }
+    
+    func toMatrix() -> Matrix { [self] }
 }
