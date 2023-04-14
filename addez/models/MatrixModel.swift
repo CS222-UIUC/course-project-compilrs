@@ -18,11 +18,43 @@ func *(lhs: [Double], rhs: Double) -> [Double] { lhs.map { $0 * rhs } }
 
 func *(lhs: Double, rhs: [Double]) -> [Double] { rhs.map { $0 * lhs } }
 
-func +(lhs: [Double], rhs: [Double]) -> [Double] { lhs.enumerated().map { $1 + rhs[$0] } }
+func *(lhs: Vector, rhs: Vector) -> Double? {
+    guard lhs.count == rhs.count else { return .none }
+    return lhs.enumerated()
+        .map { i, element in element * rhs[i] }
+        .reduce(0.0, +)
+}
 
-func -(lhs: [Double], rhs: [Double]) -> [Double] { lhs.enumerated().map { $1 - rhs[$0] } }
+infix operator <+>: AdditionPrecedence
+
+infix operator <->: AdditionPrecedence
+
+func <+>(lhs: Vector, rhs: Vector) -> Vector? {
+    guard lhs.count == rhs.count else { return .none }
+    return lhs.enumerated().map { $1 + rhs[$0] }
+}
+
+func <->(lhs: Vector, rhs: Vector) -> Vector? {
+    guard lhs.count == rhs.count else { return .none }
+    return lhs.enumerated().map { $1 - rhs[$0] }
+}
+
+func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
+    guard lhs.cols == rhs.rows else { return .none }
+    var returny = getMatrix(cols: rhs.cols, rows: lhs.rows)
+    let rhs = rhs.transpose
+    for i in 0..<returny.rows {
+        for j in 0..<returny.cols {
+            guard let val = lhs[i] * rhs[j] else { return .none }
+            returny[i][j] = val
+        }
+    }
+    return returny
+}
 
 typealias Matrix = [[Double]]
+
+typealias Vector = [Double]
 
 typealias NTuple = [String]
 
@@ -37,7 +69,25 @@ struct Step: Identifiable {
     }
 }
 
+typealias Steps = [Step]
+
 typealias ReturnType = (steps: [Step]?, solution: SolutionType?)
+
+func typeParser(steps: [Step]?, solution: Any) -> ReturnType {
+    if let solution = solution as? NTuple {
+        return (steps, .ntuple(solution))
+    } else if let solution = solution as? Matrix {
+        return (steps, .matrix(solution))
+    } else if let solution = solution as? Double {
+        return (steps, .double(solution))
+    } else if let solution = solution as? (lower: Matrix, upper: Matrix) {
+        return (steps, .matrixTuple(lower: solution.lower, upper: solution.upper))
+    } else if let solution = solution as? SolutionType {
+        return (steps, solution)
+    } else {
+        return (steps, .none)
+    }
+}
 
 enum SolutionType {
     case ntuple(NTuple)
@@ -45,6 +95,12 @@ enum SolutionType {
     case matrix(Matrix)
     case double(Double)
 }
+
+typealias MatrixSolution = (steps: Steps?, solution: Matrix)
+typealias NTupleSolution = (steps: Steps?, solution: NTuple)
+typealias DoubleSolution = (steps: Steps?, solution: Double)
+typealias MatrixTupleSolution = (steps: Steps?, (lower: Matrix, upper: Matrix))
+
 
 enum MatrixFunctions: String, CaseIterable {
     case solve = "Solve"
@@ -64,15 +120,15 @@ func solveMatrix(matrix: Matrix) -> ReturnType? {
     .none
 }
 
-func getDeterminant(matrix: Matrix) -> ReturnType? {
+func getDeterminant(matrix: Matrix) -> DoubleSolution? {
     // if (matrix dimension is 1x1 then return the only value
     // if the matrix dimension is 2x2 then return the ad-bc
     // int output = for each int in the first row:
     // output += (-1)^index * (int in the row) * getDeterminant(genmatrix(matrix: Matrix, Int: col))
     // return output
     guard matrix.rows != 0 && matrix.cols != 0 && matrix.isSquare else { return .none }
-    if let det = matrix.getDiagonal()?.reduce(1, *), matrix.isTriangular { return (.none, .double(det)) }
-    return (.none, .double(getDetHelper(matrix)))
+    if let det = matrix.getDiagonal()?.reduce(1, *), matrix.isTriangular { return (.none, det) }
+    return (.none, getDetHelper(matrix))
 }
 
 private func getDetHelper(_ matrix: Matrix) -> Double {
@@ -87,22 +143,22 @@ private func getDetHelper(_ matrix: Matrix) -> Double {
 
 func getMatrix(cols: Int, rows: Int) -> Matrix { Array(repeating: Array(repeating: 0.0, count: cols), count: rows) }
 
-private func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
+func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
     // row1 <-> row2
     var returny = matrix
     returny.swapAt(row1, row2)
     return returny
 }
 
-private func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
+func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
     // row = scale * row
     matrix.mapAt(row: row) { $0 * scale }
 }
 
-private func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
+func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    returny[row1] += 2 * returny[row2]
+    returny[row1] = ((returny[row1]) <+> (scale * returny[row2])) ?? []
     return returny
 }
 
@@ -128,7 +184,7 @@ private func rowEchelon(matrix: Matrix) -> Matrix {
     return returny
 }
 
-func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
+func reducedRowEchelon(matrix: Matrix) -> MatrixSolution? {
     var returny = rowEchelon(matrix: matrix)
     // divide each each row by its pivot value
     for row in 0..<returny.rows {
@@ -147,17 +203,13 @@ func reducedRowEchelon(matrix: Matrix) -> ReturnType? {
         }
     }
     
-    return (.none, .matrix(returny))
+    return (.none, returny)
 }
 
-func inverseMatrix(matrix: Matrix) -> ReturnType? {
+func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
     guard matrix.rows != 0 && matrix.cols != 0 else { return .none }
     guard matrix.isSquare else { return .none }
-    guard let det = getDeterminant(matrix: matrix)?.solution else { return .none }
-    switch det {
-    case .double(let determinant): guard determinant != 0 else { return .none }
-    default: return .none
-    }
+    guard let det = getDeterminant(matrix: matrix)?.solution, det != 0 else { return .none }
     var returny = getMatrix(cols: matrix.count, rows: matrix.count)
     for i in 0..<matrix.count { returny[i][i] = 1.0 }
     
@@ -179,11 +231,13 @@ func inverseMatrix(matrix: Matrix) -> ReturnType? {
             steps.append(Step(matrix: returny, stepDescription: "Add \(scale) * row \(i) to row \(j)"))
         }
     }
-    return (steps, .matrix(returny))
+    return (steps, returny)
 }
 
 extension MatrixFunctions {
-    var compute: (Matrix) -> ReturnType? {
+    var compute: (Matrix) -> ReturnType? { { $0 !>>> functionMapper !>>> typeParser } }
+    
+    private var functionMapper: (Matrix) -> (Steps?, Any)? {
         switch self {
         case .solve: return solveMatrix
         case .det: return getDeterminant
@@ -251,20 +305,20 @@ extension Matrix {
     
     func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
-        for i in 0..<returny.cols { returny[row][i] = returny[row][i] ~> transform }
+        for i in 0..<returny[row].count { returny[row][i] = returny[row][i] >>> transform }
         return returny
     }
     
     func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
         var returny = self
-        for i in 0..<returny.rows { returny[i][col] = returny[i][col] ~> transform }
+        for i in 0..<returny.rows { returny[i][col] = returny[i][col] >>> transform }
         return returny
     }
     
     func mapDiag(_ transform: (Double) -> Double) -> Matrix? {
         guard isSquare else { return .none }
         var returny = self
-        for i in 0..<returny.rows { returny[i][i] = returny[i][i] ~> transform }
+        for i in 0..<returny.rows { returny[i][i] = returny[i][i] >>> transform }
         return returny
     }
 }

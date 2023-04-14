@@ -10,25 +10,6 @@ import Foundation
 typealias Function = (Double) -> Double
 typealias Operation = (Double, Double) -> Double
 
-infix operator >>: AdditionPrecedence
-
-infix operator ~>: AdditionPrecedence
-
-infix operator **: MultiplicationPrecedence
-
-postfix operator <>
-
-postfix func <>(lhs: Double) -> Double { tgamma(lhs + 1) }
-
-func **(lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }
-
-func >><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    return rhs(lhs)
-}
-
-func ~><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
-
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
     case "+": return 0
@@ -57,7 +38,7 @@ func cot(_ x: Double) -> Double { 1 / tan(x) }
 func coth(_ x: Double) -> Double { 1 / tanh(x) }
 
 private func funcParser(_ arg: Substring) -> Function? {
-    guard arg.last != "’" else { return arg.dropLast() >> funcParser >> derivative }
+    guard arg.last != "’" else { return arg.dropLast() !>>> funcParser !>>> derivative }
     switch arg {
     case "": return identity
     case "abs": return abs
@@ -192,57 +173,57 @@ private func getPivot(_ arg: Substring) -> Int? {
 
 func parseExpression(_ arg: String) -> Function? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() ~> refactorCoeffecients ~> refactorX ~> parseHelper
+    return arg.filter { $0 != " " }.lowercased().substringify() >>> refactorCoeffecients >>> parseHelper
 }
 
 private func parseHelper(_ arg: Substring) -> Function? {
     guard arg.count != 0 else { return zero }
     guard arg != "x" else { return identity }
-    if let numeral = arg ~> numeralParser { return { _ in numeral } }
-    if let pivot = arg ~> getPivot {
+    if let numeral = arg >>> numeralParser { return { _ in numeral } }
+    if let pivot = arg >>> getPivot {
         // evaluate operands first
-        guard let operand = arg[arg.index(arg.startIndex, offsetBy: pivot)] ~> operParser,
+        guard let operand = arg[arg.index(arg.startIndex, offsetBy: pivot)] >>> operParser,
               // recursively evaluate the lhs and rhs around lowest-order operation
-              let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] ~> parseHelper,
-              let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] ~> parseHelper else { return .none }
+              let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] >>> parseHelper,
+              let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >>> parseHelper else { return .none }
         return { operand(lhs($0), rhs($0)) }
     }
-    if arg.first == "x", let f = arg.dropFirst() ~> parseHelper { return { $0 * f($0) } }
+    if arg.first == "x", let f = arg.dropFirst() >>> parseHelper { return { $0 * f($0) } }
     // evaluate postfix functions
-    if let post = arg.last ~> postfixParser {
-        guard !arg.dropLast().isEmpty, let f = arg.dropLast() ~> parseHelper else { return .none }
-        return { $0 ~> f } ~> post
+    if let post = arg.last >>> postfixParser {
+        guard !arg.dropLast().isEmpty, let f = arg.dropLast() >>> parseHelper else { return .none }
+        return { $0 >>> f } >>> post
     }
     // find index of highest-order function
     guard let parIdx = arg.firstIndex(of: "(") else { return .none }
     // f is the prefix to the paranthesis
-    guard let f = arg[..<parIdx] ~> funcParser,
+    guard let f = arg[..<parIdx] >>> funcParser,
           // params are the arguments in between the parantheses
-          let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] ~> parseHelper else { return .none }
-    return { $0 ~> params ~> f }
+          let params = arg[arg.index(after: parIdx)..<arg.index(before: arg.endIndex)] >>> parseHelper else { return .none }
+    return { $0 >>> params >>> f }
 }
 
 func parseLatex(_ arg: String) -> String? {
     guard isValid(arg) else { return .none }
-    return arg.filter { $0 != " " }.lowercased().substringify() ~> parseLatexHelper
+    return arg.filter { $0 != " " }.lowercased().substringify() >>> parseLatexHelper
 }
 
 private func parseLatexHelper(_ arg: Substring) -> String? {
     guard arg.count != 0 else { return "" }
     guard arg != "x" else { return "x" }
-    if let numeral = arg >> numeralParserLatex { return numeral  }
-    if let pivot = arg >> getPivot {
+    if let numeral = arg >>> numeralParserLatex { return numeral  }
+    if let pivot = arg >>> getPivot {
         let operand = arg[arg.index(arg.startIndex, offsetBy: pivot)]
         // recursively evaluate the lhs and rhs around lowest-order operation
-        guard let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] >> parseLatexHelper,
-              let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >> parseLatexHelper else { return .none }
+        guard let lhs = arg[..<arg.index(arg.startIndex, offsetBy: pivot)] >>> parseLatexHelper,
+              let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >>> parseLatexHelper else { return .none }
         return "{\(lhs)}\(operand){\(rhs)}"
     }
     // evaluate x as a coeffecient
-    if arg.first == "x", let f = arg.dropFirst() ~> parseLatexHelper { return "x\(f)" }
+    if arg.first == "x", let f = arg.dropFirst() >>> parseLatexHelper { return "x\(f)" }
     // evaluate postfix functions
-    if (arg.last ~> postfixParser) != nil {
-        guard !arg.dropLast().isEmpty, arg.dropLast() ~> parseLatexHelper != nil else { return .none }
+    if (arg.last >>> postfixParser) != nil {
+        guard !arg.dropLast().isEmpty, arg.dropLast() >>> parseLatexHelper != nil else { return .none }
         return String(arg)
     }
     // find index of highest-order function

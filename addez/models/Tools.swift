@@ -37,3 +37,26 @@ extension ClosedRange where Element == Int {
     
     func continuous() -> [Double] { stride(from: Double(lowerBound), through: Double(upperBound), by: 0.01).map(identity) }
 }
+
+infix operator >>>: AdditionPrecedence
+
+infix operator !>>>: AdditionPrecedence
+
+infix operator **: MultiplicationPrecedence
+
+postfix operator <>
+
+postfix func <>(lhs: Double) -> Double { tgamma(lhs + 1) }
+
+func **(lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }
+
+func !>>><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
+    guard let lhs = lhs, let rhs = rhs else { return .none }
+    return rhs(lhs)
+}
+
+func >>><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
+
+func *(lhs: [String], rhs: [String]) -> String {
+    ""
+}
