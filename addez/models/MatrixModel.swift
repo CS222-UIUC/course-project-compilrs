@@ -155,14 +155,9 @@ private func getDetHelper(_ matrix: Matrix) -> Double {
     switch matrix.rows {
     case 1: return matrix[0][0]
     case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
-    default: var output = 0.0
-            for i in 0..<matrix.cols {
-                let pivot = matrix[0][i]
-                let submatrix = matrix.withoutColumn(at: i).withoutRow(at: 0)
-                let det = getDetHelper(submatrix)
-                output += (-1 ** i.toDouble()) * pivot * det
-            }
-            return output
+    default: return matrix.first?.enumerated()
+            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutColumn(at: i).withoutRow(at: 0)) }
+            .reduce(0.0, +) ?? 0.0
     }
 }
 
