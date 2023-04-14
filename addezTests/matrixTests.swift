@@ -51,31 +51,129 @@ final class matrixTests: XCTestCase {
         XCTAssertEqual(matrix, expected)
     }
 
-    func testgetDeterminant2x2() {
-        let matrix = [[1.0, 3.0], [4.0, 9.0]]
+    func testgetDet1x1() {
+        let matrix = [[8.0]]
+        let expected = 8.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+    
+    func testgetDet2x2Normal() {
+        let matrix = [
+            [1.0, 3.0], 
+            [4.0, 9.0]]
         let expected = -3.0
         guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
+    func testgetDet2x2Triag() {
+        let matrix = [
+            [1.0, 3.0],
+            [0.0, 9.0]]
+        let expected = 9.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
     
-    func testgetDeterminant3x3Normal() {
-        let matrix = [[1.0, 3.0, 0.0], [4.0, -2.0, -1.0], [2.0, 3.0, -1.0]]
+    func testgetDet3x3Normal() {
+        let matrix = [
+            [1.0, 3.0, 0.0], 
+            [4.0, -2.0, -1.0], 
+            [2.0, 3.0, -1.0]]
         let expected = 11.0
         guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
-    func testgetDeterminant3x3Ones() {
-        let matrix = [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]
+    func testgetDet3x3Ones() {
+        let matrix = [
+            [1.0, 1.0, 1.0], 
+            [1.0, 1.0, 1.0], 
+            [1.0, 1.0, 1.0]]
         let expected = 0.0
         guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
+    
+    func testgetDet3x3Triag() {
+        let matrix = [
+            [7.0, 0.0, 0.0],
+            [4.0, -2.0, 0.0],
+            [2.0, 3.0, -3.0]]
+        let expected = 42.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
 
-    func testgetDeterminant4x4Normal() {
-        let matrix = [[1.0, 3.0, 0.0, 2.0], [4.0, -2.0, -1.0, 3.0], [2.0, 3.0, -1.0, 1.0], [1.0, 2.0, 3.0, 4.0]]
+    func testgetDet4x4Normal() {
+        let matrix = [
+            [1.0, 3.0, 0.0, 2.0], 
+            [4.0, -2.0, -1.0, 3.0], 
+            [2.0, 3.0, -1.0, 1.0], 
+            [1.0, 2.0, 3.0, 4.0]]
         let expected = -57.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+    
+    func testgetDet4x4Triag() {
+        let matrix = [
+            [1.0, 3.0, 0.0, 2.0],
+            [0.0, -2.0, -1.0, 3.0],
+            [0.0, 0.0, -1.0, 1.0],
+            [0.0, 0.0, 0.0, 4.0]]
+        let expected = 8.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+    func testgetDet5x5Normal() {
+        let matrix = [
+            [1.0, 3.0, 0.0, 2.0, 1.0], 
+            [4.0, -2.0, -1.0, 3.0, 2.0], 
+            [2.0, 3.0, -1.0, 1.0, 3.0], 
+            [1.0, 2.0, 3.0, 4.0, 4.0], 
+            [-4.0, 2.0, 0.0, 1.0, 5.0]]
+        let expected = -915.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+    
+    func testgetDet5x5Triag() {
+        let matrix = [
+            [1.0, 0.0, 0.0, 0.0, 0.0],
+            [4.0, -2.0, 0.0, 0.0, 0.0],
+            [2.0, 3.0, -1.0, 0.0, 0.0],
+            [1.0, 2.0, 3.0, 4.0, 0.0],
+            [-4.0, 2.0, 0.0, 1.0, 5.0]]
+        let expected = 40.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+    func testgetDet6x6Normal() {
+        let matrix = [
+            [1.0, 3.0, 0.0, 2.0, 1.0, 1.0], 
+            [4.0, -2.0, -1.0, 3.0, 2.0, 2.0],  
+            [1.0, 2.0, 3.0, 4.0, 4.0, 4.0], 
+            [-4.0, 2.0, 0.0, 1.0, 5.0, 5.0], 
+            [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+            [2.0, 3.0, -1.0, 1.0, 3.0, 3.0]]
+        let expected = 915.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+    
+    func testgetDet6x6Triag() {
+        let matrix = [
+            [1.0, 3.0, 0.0, 2.0, 1.0, 1.0],
+            [0.0, -2.0, -1.0, 3.0, 2.0, 2.0],
+            [0.0, 0.0, 3.0, 4.0, 4.0, 4.0],
+            [0.0, 0.0, 0.0, 1.0, 5.0, 5.0],
+            [0.0, 0.0, 0.0, 0.0, 5.0, 6.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 3.0]]
+        let expected = -90.0
         guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
