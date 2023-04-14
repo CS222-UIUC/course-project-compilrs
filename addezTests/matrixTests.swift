@@ -51,4 +51,35 @@ final class matrixTests: XCTestCase {
         XCTAssertEqual(matrix, expected)
     }
 
+    func testgetDeterminant2x2() {
+        let matrix = [[1.0, 3.0], [4.0, 9.0]]
+        let expected = -3.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+    
+    func testgetDeterminant3x3Normal() {
+        let matrix = [[1.0, 3.0, 0.0], [4.0, -2.0, -1.0], [2.0, 3.0, -1.0]]
+        let expected = 11.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+    func testgetDeterminant3x3Ones() {
+        let matrix = [[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]
+        let expected = 0.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+    func testgetDeterminant4x4Normal() {
+        let matrix = [[1.0, 3.0, 0.0, 2.0], [4.0, -2.0, -1.0, 3.0], [2.0, 3.0, -1.0, 1.0], [1.0, 2.0, 3.0, 4.0]]
+        let expected = -57.0
+        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
+
+
+
 }

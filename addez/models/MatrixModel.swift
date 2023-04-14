@@ -155,9 +155,14 @@ private func getDetHelper(_ matrix: Matrix) -> Double {
     switch matrix.rows {
     case 1: return matrix[0][0]
     case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
-    default: return matrix.first?.enumerated()
-            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutRow(at: 0).withoutColumn(at: i)) }
-            .reduce(0.0, +) ?? 0.0
+    default: var output = 0.0
+            for i in 0..<matrix.cols {
+                let pivot = matrix[0][i]
+                let submatrix = matrix.withoutColumn(at: i).withoutRow(at: 0)
+                let det = getDetHelper(submatrix)
+                output += (-1 ** i.toDouble()) * pivot * det
+            }
+            return output
     }
 }
 
@@ -324,22 +329,22 @@ extension Matrix {
     static let validDimensions = (rows: 1...6, cols: 1...6)
     
     func withoutColumn(at column: Int) -> Matrix {
-        guard column > 0 && column < rows else { return self }
+        guard column >= 0 && column < rows else { return self }
         return self.map { $0.removeItem(at: column) }
     }
     
     func withoutRow(at row: Int) -> Matrix {
-        guard row > 0 && row < rows else { return self }
+        guard row >= 0 && row < rows else { return self }
         return self.removeItem(at: row)
     }
     
     func getColumn(at column: Int) -> [Double] {
-        guard column > 0 && column < cols else { return [] }
+        guard column >= 0 && column < cols else { return [] }
         return self.map { $0[column] }
     }
     
     func getRow(at row: Int) -> [Double] {
-        guard row > 0 && row < rows else { return [] }
+        guard row >= 0 && row < rows else { return [] }
         return self[row]
     }
     
