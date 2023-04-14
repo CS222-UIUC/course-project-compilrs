@@ -256,6 +256,7 @@ func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
 
 func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     guard matrix.isSquare else { return .none }
+    
     return .none
 }
 
@@ -270,6 +271,9 @@ func getEigHelper(matrix: [[[Double]]]) -> Vector? {
 //        return matrix.first?.enumerated()
 //                .map { i, pivot in (-1 ** i.toDouble()) * pivot * getEigHelper(matrix.withoutRow(at: 0).withoutColumn(at: i)) }
 //                .reduce(0.0, +) ?? 0.0
+        return
+        let a = matrix.first?.enumerated()
+            .map { i, pivot in (-1 ** i.toDouble()) * (pivot <*> getEigHelper(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0))) }
     }
 }
 
@@ -292,6 +296,23 @@ extension MatrixFunctions {
         case .det: return (8, 8)
         default: return (10, 10)
         }
+    }
+}
+
+extension [[[Double]]] {
+    var rows: Int { self.count }
+    var cols: Int {
+        guard rows != 0 else { return 0 }
+        return self[0].count
+    }
+    func withoutColumn(at column: Int) -> [[[Double]]] {
+        guard column >= 0 && column < rows else { return self }
+        return self.map { $0.removeItem(at: column) }
+    }
+    
+    func withoutRow(at row: Int) -> [[[Double]]] {
+        guard row >= 0 && row < rows else { return self }
+        return self.removeItem(at: row)
     }
 }
 
