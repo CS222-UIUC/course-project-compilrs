@@ -281,14 +281,21 @@ private func getEigHelper(matrix: [[Vector]]) -> Vector {
     return rationalRoots.filter { f($0) == 0 }
 }
 
-private func getRationalRoots(polynomial: Vector) -> Vector {
+func getRationalRoots(polynomial: Vector) -> Vector {
     guard polynomial.count > 1 else { return [] }
     let pVals = getFactors(polynomial[0].toInt())
     let qVals = getFactors(polynomial.last!.toInt())
-    return []
+    return qVals.flatMap { q in pVals.map { p in p.toDouble()/q.toDouble() } }
 }
 
-private func getFactors(_ x: Int) -> [Int] { (0...x).filter { x % $0 == 0 } }
+private func getFactors(_ x: Int) -> Set<Int> {
+    var factors = Set<Int>()
+    for i in 0...abs(x) {
+        guard i != 0 else { continue }
+        if x % i == 0 { factors.insert(i); factors.insert(-i) }
+    }
+    return factors
+}
 
 private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
