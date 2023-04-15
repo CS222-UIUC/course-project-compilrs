@@ -96,6 +96,8 @@ func typeParser(steps: [Step]?, solution: Any) -> ReturnType {
         return (steps, .double(solution))
     } else if let solution = solution as? (lower: Matrix, upper: Matrix) {
         return (steps, .matrixTuple(lower: solution.lower, upper: solution.upper))
+    } else if let solution = solution as? Vector {
+        return (steps, .vector(solution))
     } else if let solution = solution as? SolutionType {
         return (steps, solution)
     } else {
