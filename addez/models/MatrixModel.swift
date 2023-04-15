@@ -296,7 +296,7 @@ private func getFactors(_ x: Int) -> Set<Int> {
 
 private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
-    case 1: return matrix[0][1]
+    case 1: return matrix[0][0]
     case 2:
         let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
         guard let det = a <*> d <-> b <*> c else { return [] }
@@ -399,24 +399,24 @@ extension Matrix {
         return self[row]
     }
     
-    func getDiagonal() -> [Double]? {
+    func getDiagonal() -> Vector? {
         guard isSquare else { return .none }
         return self.enumerated().map { $1[$0] }
     }
     
-    func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
+    func mapAt(row: Int, _ transform: Function) -> Matrix {
         var returny = self
         for i in 0..<returny[row].count { returny[row][i] = returny[row][i] >>> transform }
         return returny
     }
     
-    func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
+    func mapAt(col: Int, _ transform: Function) -> Matrix {
         var returny = self
         for i in 0..<returny.rows { returny[i][col] = returny[i][col] >>> transform }
         return returny
     }
     
-    func mapDiag(_ transform: (Double) -> Double) -> Matrix? {
+    func mapDiag(_ transform: Function) -> Matrix? {
         guard isSquare else { return .none }
         var returny = self
         for i in 0..<returny.rows { returny[i][i] = returny[i][i] >>> transform }
