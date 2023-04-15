@@ -288,11 +288,7 @@ private func getRationalRoots(polynomial: Vector) -> Vector {
     return []
 }
 
-private func getFactors(_ x: Int) -> Set<Int> {
-    var factors: Set<Int> = Set()
-    for i in 0...x { if x % i == 0 { factors.insert(i); factors.insert(-i) } }
-    return factors
-}
+private func getFactors(_ x: Int) -> [Int] { (0...x).filter { x % $0 == 0 } }
 
 private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
