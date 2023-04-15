@@ -168,13 +168,15 @@ func swapRows(matrix: Matrix, row1: Int, row2: Int) -> Matrix {
 
 func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
     // row = scale * row
-    matrix.mapAt(row: row) { $0 * scale }
+    var returny = matrix
+    returny[row] = returny[row] * scale
+    return returny
 }
 
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    returny[row1] = (returny[row1] <+> scale * returny[row2]) ?? []
+    returny[row2] = (returny[row2] <+> scale * returny[row1]) ?? []
     return returny
 }
 
@@ -182,19 +184,22 @@ private func rowEchelon(matrix: Matrix) -> Matrix {
     // convert the given matrix in to row echelon form
     var returny = matrix
     // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
-    if returny[0][0] == 0 {
-        for i in 1..<returny.rows {
-            guard returny[i][0] != 0 else { continue }
-            returny = swapRows(matrix: returny, row1: 0, row2: i)
-            break
+    if (returny[0][0] == 0) {
+        for i in 1..<returny.count {
+            if (returny[i][0] != 0) {
+                returny = swapRows(matrix: returny, row1: 0, row2: i)
+                break
+            }
         }
     }
     
-    for col in 0..<returny.cols {
-        guard col + 1 < returny.rows else { continue }
-        for row in col+1..<returny.count {
-            guard returny[row][col] != 0 else { continue }
-            returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
+    for col in 0..<returny[0].count {
+        if (col + 1 < returny.count) {
+            for row in col+1..<returny.count {
+                if (returny[row][col] != 0) {
+                    returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col]/returny[col][col])
+                }
+            }
         }
     }
     return returny
@@ -203,22 +208,23 @@ private func rowEchelon(matrix: Matrix) -> Matrix {
 func reducedRowEchelon(matrix: Matrix) -> MatrixSolution? {
     var returny = rowEchelon(matrix: matrix)
     // divide each each row by its pivot value
-    for row in 0..<returny.rows {
+    for row in 0..<returny.count {
         // find the first non-zero value in the row and divide the row by that value
-        for col in 0..<returny.cols {
-            guard returny[row][col] != 0 else { continue }
-            returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
-            break
+        for col in 0..<returny[0].count {
+            if (returny[row][col] != 0) {
+                returny = scaleRow(matrix: returny, row: row, scale: 1/returny[row][col])
+                break
+            }
         }
     }
     
-    for col in 0..<returny.cols {
+    for col in 0..<returny[0].count {
         for row in 0..<col {
-            guard returny[row][col] != 0 && col < returny.rows else { continue }
-            returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
+            if (returny[row][col] != 0 && col < returny.count) {
+                returny = addRows(matrix: returny, row1: col, row2: row, scale: -returny[row][col])
+            }
         }
     }
-    
     return (.none, returny)
 }
 
