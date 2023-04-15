@@ -48,7 +48,7 @@ final class operationsTests: XCTestCase {
             [1, 3, 7, 9],
             [3, 4, 0, 2.0]
         ]
-        A = addRows(matrix: A, row1: 0, row2: 1, scale: 2)
+        A = addRows(matrix: A, row1: 1, row2: 0, scale: 2)
         let expected = [
             [7, 11, 7, 13.0],
             [3, 4, 0, 2.0]
