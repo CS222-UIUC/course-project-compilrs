@@ -20,9 +20,9 @@ class MatrixObject: ObservableObject {
     init(_ matrix: Matrix) { self.matrix = matrix }
 }
 
-func *(lhs: Vector, rhs: Double) -> [Double] { lhs.map { $0 * rhs } }
+func *(lhs: Vector, rhs: Double) -> Vector { lhs.map { $0 * rhs } }
 
-func *(lhs: Double, rhs: Vector) -> [Double] { rhs.map { $0 * lhs } }
+func *(lhs: Double, rhs: Vector) -> Vector { rhs.map { $0 * lhs } }
 
 func *(lhs: Vector, rhs: Vector) -> Double? {
     guard lhs.count == rhs.count else { return .none }
@@ -178,7 +178,7 @@ func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     return returny
 }
 
-private func rowEchelon(matrix: Matrix) -> Matrix {
+func rowEchelon(matrix: Matrix) -> Matrix {
     // convert the given matrix in to row echelon form
     var returny = matrix
     // if the first row and first column index is 0, switch the row with another row that has a non-zero value in the first column
@@ -254,9 +254,9 @@ func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     guard matrix.isSquare else { return .none }
     let cube = matrix.enumerated().map { i, row in
         row.enumerated().map { j, element in
-            var arr = Array(repeating: 0.0, count: matrix.count)
+            var arr = Array(repeating: 0.0, count: matrix.count + 1)
             arr[0] = element
-            if j == 1 { arr[1] = -1 }
+            if j == i { arr[1] = -1 }
             return arr
         }
     }
@@ -271,9 +271,13 @@ func getEigHelper(matrix: [[[Double]]]) -> Vector {
         guard let det = a <*> d <-> b <*> c else { return [] }
         return det
     default:
-        let a = matrix.first?.enumerated()
-            .map { i, pivot in (-1 ** i.toDouble()) * (pivot <*> getEigHelper(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0))) }
-        return []
+        return matrix.first?.enumerated()
+            .map { i, pivot in
+                let eig = getEigHelper(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0)).resize(to: matrix[0][0].count)
+                guard let poly = pivot <*> eig else { return [0.0, 0.0] }
+                return (-1 ** i.toDouble()) * poly.resize(to: matrix[0][0].count)
+            }
+            .reduce(Array(repeating: 0.0, count: matrix[0][0].count), <+>) ?? []
     }
 }
 
@@ -391,6 +395,8 @@ extension Matrix {
 
 extension Array {
     func removeItem(at index: Int) -> [Element] { self.enumerated().compactMap { $0 == index ? nil : $1 } }
+
+    
 }
 
 extension Vector {
@@ -400,4 +406,6 @@ extension Vector {
     }
     
     func toMatrix() -> Matrix { [self] }
+    
+    func resize(to size: Int) -> [Element] { Array(repeating: 0.0, count: size).enumerated().map { i, element in self.at(i) } }
 }

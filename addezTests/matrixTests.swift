@@ -178,6 +178,14 @@ final class matrixTests: XCTestCase {
         XCTAssertEqual(returny, expected)
     }
 
-
+    func testCharacteristicPoly() {
+        let matrix = [
+            [1.0, 2.0, -2.0],
+            [3.0, 0.0, 1.0],
+            [-2.0, 1.0, 4.0]]
+        let expected = [-35.0, 7.0, 5.0, -1.0]
+        guard let returny = getEigenvalues(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
 
 }
