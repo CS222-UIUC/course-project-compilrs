@@ -56,7 +56,3 @@ func !>>><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
 }
 
 func >>><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
-
-func *(lhs: [String], rhs: [String]) -> String {
-    ""
-}

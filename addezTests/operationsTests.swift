@@ -55,4 +55,12 @@ final class operationsTests: XCTestCase {
         ]
         XCTAssertEqual(A, expected)
     }
+    func testPolynomialConversion() {
+        let poly = [3.0, 4.0, 7.0]
+        let f = poly.polynomialToFunction()
+        XCTAssertEqual(f(3), 7*(3**2) + 4*(3) + 3)
+        let arr = [3.0, 12.0, 9.0, 0.0, 7.0]
+        let g = arr.polynomialToFunction()
+        XCTAssertEqual(g(3), 7*(3**4) + 9*(3**2) + 12*3 + 3.0)
+    }
 }
