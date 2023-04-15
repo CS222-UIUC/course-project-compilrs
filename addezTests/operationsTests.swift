@@ -43,4 +43,16 @@ final class operationsTests: XCTestCase {
         let expected = [8.0, -3, 1]
         XCTAssertEqual(res, expected)
     }
+    func testAddRows() {
+        var A = [
+            [1, 3, 7, 9],
+            [3, 4, 0, 2.0]
+        ]
+        A = addRows(matrix: A, row1: 0, row2: 1, scale: 2)
+        let expected = [
+            [7, 11, 7, 13.0],
+            [3, 4, 0, 2.0]
+        ]
+        XCTAssertEqual(A, expected)
+    }
 }
