@@ -63,4 +63,9 @@ final class operationsTests: XCTestCase {
         let g = arr.polynomialToFunction()
         XCTAssertEqual(g(3), 7*(3**4) + 9*(3**2) + 12*3 + 3.0)
     }
+    func testRationalRootsThm() {
+        let polynomial = [-1, 0, 4.0]
+        let roots = getRationalRoots(polynomial: polynomial)
+        XCTAssert(roots.contains([-0.5, 0.5]))
+    }
 }
