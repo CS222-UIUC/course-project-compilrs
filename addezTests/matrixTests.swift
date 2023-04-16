@@ -54,7 +54,7 @@ final class matrixTests: XCTestCase {
     func testgetDet1x1() {
         let matrix = [[8.0]]
         let expected = 8.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -63,7 +63,7 @@ final class matrixTests: XCTestCase {
             [1.0, 3.0], 
             [4.0, 9.0]]
         let expected = -3.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -72,7 +72,7 @@ final class matrixTests: XCTestCase {
             [1.0, 3.0],
             [0.0, 9.0]]
         let expected = 9.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -82,7 +82,7 @@ final class matrixTests: XCTestCase {
             [4.0, -2.0, -1.0], 
             [2.0, 3.0, -1.0]]
         let expected = 11.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -92,7 +92,7 @@ final class matrixTests: XCTestCase {
             [1.0, 1.0, 1.0], 
             [1.0, 1.0, 1.0]]
         let expected = 0.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -102,7 +102,7 @@ final class matrixTests: XCTestCase {
             [4.0, -2.0, 0.0],
             [2.0, 3.0, -3.0]]
         let expected = 42.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -113,7 +113,7 @@ final class matrixTests: XCTestCase {
             [2.0, 3.0, -1.0, 1.0], 
             [1.0, 2.0, 3.0, 4.0]]
         let expected = -57.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -124,7 +124,7 @@ final class matrixTests: XCTestCase {
             [0.0, 0.0, -1.0, 1.0],
             [0.0, 0.0, 0.0, 4.0]]
         let expected = 8.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -136,7 +136,7 @@ final class matrixTests: XCTestCase {
             [1.0, 2.0, 3.0, 4.0, 4.0], 
             [-4.0, 2.0, 0.0, 1.0, 5.0]]
         let expected = -915.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -148,7 +148,7 @@ final class matrixTests: XCTestCase {
             [1.0, 2.0, 3.0, 4.0, 0.0],
             [-4.0, 2.0, 0.0, 1.0, 5.0]]
         let expected = 40.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -161,7 +161,7 @@ final class matrixTests: XCTestCase {
             [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
             [2.0, 3.0, -1.0, 1.0, 3.0, 3.0]]
         let expected = 915.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
     
@@ -174,7 +174,7 @@ final class matrixTests: XCTestCase {
             [0.0, 0.0, 0.0, 0.0, 5.0, 6.0],
             [0.0, 0.0, 0.0, 0.0, 0.0, 3.0]]
         let expected = -90.0
-        guard let returny = getDeterminant(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getDeterminant(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 
@@ -184,7 +184,7 @@ final class matrixTests: XCTestCase {
             [3.0, 0.0, 1.0],
             [-2.0, 1.0, 4.0]]
         let expected = [-35.0, 7.0, 5.0, -1.0]
-        guard let returny = getEigenvalues(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        guard let returny = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
 

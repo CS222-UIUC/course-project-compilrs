@@ -21,9 +21,11 @@ private func orderOfOps(_ arg: Character) -> Int {
     }
 }
 
+func +(lhs: @escaping Function, rhs: @escaping Function) -> Function {{ x in lhs(x) + rhs(x) } }
+
 func identity<T>(_ x: T) -> T { x }
 
-private func zero(_ x: Double) -> Double { 0 }
+func zero(_ x: Double) -> Double { 0 }
 
 func sec(_ x: Double) -> Double { 1 / cos(x) }
 
@@ -237,7 +239,7 @@ private func parseLatexHelper(_ arg: Substring) -> String? {
 
 func riemannSum(in range: ClosedRange<Double>, _ f: @escaping Function) -> Double {
     let step = (range.upperBound - range.lowerBound) / 10000
-    return (0..<10000).reduce(0.0) { sum, i in
+    return (0..<10000).reduce(0) { sum, i in
         let x1 = range.lowerBound + Double(i) * step
         let x2 = range.lowerBound + Double(i + 1) * step
         return sum + (f(x1) + f(x2)) * step / 2
@@ -250,7 +252,7 @@ func limit(approaches x: Double, _ f: @escaping Function) -> Double {
 }
 
 func derivative(_ f: @escaping Function) -> Function {
-    { x in limit(approaches: 0.0) { h in
+    { x in limit(approaches: 0) { h in
         return (f(x + h) - f(x)) / h
     } }
 }

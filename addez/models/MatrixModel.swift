@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Collections
 
 typealias Matrix = [[Double]]
 
@@ -96,6 +97,8 @@ func typeParser(steps: [Step]?, solution: Any) -> ReturnType {
         return (steps, .double(solution))
     } else if let solution = solution as? (lower: Matrix, upper: Matrix) {
         return (steps, .matrixTuple(lower: solution.lower, upper: solution.upper))
+    } else if let solution = solution as? Vector {
+        return (steps, .vector(solution))
     } else if let solution = solution as? SolutionType {
         return (steps, solution)
     } else {
@@ -269,9 +272,34 @@ func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     return (.none, getEigHelper(matrix: cube))
 }
 
-func getEigHelper(matrix: [[[Double]]]) -> Vector {
+private func getEigHelper(matrix: [[Vector]]) -> Vector {
+    let polynomial = matrix >>> getCharacteristicPolynomial
+    let f = polynomial.polynomialToFunction()
+    // find the potential rational roots
+    let rationalRoots = polynomial >>> getRationalRoots
+    // return the roots that result in 0
+    return rationalRoots.filter { f($0) == 0 }
+}
+
+func getRationalRoots(polynomial: Vector) -> Vector {
+    guard polynomial.count > 1 else { return [] }
+    let pVals = getFactors(polynomial[0].toInt())
+    let qVals = getFactors(polynomial.last!.toInt())
+    return qVals.flatMap { q in pVals.map { p in p.toDouble()/q.toDouble() } }
+}
+
+private func getFactors(_ x: Int) -> Set<Int> {
+    var factors = Set<Int>()
+    for i in 0...abs(x) {
+        guard i != 0 else { continue }
+        if x % i == 0 { factors.insert(i); factors.insert(-i) }
+    }
+    return factors
+}
+
+private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
-    case 1: return matrix[0][1]
+    case 1: return matrix[0][0]
     case 2:
         let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
         guard let det = a <*> d <-> b <*> c else { return [] }
@@ -279,7 +307,7 @@ func getEigHelper(matrix: [[[Double]]]) -> Vector {
     default:
         return matrix.first?.enumerated()
             .map { i, pivot in
-                let eig = getEigHelper(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0)).resize(to: matrix[0][0].count)
+                let eig = getCharacteristicPolynomial(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0)).resize(to: matrix[0][0].count)
                 guard let poly = pivot <*> eig else { return [0.0, 0.0] }
                 return (-1 ** i.toDouble()) * poly.resize(to: matrix[0][0].count)
             }
@@ -364,34 +392,34 @@ extension Matrix {
         return self.removeItem(at: row)
     }
     
-    func getColumn(at column: Int) -> [Double] {
+    func getColumn(at column: Int) -> Vector {
         guard column >= 0 && column < cols else { return [] }
         return self.map { $0[column] }
     }
     
-    func getRow(at row: Int) -> [Double] {
+    func getRow(at row: Int) -> Vector {
         guard row >= 0 && row < rows else { return [] }
         return self[row]
     }
     
-    func getDiagonal() -> [Double]? {
+    func getDiagonal() -> Vector? {
         guard isSquare else { return .none }
         return self.enumerated().map { $1[$0] }
     }
     
-    func mapAt(row: Int, _ transform: (Double) -> Double) -> Matrix {
+    func mapAt(row: Int, _ transform: Function) -> Matrix {
         var returny = self
         for i in 0..<returny[row].count { returny[row][i] = returny[row][i] >>> transform }
         return returny
     }
     
-    func mapAt(col: Int, _ transform: (Double) -> Double) -> Matrix {
+    func mapAt(col: Int, _ transform: Function) -> Matrix {
         var returny = self
         for i in 0..<returny.rows { returny[i][col] = returny[i][col] >>> transform }
         return returny
     }
     
-    func mapDiag(_ transform: (Double) -> Double) -> Matrix? {
+    func mapDiag(_ transform: Function) -> Matrix? {
         guard isSquare else { return .none }
         var returny = self
         for i in 0..<returny.rows { returny[i][i] = returny[i][i] >>> transform }
@@ -401,8 +429,6 @@ extension Matrix {
 
 extension Array {
     func removeItem(at index: Int) -> [Element] { self.enumerated().compactMap { $0 == index ? nil : $1 } }
-
-    
 }
 
 extension Vector {
@@ -414,4 +440,22 @@ extension Vector {
     func toMatrix() -> Matrix { [self] }
     
     func resize(to size: Int) -> [Element] { Array(repeating: 0.0, count: size).enumerated().map { i, element in self.at(i) } }
+    
+    /// Return a latexified version of a coeffecient vector
+    func polynomialToString() -> String {
+        self.reversed().enumerated().compactMap { i, coef in
+            coef != 0 ? "\(coef)x^\(count - i - 1) + " : nil
+        }
+        .reduce("", +)
+        .dropLast(3) >>> String.init >>> parseLatex ?? ""
+    }
+    
+    /// Return a composed function described by a coeffecient vector of a polynomial
+    func polynomialToFunction() -> Function {
+        self.enumerated().compactMap { i, coef in
+            // ignore 0 coeffecient as `nil` and return cx^i otherwise
+            coef != 0 ? { x in coef*(x ** i.toDouble()) } : nil
+        }
+        .reduce(zero, +)
+    }
 }
