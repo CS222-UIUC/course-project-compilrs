@@ -56,3 +56,12 @@ func !>>><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
 }
 
 func >>><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
+
+infix operator ≈≈
+
+/// Roughly equal
+func ≈≈(lhs: Double, rhs: Double) -> Bool { return abs(lhs - rhs) < 0.5 }
+
+postfix operator ~
+
+postfix func ~(lhs: @escaping Function) -> Function { return lhs >>> derivative }

@@ -190,6 +190,7 @@ private func parseHelper(_ arg: Substring) -> Function? {
               let rhs = arg[arg.index(arg.startIndex, offsetBy: pivot + 1)...] >>> parseHelper else { return .none }
         return { operand(lhs($0), rhs($0)) }
     }
+    // evaluate x as a coeffecient
     if arg.first == "x", let f = arg.dropFirst() >>> parseHelper { return { $0 * f($0) } }
     // evaluate postfix functions
     if let post = arg.last >>> postfixParser {
