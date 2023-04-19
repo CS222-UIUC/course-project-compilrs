@@ -179,20 +179,38 @@ final class matrixTests: XCTestCase {
     }
 
     func testCharacteristicPoly() {
-        let matrix = [
+        var matrix = [
             [1.0, 2.0, -2.0],
             [3.0, 0.0, 1.0],
             [-2.0, 1.0, 4.0]
         ]
-        let cube = matrix.enumerated().map { i, row in
+        var cube = matrix.enumerated().map { i, row in
             row.enumerated().map { j, element in
                 var arr = [element]
                 if j == i { arr.append(-1) }
                 return arr
             }
         }
-        let expected = [-35.0, 7.0, 5.0, -1.0]
-        let returny = getCharacteristicPolynomial(matrix: cube)
+        var expected = [-35.0, 7.0, 5.0, -1.0]
+        var returny = getCharacteristicPolynomial(matrix: cube)
+        XCTAssertEqual(returny, expected)
+        
+        matrix = [
+            [9.0, -3, 0, 2, 4],
+            [-2.0, 0, 3, 1, 5],
+            [1.0, 2, 1, 1, 0],
+            [-4.0, 5, 2, 1, 4],
+            [6.0, 9, 8, 3, 1]
+        ]
+        cube = matrix.enumerated().map { i, row in
+            row.enumerated().map { j, element in
+                var arr = [element]
+                if j == i { arr.append(-1) }
+                return arr
+            }
+        }
+        expected = [-1283, -705, -679, 62, 12, -1]
+        returny = getCharacteristicPolynomial(matrix: cube)
         XCTAssertEqual(returny, expected)
     }
     
