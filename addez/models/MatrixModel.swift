@@ -315,6 +315,34 @@ private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     }
 }
 
+func doubleToFraction(x: Double, error: Double = 0.000001) -> (Int, Int) {
+    var x = x
+    let n = Int(floor(x))
+    x -= Double(n)
+    if x < error {
+        return (n, 1)
+    } else if 1 - error < x {
+        return (n + 1, 1)
+    }
+    var lower_n = 0
+    var lower_d = 1
+    var upper_n = 1
+    var upper_d = 1
+    while true {
+        let middle_n = lower_n + upper_n
+        let middle_d = lower_d + upper_d
+        if middle_d.toDouble() * (x + error) < Double(middle_n) {
+            upper_n = middle_n
+            upper_d = middle_d
+        } else if Double(middle_n) < (x - error) * Double(middle_d) {
+            lower_n = middle_n
+            lower_d = middle_d
+        } else {
+            return (n * middle_d + middle_n, middle_d)
+        }
+    }
+}
+
 extension MatrixFunctions {
     var compute: (Matrix) -> ReturnType? { { $0 !>>> functionMapper !>>> typeParser } }
     

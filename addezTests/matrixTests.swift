@@ -187,5 +187,32 @@ final class matrixTests: XCTestCase {
         guard let returny = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
         XCTAssertEqual(returny, expected)
     }
+    
+    func testRREF3x3() {
+        let matrix = [
+            [3.0, 2.0, 5.0],
+            [-4.0, 6.0, 1.0],
+            [3.0, -1.0, 0.0]
+        ]
+        let expected = [
+            [1.0, 0, 0],
+            [0.0, 1, 0],
+            [0.0, 0, 1]
+        ]
+        guard let returny = reducedRowEchelon(matrix: matrix)?.solution else {XCTAssertNotNil(nil); return }
+        XCTAssertEqual(returny, expected)
+    }
 
+    func testDoubleToFrac() {
+        let one3rd = 0.3333333
+        let one = 1.0
+        let two = 2.0000000000001
+        let three = 2.999999999999
+        let three7ths = 0.42857143
+        XCTAssert(doubleToFraction(x: one3rd) == (1,3))
+        XCTAssert(doubleToFraction(x: one) == (1,1))
+        XCTAssert(doubleToFraction(x: two) == (2,1))
+        XCTAssert(doubleToFraction(x: three) == (3,1))
+        XCTAssert(doubleToFraction(x: three7ths) == (3,7))
+    }
 }

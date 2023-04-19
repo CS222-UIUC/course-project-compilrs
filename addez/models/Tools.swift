@@ -56,3 +56,9 @@ func !>>><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
 }
 
 func >>><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
+
+func ==<T: Equatable, B: Equatable>(lhs: (T, B), rhs: (T, B)) -> Bool {
+    if (lhs.0 != rhs.0) { return false }
+    if (lhs.1 != rhs.1) { return false }
+    return true
+}
