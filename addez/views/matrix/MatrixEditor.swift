@@ -47,7 +47,7 @@ struct MatrixEditor: View {
                                     }),
                                     formatter: .numberFormatter
                                 )
-                                .celled()
+                                .celled(model.matrix[row][col] == 0 ? .background : .none)
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(.roundedBorder)
                                 .multilineTextAlignment(.center)

@@ -32,12 +32,12 @@ extension View {
             .format()
     }
     
-    func celled() -> some View {
+    func celled(_ color: Color? = .none) -> some View {
         self
             .padding(1)
             .overlay(
                 RoundedRectangle(cornerRadius: 5)
-                    .stroke(Color.matrixCell, lineWidth: 2)
+                    .stroke(color ?? .matrixCell, lineWidth: 2)
             )
     }
 }
