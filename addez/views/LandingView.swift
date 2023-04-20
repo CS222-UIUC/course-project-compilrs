@@ -13,20 +13,20 @@ struct LandingView: View {
             ScrollView {
                 GeometryReader { geometry in
                     Text("Matrices")
-                        .cardView(.canvas)
+                        .tiled()
                         .navLink(MatrixSolveView())
                         .padding(15)
                         .shadow(radius: 10)
-                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 50.0), axis: (x: 10.0, y: 0.0, z: 0))
+                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 90.0), axis: (x: 2.0, y: 0.0, z: 0))
                 }
                 .frame(height: 300)
                 GeometryReader { geometry in
                     Text("Integrals")
-                        .cardView(.canvas)
+                        .tiled()
                         .navLink(IntegralSolveView())
                         .padding(15)
                         .shadow(radius: 10)
-                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 50.0), axis: (x: 10.0, y: 0.0, z: 0))
+                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 90.0), axis: (x: 2.0, y: 0.0, z: 0))
                 }
                 .frame(height: 300)
             }
