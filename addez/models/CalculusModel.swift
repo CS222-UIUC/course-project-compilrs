@@ -10,6 +10,24 @@ import Foundation
 typealias Function = (Double) -> Double
 typealias Operation = (Double, Double) -> Double
 
+typealias Complex = (Double, Double)
+
+func *(lhs: Complex, rhs: Complex) -> Complex {
+    let (a, b) = lhs
+    let (c, d) = rhs
+    return (a * c - b * d, a * d + b * c)
+}
+
+func complexPow(_ lhs: Complex, _ rhs: Double) -> Complex {
+    if (rhs == 0) { return (1, 0) }
+    let (r, i) = lhs
+    var returny = (r, i)
+    for _ in 1..<Int(rhs) {
+        returny = returny * lhs
+    }
+    return returny
+}
+
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
     case "+": return 0
@@ -259,3 +277,106 @@ func derivative(_ f: @escaping Function) -> Function {
 }
 
 func summation(in range: ClosedRange<Int>, _ f: Function) -> Double { range.map(Double.init).compactMap(f).reduce(0, +) }
+
+func rootFinding(polynomial: Vector) -> [Complex] {
+    // reverse polynomial
+    var poly = polynomial.reversed()
+    // guard against the first coefficient being 0
+    // while the leading coefficient is 0, erase the leading coefficient
+    // and shift the polynomial to the right
+    while poly[0] == 0.0 { poly.removeFirst() }
+    if poly.isEmpty { return [] }
+    
+    // use Durand Kerner method to find roots of the polynomial f
+    // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
+    let degree = poly.count - 1
+    
+    // divide the polynomial by its leading coefficient if it is not 0
+    let f = poly[0] == 0.0 ? poly : poly.map { $0 / poly[0] }
+    
+    // make an Array of roots initialized to powers of (0.4 + 0.9i) using the Complex typealias
+    // ex: roots[0] = 0.4 + 0.9i, roots[1] = (0.4 + 0.9i)^2, roots[2] = (0.4 + 0.9i)^3, etc.
+    var roots = (0...degree).map { n in complexPow(Complex(0.4, 0.9), n) }
+
+    // iterate 10 times for accuracy
+    for _ in 0..<10 {
+        
+        // for each root in roots Array, apply the Durand Kerner method
+        for i in 0..<roots.count {
+            
+            // create an array of the "other" roots
+            let otherRoots = roots.enumerated().filter { $0.offset != i }.map { $0.element }
+            let currentRoot = roots[i]
+            
+            // compute new_current_root = current_root - f(current_root) / prod(current_root - other_root)
+            let newRoot = currentRoot - evaluate(f, at: currentRoot) / otherRoots.reduce(1) { $0 * (currentRoot - $1) }
+            
+            // update roots Array
+            roots[i] = newRoot
+        }
+    }
+    return roots
+}
+
+// q: can swift multithread?
+// a: yes, but only on macOS and iOS
+
+// q: can you rewrite the function above but multi-threaded?
+// a: yes, but it's not worth it
+
+// q: just do it please
+// a: ok
+
+// q: write a function to evalute a function f at a complex number (a, b)
+func evaluate(polynomial: Vector, value: Double) -> Complex {
+    // init a return value to (0, 0)
+    var result = Complex(0, 0)
+
+    // for each coefficient in the polynomial
+    for (i, coefficient) in polynomial.enumerated() {
+        // add the coefficient times z^i to the return value
+        result += coefficient * complexPow(value, i)
+    }
+    return result
+}
+
+func rootFindingMT(polynomial: Vector) -> [Complex] {
+    // reverse polynomial
+    let polynomial = polynomial.reversed()
+    // guard against the first coefficient being 0
+    // while the leading coefficient is 0, erase the leading coefficient
+    // and shift the polynomial to the right
+    var polynomial = polynomial
+    while polynomial[0] == 0 { polynomial.removeFirst() }
+    if polynomial.isEmpty { return [] }
+    
+    // use Durand Kerner method to find roots of the polynomial f
+    // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
+    let degree = polynomial.count - 1
+    
+    // divide the polynomial by its leading coefficient if it is not 0
+    let f = polynomial[0] == 0 ? polynomial : polynomial.map { $0 / polynomial[0] }
+    
+    // make an Array of roots initialized to powers of (0.4 + 0.9i) using the Complex typealias
+    // ex: roots[0] = 0.4 + 0.9i, roots[1] = (0.4 + 0.9i)^2, roots[2] = (0.4 + 0.9i)^3, etc.
+    var roots = (0...degree).map{ n in complexPow(Complex(0.4, 0.9), n) }
+
+    // iterate 10 times for accuracy
+    for _ in 0..<10 {
+        
+        // for each root in roots Array, apply the Durand Kerner method
+        DispatchQueue.concurrentPerform(iterations: roots.count) { i in
+            
+            // create an array of the "other" roots
+            let otherRoots = roots.enumerated().filter { $0.offset != i }.map { $0.element }
+            let currentRoot = roots[i]
+            
+            // compute new_current_root = current_root - f(current_root) / prod(current_root - other_root)\
+            let newRoot = currentRoot - evaluate(polynomial: f, at: currentRoot) / otherRoots.reduce(1) { $0 * (currentRoot - $1) }
+            
+            // update roots Array
+            roots[i] = newRoot
+        }
+    }
+    return roots
+}

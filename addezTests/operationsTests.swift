@@ -69,4 +69,13 @@ final class operationsTests: XCTestCase {
         let roots = getRationalRoots(polynomial: polynomial).filter { f($0) ≈≈ 0 }
         XCTAssert(roots.contains([-2.353]))
     }
+    func testKurnerDurand() {
+        let polynomial = [7, 2.0, 9.0, 4]
+        let f = polynomial.polynomialToFunction()
+        let roots = getRationalRoots(polynomial: polynomial).filter { f($0) ≈≈ 0 }
+        let res = rootFindingMT(polynomial: polynomial, roots: roots)
+        let expected = [(-2.3535, 0), (0.0517, -0.8608), (0.0517, 0.8608)]
+        print(res)
+        XCTAssertEqual(res, expected)
+    }
 }
