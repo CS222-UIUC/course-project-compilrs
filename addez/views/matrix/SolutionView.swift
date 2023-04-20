@@ -31,6 +31,7 @@ struct SolutionView: View {
             }
         }
         .cardView()
+        case .vector(let vec): return Text("[\(vec.reduce("") { "\($0), \($1)" })]").cardView()
         }
     }
 }
@@ -56,5 +57,11 @@ struct MatrixTupleSolutionPreview: PreviewProvider {
 struct NTupleSolutionPreview: PreviewProvider {
     static var previews: some View {
         SolutionView(.ntuple(["x = ss", "y = ss", "z = ss"]))
+    }
+}
+
+struct VectorSolutionPreview: PreviewProvider {
+    static var previews: some View {
+        SolutionView(.vector([0, 1, 2, 3]))
     }
 }
