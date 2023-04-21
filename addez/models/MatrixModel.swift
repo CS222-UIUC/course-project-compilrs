@@ -114,6 +114,7 @@ typealias NTupleSolution = (steps: Steps?, solution: NTuple)
 typealias DoubleSolution = (steps: Steps?, solution: Double)
 typealias MatrixTupleSolution = (steps: Steps?, solution: (lower: Matrix, upper: Matrix))
 typealias VectorSolution = (steps: Steps?, solution: Vector)
+typealias RootsSolution = (steps: Steps?, solution: Dictionary<Complex, Int>)
 
 
 enum MatrixFunctions: String, CaseIterable {
@@ -254,7 +255,7 @@ func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
     return (steps, returny)
 }
 
-func getEigenvalues(matrix: Matrix) -> VectorSolution? {
+func getEigenvalues(matrix: Matrix) -> RootsSolution? {
     guard matrix.isSquare else { return .none }
     let cube = matrix.enumerated().map { i, row in
         row.enumerated().map { j, element in
@@ -267,13 +268,17 @@ func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     return (.none, getEigHelper(matrix: cube))
 }
 
-private func getEigHelper(matrix: [[Vector]]) -> Vector {
+private func getEigHelper(matrix: [[Vector]]) -> Dictionary<Complex, Int> {
     let polynomial = matrix >>> getCharacteristicPolynomial
     let f = polynomial.polynomialToFunction()
     // find the potential rational roots
-    let rationalRoots = polynomial >>> getRationalRoots
+    let allRoots = polynomial >>> rootFinding
     // return the roots that result in 0
-    return rationalRoots.filter { f($0) ≈≈ 0 }
+    var dict = Dictionary<Complex, Int>()
+    for root in allRoots {
+        dict[root]! += 1
+    }
+    return dict
 }
 
 func getRationalRoots(polynomial: Vector) -> Set<Double> {

@@ -10,22 +10,15 @@ import Foundation
 typealias Function = (Double) -> Double
 typealias Operation = (Double, Double) -> Double
 
-typealias Complex = (Double, Double)
-
-func *(lhs: Complex, rhs: Complex) -> Complex {
-    let (a, b) = lhs
-    let (c, d) = rhs
-    return (a * c - b * d, a * d + b * c)
+struct Complex: Hashable {
+    var real: Double
+    var imaginary: Double
 }
 
-func complexPow(_ lhs: Complex, _ rhs: Double) -> Complex {
-    if (rhs == 0) { return (1, 0) }
-    let (r, i) = lhs
-    var returny = (r, i)
-    for _ in 1..<Int(rhs) {
-        returny = returny * lhs
-    }
-    return returny
+func *(lhs: Complex, rhs: Complex) -> Complex {
+    let a = lhs.real, b = lhs.imaginary
+    let c = rhs.real, d = rhs.imaginary
+    return Complex(real: a * c - b * d, imaginary: a * d + b * c)
 }
 
 private func orderOfOps(_ arg: Character) -> Int {
@@ -278,105 +271,123 @@ func derivative(_ f: @escaping Function) -> Function {
 
 func summation(in range: ClosedRange<Int>, _ f: Function) -> Double { range.map(Double.init).compactMap(f).reduce(0, +) }
 
-func rootFinding(polynomial: Vector) -> [Complex] {
-    // reverse polynomial
-    var poly = polynomial.reversed()
-    // guard against the first coefficient being 0
-    // while the leading coefficient is 0, erase the leading coefficient
-    // and shift the polynomial to the right
-    while poly[0] == 0.0 { poly.removeFirst() }
-    if poly.isEmpty { return [] }
-    
-    // use Durand Kerner method to find roots of the polynomial f
-    // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
-    let degree = poly.count - 1
-    
-    // divide the polynomial by its leading coefficient if it is not 0
-    let f = poly[0] == 0.0 ? poly : poly.map { $0 / poly[0] }
-    
-    // make an Array of roots initialized to powers of (0.4 + 0.9i) using the Complex typealias
-    // ex: roots[0] = 0.4 + 0.9i, roots[1] = (0.4 + 0.9i)^2, roots[2] = (0.4 + 0.9i)^3, etc.
-    var roots = (0...degree).map { n in complexPow(Complex(0.4, 0.9), n) }
-
-    // iterate 10 times for accuracy
-    for _ in 0..<10 {
-        
-        // for each root in roots Array, apply the Durand Kerner method
-        for i in 0..<roots.count {
-            
-            // create an array of the "other" roots
-            let otherRoots = roots.enumerated().filter { $0.offset != i }.map { $0.element }
-            let currentRoot = roots[i]
-            
-            // compute new_current_root = current_root - f(current_root) / prod(current_root - other_root)
-            let newRoot = currentRoot - evaluate(f, at: currentRoot) / otherRoots.reduce(1) { $0 * (currentRoot - $1) }
-            
-            // update roots Array
-            roots[i] = newRoot
-        }
-    }
-    return roots
+// overload the *= operator for complex numbers
+func *= (lhs: inout Complex, rhs: Complex) {
+    lhs = Complex(real: lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, imaginary: lhs.real * rhs.imaginary + lhs.imaginary * rhs.real)
 }
 
-// q: can swift multithread?
-// a: yes, but only on macOS and iOS
+// overload the - operator for complex numbers
+func - (lhs: Complex, rhs: Complex) -> Complex {
+    return Complex(real: lhs.real - rhs.real, imaginary: lhs.imaginary - rhs.imaginary)
+}
 
-// q: can you rewrite the function above but multi-threaded?
-// a: yes, but it's not worth it
+//overload the / operator for complex numbers
+func / (lhs: Complex, rhs: Complex) -> Complex {
+    let denominator = rhs.real * rhs.real + rhs.imaginary * rhs.imaginary
+    return Complex(real: (lhs.real * rhs.real + lhs.imaginary * rhs.imaginary) / denominator, imaginary: (lhs.imaginary * rhs.real - lhs.real * rhs.imaginary) / denominator)
+}
 
-// q: just do it please
-// a: ok
+// overload multiplication for a complex number and a scalar
+func * (lhs: Complex, rhs: Double) -> Complex {
+    return Complex(real: lhs.real * rhs, imaginary: lhs.imaginary * rhs)
+}
 
-// q: write a function to evalute a function f at a complex number (a, b)
-func evaluate(polynomial: Vector, value: Double) -> Complex {
-    // init a return value to (0, 0)
-    var result = Complex(0, 0)
+// overload the += operator for complex numbers
+func += (lhs: inout Complex, rhs: Complex) {
+    lhs = Complex(real: lhs.real + rhs.real, imaginary: lhs.imaginary + rhs.imaginary)
+}
 
-    // for each coefficient in the polynomial
-    for (i, coefficient) in polynomial.enumerated() {
-        // add the coefficient times z^i to the return value
-        result += coefficient * complexPow(value, i)
+func == (lhs: Complex, rhs: Complex) -> Bool {
+    return lhs.real == rhs.real && lhs.imaginary == rhs.imaginary
+}
+
+// overload the approx operator for complex numbers
+func ≈≈ (lhs: Complex, rhs: Complex) -> Bool {
+    let tolerance = 1e-8
+    return abs(lhs.real - rhs.real) < tolerance && abs(lhs.imaginary - rhs.imaginary) < tolerance
+}
+
+func complexPow(_ number: Complex, _ power: Int) -> Complex {
+    if (power == 0) { return Complex(real: 1, imaginary: 0) }
+    if (power == 1) { return number }
+    
+    var result = number
+    for _ in 1..<power { result *= number }
+    return result
+}
+
+func evaluate(polynomial: Vector, value: Complex) -> Complex {
+    var result = Complex(real: 0, imaginary: 0)
+    for i in 0..<polynomial.count {
+        result += complexPow(value, i) * polynomial[i]
     }
     return result
 }
 
-func rootFindingMT(polynomial: Vector) -> [Complex] {
-    // reverse polynomial
-    let polynomial = polynomial.reversed()
-    // guard against the first coefficient being 0
-    // while the leading coefficient is 0, erase the leading coefficient
-    // and shift the polynomial to the right
-    var polynomial = polynomial
-    while polynomial[0] == 0 { polynomial.removeFirst() }
-    if polynomial.isEmpty { return [] }
+func rootFinding(polynom: Vector) -> [Complex] {
+    // remove leading zeros (end of the vector)
+    var poly = polynom
+     while poly.last == 0 { poly.removeLast() }
+     if poly.count == 0 { return [] }
     
+    var polynomial = poly
     // use Durand Kerner method to find roots of the polynomial f
     // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
     let degree = polynomial.count - 1
     
-    // divide the polynomial by its leading coefficient if it is not 0
-    let f = polynomial[0] == 0 ? polynomial : polynomial.map { $0 / polynomial[0] }
+    // divide the polynomial by its leading coefficient to make it monic
+    for i in 0..<polynomial.count { polynomial[i] /= polynomial.last! }
     
     // make an Array of roots initialized to powers of (0.4 + 0.9i) using the Complex typealias
     // ex: roots[0] = 0.4 + 0.9i, roots[1] = (0.4 + 0.9i)^2, roots[2] = (0.4 + 0.9i)^3, etc.
-    var roots = (0...degree).map{ n in complexPow(Complex(0.4, 0.9), n) }
+    var roots = (0..<degree).map { complexPow(Complex(real: 0.4, imaginary: 0.9), $0) }
+//    print("roots: \(roots)")
 
-    // iterate 10 times for accuracy
-    for _ in 0..<10 {
+    let iterations = 100
+    for i in 0..<iterations {
         
         // for each root in roots Array, apply the Durand Kerner method
-        DispatchQueue.concurrentPerform(iterations: roots.count) { i in
-            
-            // create an array of the "other" roots
-            let otherRoots = roots.enumerated().filter { $0.offset != i }.map { $0.element }
+        // make an array to store the new roots called newRoots
+
+        for i in 0..<roots.count {
             let currentRoot = roots[i]
+            let otherRoots = roots.filter { $0 != currentRoot }
+//            print("\ncurrentRoot: \(currentRoot)")
+//            print("otherRoots: \(otherRoots)")
+
+            let numerator = evaluate(polynomial: polynomial, value: currentRoot)
+//            print("numerator:  \(numerator)")
             
-            // compute new_current_root = current_root - f(current_root) / prod(current_root - other_root)\
-            let newRoot = currentRoot - evaluate(polynomial: f, at: currentRoot) / otherRoots.reduce(1) { $0 * (currentRoot - $1) }
+            var denominator = Complex(real: 1, imaginary: 0)
+            for root in otherRoots { denominator *= (currentRoot - root) }
+//            print("denominator: \(denominator)")
             
-            // update roots Array
+//            print("numerator/denominator: \(numerator / denominator)")
+            
+            let newRoot = currentRoot - (numerator / denominator)
+//            print("currentRoot: \(currentRoot) --> newRoot: \(newRoot)\n")
+            
             roots[i] = newRoot
+            // print("newRoot: \(newRoot)")
         }
+        // print the roots array rounded to 3 decimal places
+//        var rounded_roots = [Complex]()
+//        for root in roots {
+//            rounded_roots.append(Complex(real: round(1000 * root.real) / 1000, imaginary: round(1000 * root.imaginary) / 1000))
+//        }
+        // print iteration number and roots
+//        let spacer = i + 1 <= 9 ? " " : ""
+//        print("iteration \(spacer)\(i + 1): \(rounded_roots)")
+    }
+    // for each root in the roots array, if the real of imaginary component is less than 1e-10, set it to 0
+    for i in 0..<roots.count {
+        if abs(roots[i].real) < 1e-8 { roots[i].real = 0 }
+        if abs(roots[i].imaginary) < 1e-8 { roots[i].imaginary = 0 }
+    }
+    // for each root if the distance from the nearest integer is less than 1e-8, round it to the nearest integer
+    for i in 0..<roots.count {
+        let nearestInteger = round(roots[i].real)
+        if abs(nearestInteger - roots[i].real) < 1e-8 { roots[i].real = nearestInteger }
     }
     return roots
 }
