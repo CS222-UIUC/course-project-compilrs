@@ -411,7 +411,7 @@ extension Matrix {
         return returny
     }
     
-    static let maxDimensions = (rows: 6, cols: 6)
+    static let maxDimensions = (rows: 5, cols: 5)
     
     static let validDimensions = (rows: 1...6, cols: 1...6)
     

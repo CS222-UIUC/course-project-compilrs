@@ -65,3 +65,9 @@ func ≈≈(lhs: Double, rhs: Double) -> Bool { return abs(lhs - rhs) < 0.5 }
 postfix operator ~
 
 postfix func ~(lhs: @escaping Function) -> Function { return lhs >>> derivative }
+
+infix operator <==>
+
+func <==>(lhs: Double, rhs: Double) -> ClosedRange<Double> {
+    min(lhs, rhs)...max(lhs, rhs)
+}

@@ -18,9 +18,8 @@ struct StepsList: View {
             ForEach (steps) { step in
                 GeometryReader { geometry in
                     CardView() {
-                        HStack {
+                        VStack {
                             LaTeX(step.stepDescription)
-                            Spacer()
                             MatrixView(step.matrix)
                         }
                         .padding(15)

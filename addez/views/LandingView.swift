@@ -11,24 +11,14 @@ struct LandingView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                GeometryReader { geometry in
-                    Text("Matrices")
-                        .tiled()
-                        .navLink(MatrixSolveView())
-                        .padding(15)
-                        .shadow(radius: 10)
-                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 90.0), axis: (x: 2.0, y: 0.0, z: 0))
-                }
-                .frame(height: 300)
-                GeometryReader { geometry in
-                    Text("Integrals")
-                        .tiled()
-                        .navLink(IntegralSolveView())
-                        .padding(15)
-                        .shadow(radius: 10)
-                        .rotation3DEffect(Angle(degrees: (geometry.frame(in: .global).minY - 10) / 90.0), axis: (x: 2.0, y: 0.0, z: 0))
-                }
-                .frame(height: 300)
+                Text("Matrices")
+                    .tiled()
+                    .navLink(MatrixSolveView())
+                    .padding(15)
+                Text("Integrals")
+                    .tiled()
+                    .navLink(IntegralSolveView())
+                    .padding(15)
             }
         }
         .navigationBarTitle("Home")
