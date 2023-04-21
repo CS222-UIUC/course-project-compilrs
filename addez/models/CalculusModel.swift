@@ -327,65 +327,45 @@ func evaluate(polynomial: Vector, value: Complex) -> Complex {
 func rootFinding(polynom: Vector) -> [Complex] {
     // remove leading zeros (end of the vector)
     var poly = polynom
-     while poly.last == 0 { poly.removeLast() }
-     if poly.count == 0 { return [] }
+    while poly.last == 0 { poly.removeLast() }
+    if poly.count == 0 { return [] }
     
     var polynomial = poly
+    
     // use Durand Kerner method to find roots of the polynomial f
     // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
     let degree = polynomial.count - 1
     
     // divide the polynomial by its leading coefficient to make it monic
-    for i in 0..<polynomial.count { polynomial[i] /= polynomial.last! }
+    if polynomial[degree] != 1 {
+        let leadingCoefficient = polynomial[degree]
+        polynomial = polynomial.map { $0 / leadingCoefficient }
+    }
     
-    // make an Array of roots initialized to powers of (0.4 + 0.9i) using the Complex typealias
-    // ex: roots[0] = 0.4 + 0.9i, roots[1] = (0.4 + 0.9i)^2, roots[2] = (0.4 + 0.9i)^3, etc.
+    // create an array of complex numbers to represent initial root guesses
     var roots = (0..<degree).map { complexPow(Complex(real: 0.4, imaginary: 0.9), $0) }
-//    print("roots: \(roots)")
 
+    // iterate the Durand Kerner method 100 times
     let iterations = 100
-    for i in 0..<iterations {
-        
-        // for each root in roots Array, apply the Durand Kerner method
-        // make an array to store the new roots called newRoots
-
+    for _ in 0..<iterations {
+        // for each root in the roots array, find the new root using the Durand Kerner method
         for i in 0..<roots.count {
             let currentRoot = roots[i]
             let otherRoots = roots.filter { $0 != currentRoot }
-//            print("\ncurrentRoot: \(currentRoot)")
-//            print("otherRoots: \(otherRoots)")
-
-            let numerator = evaluate(polynomial: polynomial, value: currentRoot)
-//            print("numerator:  \(numerator)")
             
+            let numerator = evaluate(polynomial: polynomial, value: currentRoot)
             var denominator = Complex(real: 1, imaginary: 0)
             for root in otherRoots { denominator *= (currentRoot - root) }
-//            print("denominator: \(denominator)")
-            
-//            print("numerator/denominator: \(numerator / denominator)")
             
             let newRoot = currentRoot - (numerator / denominator)
-//            print("currentRoot: \(currentRoot) --> newRoot: \(newRoot)\n")
-            
             roots[i] = newRoot
-            // print("newRoot: \(newRoot)")
         }
-        // print the roots array rounded to 3 decimal places
-//        var rounded_roots = [Complex]()
-//        for root in roots {
-//            rounded_roots.append(Complex(real: round(1000 * root.real) / 1000, imaginary: round(1000 * root.imaginary) / 1000))
-//        }
-        // print iteration number and roots
-//        let spacer = i + 1 <= 9 ? " " : ""
-//        print("iteration \(spacer)\(i + 1): \(rounded_roots)")
     }
     // for each root in the roots array, if the real of imaginary component is less than 1e-10, set it to 0
+    // if the real/imaginary component is close to an integer, set it to that integer
     for i in 0..<roots.count {
         if abs(roots[i].real) < 1e-8 { roots[i].real = 0 }
         if abs(roots[i].imaginary) < 1e-8 { roots[i].imaginary = 0 }
-    }
-    // for each root if the distance from the nearest integer is less than 1e-8, round it to the nearest integer
-    for i in 0..<roots.count {
         let nearestInteger = round(roots[i].real)
         if abs(nearestInteger - roots[i].real) < 1e-8 { roots[i].real = nearestInteger }
     }
