@@ -10,6 +10,17 @@ import Foundation
 typealias Function = (Double) -> Double
 typealias Operation = (Double, Double) -> Double
 
+struct Complex: Hashable {
+    var real: Double
+    var imaginary: Double
+}
+
+func *(lhs: Complex, rhs: Complex) -> Complex {
+    let a = lhs.real, b = lhs.imaginary
+    let c = rhs.real, d = rhs.imaginary
+    return Complex(real: a * c - b * d, imaginary: a * d + b * c)
+}
+
 private func orderOfOps(_ arg: Character) -> Int {
     switch arg {
     case "+": return 0
@@ -259,3 +270,104 @@ func derivative(_ f: @escaping Function) -> Function {
 }
 
 func summation(in range: ClosedRange<Int>, _ f: Function) -> Double { range.map(Double.init).compactMap(f).reduce(0, +) }
+
+// overload the *= operator for complex numbers
+func *= (lhs: inout Complex, rhs: Complex) {
+    lhs = Complex(real: lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, imaginary: lhs.real * rhs.imaginary + lhs.imaginary * rhs.real)
+}
+
+// overload the - operator for complex numbers
+func - (lhs: Complex, rhs: Complex) -> Complex {
+    return Complex(real: lhs.real - rhs.real, imaginary: lhs.imaginary - rhs.imaginary)
+}
+
+//overload the / operator for complex numbers
+func / (lhs: Complex, rhs: Complex) -> Complex {
+    let denominator = rhs.real * rhs.real + rhs.imaginary * rhs.imaginary
+    return Complex(real: (lhs.real * rhs.real + lhs.imaginary * rhs.imaginary) / denominator, imaginary: (lhs.imaginary * rhs.real - lhs.real * rhs.imaginary) / denominator)
+}
+
+// overload multiplication for a complex number and a scalar
+func * (lhs: Complex, rhs: Double) -> Complex {
+    return Complex(real: lhs.real * rhs, imaginary: lhs.imaginary * rhs)
+}
+
+// overload the += operator for complex numbers
+func += (lhs: inout Complex, rhs: Complex) {
+    lhs = Complex(real: lhs.real + rhs.real, imaginary: lhs.imaginary + rhs.imaginary)
+}
+
+func == (lhs: Complex, rhs: Complex) -> Bool {
+    return lhs.real == rhs.real && lhs.imaginary == rhs.imaginary
+}
+
+// overload the approx operator for complex numbers
+func ≈≈ (lhs: Complex, rhs: Complex) -> Bool {
+    let tolerance = 1e-8
+    return abs(lhs.real - rhs.real) < tolerance && abs(lhs.imaginary - rhs.imaginary) < tolerance
+}
+
+func complexPow(_ number: Complex, _ power: Int) -> Complex {
+    if (power == 0) { return Complex(real: 1, imaginary: 0) }
+    if (power == 1) { return number }
+    
+    var result = number
+    for _ in 1..<power { result *= number }
+    return result
+}
+
+func evaluate(polynomial: Vector, value: Complex) -> Complex {
+    var result = Complex(real: 0, imaginary: 0)
+    for i in 0..<polynomial.count {
+        result += complexPow(value, i) * polynomial[i]
+    }
+    return result
+}
+
+func rootFinding(polynom: Vector) -> [Complex] {
+    // remove leading zeros (end of the vector)
+    var poly = polynom
+    while poly.last == 0 { poly.removeLast() }
+    if poly.count == 0 { return [] }
+    
+    var polynomial = poly
+    
+    // use Durand Kerner method to find roots of the polynomial f
+    // https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
+    let degree = polynomial.count - 1
+    
+    // divide the polynomial by its leading coefficient to make it monic
+    if polynomial[degree] != 1 {
+        let leadingCoefficient = polynomial[degree]
+        polynomial = polynomial.map { $0 / leadingCoefficient }
+    }
+    
+    // create an array of complex numbers to represent initial root guesses
+    var roots = (0..<degree).map { complexPow(Complex(real: 0.4, imaginary: 0.9), $0) }
+
+    // iterate the Durand Kerner method 100 times
+    let iterations = 100
+    for _ in 0..<iterations {
+        // for each root in the roots array, find the new root using the Durand Kerner method
+        for i in 0..<roots.count {
+            let currentRoot = roots[i]
+            let otherRoots = roots.filter { $0 != currentRoot }
+            
+            let numerator = evaluate(polynomial: polynomial, value: currentRoot)
+            var denominator = Complex(real: 1, imaginary: 0)
+            for root in otherRoots { denominator *= (currentRoot - root) }
+            
+            let newRoot = currentRoot - (numerator / denominator)
+            roots[i] = newRoot
+        }
+    }
+    // for each root in the roots array, if the real of imaginary component is less than 1e-10, set it to 0
+    // if the real/imaginary component is close to an integer, set it to that integer
+    for i in 0..<roots.count {
+        if abs(roots[i].real) < 1e-8 { roots[i].real = 0 }
+        if abs(roots[i].imaginary) < 1e-8 { roots[i].imaginary = 0 }
+        let nearestInteger = round(roots[i].real)
+        if abs(nearestInteger - roots[i].real) < 1e-8 { roots[i].real = nearestInteger }
+    }
+    return roots
+}
