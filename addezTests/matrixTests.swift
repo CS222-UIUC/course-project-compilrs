@@ -8,7 +8,6 @@
 import XCTest
 
 final class matrixTests: XCTestCase {
-    
     func testReducedRowEchelon2x2() {
         let matrix = [[1.0, 3.0], [4.0, 9.0]]
         let expected = [[1.0, 0.0], [0.0, 1.0]]
@@ -214,22 +213,22 @@ final class matrixTests: XCTestCase {
         XCTAssertEqual(returny, expected)
     }
     
-//    func testEigenvalues() {
-//        var matrix = [
-//            [1.0, 2.0, -2.0],
-//            [3.0, 0.0, 1.0],
-//            [-2.0, 1.0, 4.0]
-//        ]
-//        var expected = [5.0]
-//        guard let eigenvalues = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
-//        XCTAssertEqual(eigenvalues, expected)
-//        matrix = [
-//            [3.0, 2.0, -2.0],
-//            [3.0, 5.0, 1.0],
-//            [-2.0, 1.0, 2.0]
-//        ]
-//        expected = [6.65736, 3.91775, -0.575112]
-//        guard let eigenvalues = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
-//        XCTAssertEqual(eigenvalues, expected)
-//    }
+    func testEigenvalues() {
+        let matrix = [
+            [3.0, 2.0, -2.0],
+            [3.0, 5.0, 1.0],
+            [-2.0, 1.0, 2.0]
+        ]
+        let expected = [Complex(real: 6.65736) : 1, Complex(real: 3.91775) : 1, Complex(real: -0.575112) : 1]
+        guard let eigenvalues = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        for eigenvalue in eigenvalues.keys {
+            var found = false
+            for expectedValue in expected.keys {
+                if within(expectedValue.real, eigenvalue.real) && within(expectedValue.imaginary, eigenvalue.imaginary) {
+                    found = true
+                }
+            }
+            XCTAssert(found)
+        }
+    }
 }

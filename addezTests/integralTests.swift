@@ -7,16 +7,15 @@
 
 import XCTest
 
+func within(_ x: Double?, _ y: Double?, delta: Double = 0.0001) -> Bool {
+    if ((x == .nan && y == .nan) || (x == .none && y == .none) || (x == .infinity && y == .infinity)) {
+        return true }
+    guard x != y else { return true }
+    guard let x = x, let y = y else { return false }
+    return abs(x - y) < delta
+}
 
 final class integralTests: XCTestCase {
-    func within(_ x: Double?, _ y: Double?, delta: Double = 0.0001) -> Bool {
-        if ((x == .nan && y == .nan) || (x == .none && y == .none) || (x == .infinity && y == .infinity)) {
-            return true }
-        guard x != y else { return true }
-        guard let x = x, let y = y else { return false }
-        return abs(x - y) < delta
-    }
-    
     func testNestedFunctions() {
         guard let f = parseExpression("sin(cos(tan(x)))") else { XCTAssertNotNil(nil); return }
         XCTAssert(within(f(3), 0.835947745218))

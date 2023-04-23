@@ -12,7 +12,7 @@ typealias Operation = (Double, Double) -> Double
 
 struct Complex: Hashable {
     var real: Double
-    var imaginary: Double
+    var imaginary: Double = 0
 }
 
 func *(lhs: Complex, rhs: Complex) -> Complex {
@@ -32,10 +32,13 @@ private func orderOfOps(_ arg: Character) -> Int {
     }
 }
 
+/// f + g = f(x) + g(x)
 func +(lhs: @escaping Function, rhs: @escaping Function) -> Function {{ x in lhs(x) + rhs(x) } }
 
+/// Function that returns itself
 func identity<T>(_ x: T) -> T { x }
 
+/// Function that returns zero
 func zero(_ x: Double) -> Double { 0 }
 
 func sec(_ x: Double) -> Double { 1 / cos(x) }

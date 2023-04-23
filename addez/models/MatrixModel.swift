@@ -38,18 +38,11 @@ infix operator <->: AdditionPrecedence
 
 infix operator <*>: MultiplicationPrecedence
 
-func <+>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    return (0..<max(lhs.count, rhs.count)).map { lhs.at($0) + rhs.at($0) }
-}
+func <+>(lhs: Vector, rhs: Vector) -> Vector { (0..<max(lhs.count, rhs.count)).map { lhs.at($0) + rhs.at($0) } }
 
-func <->(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
-    return (0..<max(lhs.count, rhs.count)).map { lhs.at($0) - rhs.at($0) }
-}
+func <->(lhs: Vector, rhs: Vector) -> Vector { (0..<max(lhs.count, rhs.count)).map { lhs.at($0) - rhs.at($0) } }
 
-func <*>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs else { return .none }
+func <*>(lhs: Vector, rhs: Vector) -> Vector {
     var returny = Array(repeating: 0.0, count: lhs.count + rhs.count - 1)
     for i in 0..<lhs.count { for j in 0..<rhs.count { returny[i + j] += lhs[i] * rhs[j] } }
     return returny
@@ -107,6 +100,7 @@ enum SolutionType {
     case matrix(Matrix)
     case double(Double)
     case vector(Vector)
+    case roots(Dictionary<Complex, Int>)
 }
 
 typealias MatrixSolution = (steps: Steps?, solution: Matrix)
@@ -175,7 +169,7 @@ func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    returny[row2] = (returny[row2] <+> scale * returny[row1]) ?? []
+    returny[row2] = returny[row2] <+> scale * returny[row1]
     return returny
 }
 
@@ -270,14 +264,11 @@ func getEigenvalues(matrix: Matrix) -> RootsSolution? {
 
 private func getEigHelper(matrix: [[Vector]]) -> Dictionary<Complex, Int> {
     let polynomial = matrix >>> getCharacteristicPolynomial
-    let f = polynomial.polynomialToFunction()
     // find the potential rational roots
     let allRoots = polynomial >>> rootFinding
     // return the roots that result in 0
     var dict = Dictionary<Complex, Int>()
-    for root in allRoots {
-        dict[root]! += 1
-    }
+    for root in allRoots { dict.updateValue(dict[root] ?? 0, forKey: root) }
     return dict
 }
 
@@ -287,32 +278,6 @@ func getRationalRoots(polynomial: Vector) -> Set<Double> {
     let qVals = getFactors((polynomial.last!).toInt())
     var roots = Set<Double>()
     qVals.flatMap { q in pVals.map { p in p.toDouble()/q.toDouble() } }.forEach { root in roots.insert(root) }
-    return roots
-}
-
-func newtonRoots(of polynomial: Vector) -> Set<Double> {
-    var roots = Set<Double>()
-    let f = polynomial.polynomialToFunction()
-    var foundRoots = 0
-//    var currEst = -polynomial.max() ?? 0.0
-//    while foundRoots < polynomial.count - 1 {
-//        let df = f~
-//        let m = df(currEst)
-//        // f(3) = -5.0
-//        // f'(3) = 7
-//        // linear(x) = 7x + b
-//        // -5 = 7(3) + b
-//        let b = f(currEst) - m * currEst
-//        // y = mx + b
-//        // 0 = mx + b
-//        // x = -b/m
-//        let root = -b/m
-//        if f(root) ≈≈ 0 {
-//            roots.insert(root)
-//        } else {
-//            currEst = root
-//        }
-//    }
     return roots
 }
 
@@ -330,17 +295,11 @@ func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     case 1: return matrix[0][0]
     case 2:
         let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
-        guard let det = a <*> d <-> b <*> c else {
-            let a = 2
-            return []
-        }
-        return det
+        return a <*> d <-> b <*> c
     default:
         return matrix.first?.enumerated()
             .map { i, pivot in
-                let eig = getCharacteristicPolynomial(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0))
-                guard let poly = pivot <*> eig else { return [0.0, 0.0] }
-                return (-1 ** i.toDouble()) * poly
+                (-1 ** i) * pivot <*> getCharacteristicPolynomial(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0))
             }
             .reduce(Array(repeating: 0.0, count: matrix.count), <+>) ?? []
     }
@@ -485,7 +444,7 @@ extension Vector {
     func polynomialToFunction() -> Function {
         self.enumerated().compactMap { i, coef in
             // ignore 0 coeffecient as `nil` and return cx^i otherwise
-            coef != 0 ? { x in coef*(x ** i.toDouble()) } : nil
+            coef != 0 ? { x in coef*(x ** i) } : nil
         }
         .reduce(zero, +)
     }
