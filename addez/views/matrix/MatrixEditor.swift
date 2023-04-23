@@ -83,7 +83,7 @@ struct MatrixEditor: View {
 }
 
 struct MatrixEditor_Previews: PreviewProvider {
-    static var matrix = getMatrix(width: 6, height: 6)
+    static var matrix = getMatrix(cols: 6, rows: 6)
     static var previews: some View {
         MatrixEditor()
             .environmentObject(MatrixObject(matrix))

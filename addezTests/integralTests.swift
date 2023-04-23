@@ -7,16 +7,15 @@
 
 import XCTest
 
+func within(_ x: Double?, _ y: Double?, delta: Double = 0.0001) -> Bool {
+    if ((x == .nan && y == .nan) || (x == .none && y == .none) || (x == .infinity && y == .infinity)) {
+        return true }
+    guard x != y else { return true }
+    guard let x = x, let y = y else { return false }
+    return abs(x - y) < delta
+}
 
 final class integralTests: XCTestCase {
-    func within(_ x: Double?, _ y: Double?, delta: Double = 0.0001) -> Bool {
-        if ((x == .nan && y == .nan) || (x == .none && y == .none) || (x == .infinity && y == .infinity)) {
-            return true }
-        guard x != y else { return true }
-        guard let x = x, let y = y else { return false }
-        return abs(x - y) < delta
-    }
-    
     func testNestedFunctions() {
         guard let f = parseExpression("sin(cos(tan(x)))") else { XCTAssertNotNil(nil); return }
         XCTAssert(within(f(3), 0.835947745218))
@@ -67,12 +66,24 @@ final class integralTests: XCTestCase {
     
     func testIntegrals() {
         guard let f = parseExpression("3") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(riemannSum(lowerBound: 0, upperBound: 3, f), 9))
+        XCTAssert(within(riemannSum(in: 0...(3.0), f), 9))
         guard let f = parseExpression("4x^3") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(riemannSum(lowerBound: 0, upperBound: 2, f), 16))
+        XCTAssert(within(riemannSum(in: 0...(2.0), f), 16))
         guard let f = parseExpression("1/x") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(riemannSum(lowerBound: 1, upperBound: exp(2), f), 2))
+        XCTAssert(within(riemannSum(in: (1.0)...exp(2), f), 2))
         guard let f = parseExpression("(x/3)*cos(x)") else { XCTAssertNotNil(nil); return }
-        XCTAssert(within(riemannSum(lowerBound: 0, upperBound: 4, f), -1.56028))
+        XCTAssert(within(riemannSum(in: (0.0)...(4.0), f), -1.56028))
     }
+    
+    func testPostfixFunctions() {
+        guard let f = parseExpression("x!") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), 3<>))
+        XCTAssert(within(f(0), 1))
+        guard let f = parseExpression("sin(x)!") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), sin(3)<>))
+        guard let f = parseExpression("(x^2)!") else { XCTAssertNotNil(nil); return }
+        XCTAssert(within(f(3), (3**2)<>))
+    }
+    
+
 }

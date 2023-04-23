@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Neumorphic
-import OrderedCollections
 import LaTeXSwiftUI
 import Charts
 
@@ -24,6 +23,7 @@ struct Point: Identifiable {
 
 struct IntegralSolveView: View {
     @State var userInput = "sin(x)"
+    @State var latexed = "\\sin(x)"
     @State var x = 0.0
     @State var inputX = ""
     @State var f: Function?
@@ -83,6 +83,8 @@ struct IntegralSolveView: View {
             Button("Evaluate") {
                 f = parseExpression(userInput)
                 guard let f = f else { points = []; return }
+                if let latex = parseLatex(userInput) { latexed = latex }
+                else { latexed = "" }
                 points = xRange.continuous().compactMap { x in
                     let x = Double(x)
                     let y = f(Double(x))
@@ -100,8 +102,8 @@ struct IntegralSolveView: View {
         guard let f = f else { return EmptyView().format() }
         return VStack {
             LaTeX("$f(\(x)) = \(String(describing: f(x)))$")
-            LaTeX("$\\int_{0}^{\(x)} \(userInput) = \(riemannSum(lowerBound: 0, upperBound: x, f))$")
-            LaTeX("$\\sum_0^{\(Int(x))} \(userInput) = \(summation(range: 0...Int(x), f))$")
+            LaTeX("$\\int_{0}^{\(x)} \(latexed) = \(riemannSum(in: 0...x, f))$")
+            LaTeX("$\\sum_0^{\(Int(x))} \(latexed) = \(summation(in: 0...Int(x), f))$")
         }
         .format()
     }
