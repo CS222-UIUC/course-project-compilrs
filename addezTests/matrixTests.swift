@@ -47,7 +47,7 @@ final class matrixTests: XCTestCase {
                 returny[i][j] = round(returny[i][j] * 10000000) / 10000000
             }
         }
-        XCTAssertEqual(matrix, expected)
+        XCTAssertEqual(returny, expected)
     }
 
     func testgetDet1x1() {
