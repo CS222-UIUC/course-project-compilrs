@@ -87,6 +87,8 @@ func typeParser(steps: [Step]?, solution: Any) -> ReturnType {
         return (steps, .matrixTuple(lower: solution.lower, upper: solution.upper))
     } else if let solution = solution as? Vector {
         return (steps, .vector(solution))
+    } else if let solution = solution as? Dictionary<Complex, Int> {
+        return (steps, .roots(solution))
     } else if let solution = solution as? SolutionType {
         return (steps, solution)
     } else {
