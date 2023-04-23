@@ -15,6 +15,13 @@ extension Double {
     func toInt() -> Int { Int(self) }
 }
 
+extension Complex {
+    func toString() -> String {
+        guard imaginary == 0 else { return "\(real) + \(imaginary)i" }
+        return "\(real)"
+    }
+}
+
 extension String {
     func latexify() -> String {
         self
@@ -50,9 +57,36 @@ postfix func <>(lhs: Double) -> Double { tgamma(lhs + 1) }
 
 func **(lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }
 
+func **(lhs: Int, rhs: Double) -> Double { pow(lhs.toDouble(), rhs) }
+
+func **(lhs: Double, rhs: Int) -> Double { pow(lhs, rhs.toDouble()) }
+
+func **(lhs: Int, rhs: Int) -> Double { pow(lhs.toDouble(), rhs.toDouble()) }
+
+func +(lhs: Double, rhs: Int) -> Double { lhs + rhs.toDouble() }
+
+func +(lhs: Int, rhs: Double) -> Double { lhs.toDouble() + rhs }
+
+func -(lhs: Double, rhs: Int) -> Double { lhs - rhs.toDouble() }
+
+func -(lhs: Int, rhs: Double) -> Double { lhs.toDouble() - rhs }
+
+func /(lhs: Double, rhs: Int) -> Double { lhs / rhs.toDouble() }
+
+func /(lhs: Int, rhs: Double) -> Double { lhs.toDouble() / rhs }
+
 func !>>><T, B>(lhs: T?, rhs: ((T) -> B?)?) -> B? {
     guard let lhs = lhs, let rhs = rhs else { return .none }
     return rhs(lhs)
 }
 
 func >>><T, B>(lhs: T, rhs: (T) -> B) -> B { rhs(lhs) }
+
+infix operator ≈≈
+
+/// Roughly equal
+func ≈≈(lhs: Double, rhs: Double) -> Bool { return abs(lhs - rhs) < 0.01 }
+
+postfix operator ~
+
+postfix func ~(lhs: @escaping Function) -> Function { return lhs >>> derivative }

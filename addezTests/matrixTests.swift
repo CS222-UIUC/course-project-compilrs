@@ -8,7 +8,6 @@
 import XCTest
 
 final class matrixTests: XCTestCase {
-    
     func testReducedRowEchelon2x2() {
         let matrix = [[1.0, 3.0], [4.0, 9.0]]
         let expected = [[1.0, 0.0], [0.0, 1.0]]
@@ -48,7 +47,7 @@ final class matrixTests: XCTestCase {
                 returny[i][j] = round(returny[i][j] * 10000000) / 10000000
             }
         }
-        XCTAssertEqual(matrix, expected)
+        XCTAssertEqual(returny, expected)
     }
 
     func testgetDet1x1() {
@@ -179,13 +178,57 @@ final class matrixTests: XCTestCase {
     }
 
     func testCharacteristicPoly() {
-        let matrix = [
+        var matrix = [
             [1.0, 2.0, -2.0],
             [3.0, 0.0, 1.0],
-            [-2.0, 1.0, 4.0]]
-        let expected = [-35.0, 7.0, 5.0, -1.0]
-        guard let returny = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+            [-2.0, 1.0, 4.0]
+        ]
+        var cube = matrix.enumerated().map { i, row in
+            row.enumerated().map { j, element in
+                var arr = [element]
+                if j == i { arr.append(-1) }
+                return arr
+            }
+        }
+        var expected = [-35.0, 7.0, 5.0, -1.0]
+        var returny = getCharacteristicPolynomial(matrix: cube)
+        XCTAssertEqual(returny, expected)
+        
+        matrix = [
+            [9.0, -3, 0, 2, 4],
+            [-2.0, 0, 3, 1, 5],
+            [1.0, 2, 1, 1, 0],
+            [-4.0, 5, 2, 1, 4],
+            [6.0, 9, 8, 3, 1]
+        ]
+        cube = matrix.enumerated().map { i, row in
+            row.enumerated().map { j, element in
+                var arr = [element]
+                if j == i { arr.append(-1) }
+                return arr
+            }
+        }
+        expected = [-1283, -705, -679, 62, 12, -1]
+        returny = getCharacteristicPolynomial(matrix: cube)
         XCTAssertEqual(returny, expected)
     }
-
+    
+    func testEigenvalues() {
+        let matrix = [
+            [3.0, 2.0, -2.0],
+            [3.0, 5.0, 1.0],
+            [-2.0, 1.0, 2.0]
+        ]
+        let expected = [Complex(real: 6.65736) : 1, Complex(real: 3.91775) : 1, Complex(real: -0.575112) : 1]
+        guard let eigenvalues = getEigenvalues(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        for eigenvalue in eigenvalues.keys {
+            var found = false
+            for expectedValue in expected.keys {
+                if within(expectedValue.real, eigenvalue.real) && within(expectedValue.imaginary, eigenvalue.imaginary) {
+                    found = true
+                }
+            }
+            XCTAssert(found)
+        }
+    }
 }

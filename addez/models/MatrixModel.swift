@@ -38,25 +38,13 @@ infix operator <->: AdditionPrecedence
 
 infix operator <*>: MultiplicationPrecedence
 
-func <+>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs, lhs.count == rhs.count else { return .none }
-    return lhs.enumerated().map { $1 + rhs[$0] }
-}
+func <+>(lhs: Vector, rhs: Vector) -> Vector { (0..<max(lhs.count, rhs.count)).map { lhs.at($0) + rhs.at($0) } }
 
-func <->(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs, let rhs = rhs, lhs.count == rhs.count else { return .none }
-    return lhs.enumerated().map { $1 - rhs[$0] }
-}
+func <->(lhs: Vector, rhs: Vector) -> Vector { (0..<max(lhs.count, rhs.count)).map { lhs.at($0) - rhs.at($0) } }
 
-func <*>(lhs: Vector?, rhs: Vector?) -> Vector? {
-    guard let lhs = lhs?.toMatrix().transpose, let rhs = rhs?.toMatrix(), lhs.rows == rhs.cols else { return .none }
-    guard let product = lhs * rhs else { return .none }
-    var returny = Array(repeating: 0.0, count: product.cols + product.rows - 1)
-    for i in 0..<product.rows {
-        for j in 0..<product.cols {
-            returny[i + j] += product[i][j]
-        }
-    }
+func <*>(lhs: Vector, rhs: Vector) -> Vector {
+    var returny = Array(repeating: 0.0, count: lhs.count + rhs.count - 1)
+    for i in 0..<lhs.count { for j in 0..<rhs.count { returny[i + j] += lhs[i] * rhs[j] } }
     return returny
 }
 
@@ -112,6 +100,7 @@ enum SolutionType {
     case matrix(Matrix)
     case double(Double)
     case vector(Vector)
+    case roots(Dictionary<Complex, Int>)
 }
 
 typealias MatrixSolution = (steps: Steps?, solution: Matrix)
@@ -119,6 +108,7 @@ typealias NTupleSolution = (steps: Steps?, solution: NTuple)
 typealias DoubleSolution = (steps: Steps?, solution: Double)
 typealias MatrixTupleSolution = (steps: Steps?, solution: (lower: Matrix, upper: Matrix))
 typealias VectorSolution = (steps: Steps?, solution: Vector)
+typealias RootsSolution = (steps: Steps?, solution: Dictionary<Complex, Int>)
 
 
 enum MatrixFunctions: String, CaseIterable {
@@ -179,7 +169,7 @@ func scaleRow(matrix: Matrix, row: Int, scale: Double) -> Matrix {
 func addRows(matrix: Matrix, row1: Int, row2: Int, scale: Double) -> Matrix {
     // row2 = row2 + scale * row1
     var returny = matrix
-    returny[row2] = (returny[row2] <+> scale * returny[row1]) ?? []
+    returny[row2] = returny[row2] <+> scale * returny[row1]
     return returny
 }
 
@@ -259,7 +249,7 @@ func inverseMatrix(matrix: Matrix) -> MatrixSolution? {
     return (steps, returny)
 }
 
-func getEigenvalues(matrix: Matrix) -> VectorSolution? {
+func getEigenvalues(matrix: Matrix) -> RootsSolution? {
     guard matrix.isSquare else { return .none }
     let cube = matrix.enumerated().map { i, row in
         row.enumerated().map { j, element in
@@ -272,39 +262,46 @@ func getEigenvalues(matrix: Matrix) -> VectorSolution? {
     return (.none, getEigHelper(matrix: cube))
 }
 
-private func getEigHelper(matrix: [[Vector]]) -> Vector {
+private func getEigHelper(matrix: [[Vector]]) -> Dictionary<Complex, Int> {
     let polynomial = matrix >>> getCharacteristicPolynomial
-    let f = polynomial.polynomialToFunction()
     // find the potential rational roots
-    let rationalRoots = polynomial >>> getRationalRoots
+    let allRoots = polynomial >>> rootFinding
     // return the roots that result in 0
-    return rationalRoots.filter { f($0) == 0 }
+    var dict = Dictionary<Complex, Int>()
+    for root in allRoots { dict.updateValue(dict[root] ?? 0, forKey: root) }
+    return dict
 }
 
-private func getRationalRoots(polynomial: Vector) -> Vector {
+func getRationalRoots(polynomial: Vector) -> Set<Double> {
     guard polynomial.count > 1 else { return [] }
-    let pVals = getFactors(polynomial[0].toInt())
-    let qVals = getFactors(polynomial.last!.toInt())
-    return []
+    let pVals = getFactors((polynomial[0]).toInt())
+    let qVals = getFactors((polynomial.last!).toInt())
+    var roots = Set<Double>()
+    qVals.flatMap { q in pVals.map { p in p.toDouble()/q.toDouble() } }.forEach { root in roots.insert(root) }
+    return roots
 }
 
-private func getFactors(_ x: Int) -> [Int] { (0...x).filter { x % $0 == 0 } }
+private func getFactors(_ x: Int) -> Set<Int> {
+    var factors = Set<Int>()
+    for i in 0...abs(x)/2 {
+        guard i != 0 else { continue }
+        if x % i == 0 { factors.insert(i); factors.insert(-i); factors.insert(x/i); factors.insert(-x/i) }
+    }
+    return factors
+}
 
-private func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
+func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     switch matrix.count {
     case 1: return matrix[0][0]
     case 2:
         let a = matrix[0][0], b = matrix[0][1], c = matrix[1][0], d = matrix[1][1]
-        guard let det = a <*> d <-> b <*> c else { return [] }
-        return det
+        return a <*> d <-> b <*> c
     default:
         return matrix.first?.enumerated()
             .map { i, pivot in
-                let eig = getCharacteristicPolynomial(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0)).resize(to: matrix[0][0].count)
-                guard let poly = pivot <*> eig else { return [0.0, 0.0] }
-                return (-1 ** i.toDouble()) * poly.resize(to: matrix[0][0].count)
+                (-1 ** i) * pivot <*> getCharacteristicPolynomial(matrix: matrix.withoutColumn(at: i).withoutRow(at: 0))
             }
-            .reduce(Array(repeating: 0.0, count: matrix[0][0].count), <+>) ?? []
+            .reduce(Array(repeating: 0.0, count: matrix.count), <+>) ?? []
     }
 }
 
@@ -447,7 +444,7 @@ extension Vector {
     func polynomialToFunction() -> Function {
         self.enumerated().compactMap { i, coef in
             // ignore 0 coeffecient as `nil` and return cx^i otherwise
-            coef != 0 ? { x in coef*(x ** i.toDouble()) } : nil
+            coef != 0 ? { x in coef*(x ** i) } : nil
         }
         .reduce(zero, +)
     }
