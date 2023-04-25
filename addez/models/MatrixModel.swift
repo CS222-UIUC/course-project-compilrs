@@ -142,15 +142,7 @@ func getDeterminant(matrix: Matrix) -> DoubleSolution? {
     return (.none, getDetHelper(matrix))
 }
 
-private func getDetHelper(_ matrix: Matrix) -> Double {
-    switch matrix.rows {
-    case 1: return matrix[0][0]
-    case 2: return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
-    default: return matrix.first?.enumerated()
-            .map { i, pivot in (-1 ** i.toDouble()) * pivot * getDetHelper(matrix.withoutColumn(at: i).withoutRow(at: 0)) }
-            .reduce(0.0, +) ?? 0.0
-    }
-}
+private func getDetHelper(_ matrix: Matrix) -> Double { getCharacteristicPolynomial(matrix: matrix.map { $0.map { [$0] } } )[0] }
 
 func getMatrix(cols: Int, rows: Int) -> Matrix { Array(repeating: Array(repeating: 0.0, count: cols), count: rows) }
 
@@ -272,24 +264,6 @@ private func getEigHelper(matrix: [[Vector]]) -> Dictionary<Complex, Int> {
     var dict = Dictionary<Complex, Int>()
     for root in allRoots { dict.updateValue(dict[root] ?? 0, forKey: root) }
     return dict
-}
-
-func getRationalRoots(polynomial: Vector) -> Set<Double> {
-    guard polynomial.count > 1 else { return [] }
-    let pVals = getFactors((polynomial[0]).toInt())
-    let qVals = getFactors((polynomial.last!).toInt())
-    var roots = Set<Double>()
-    qVals.flatMap { q in pVals.map { p in p.toDouble()/q.toDouble() } }.forEach { root in roots.insert(root) }
-    return roots
-}
-
-private func getFactors(_ x: Int) -> Set<Int> {
-    var factors = Set<Int>()
-    for i in 0...abs(x)/2 {
-        guard i != 0 else { continue }
-        if x % i == 0 { factors.insert(i); factors.insert(-i); factors.insert(x/i); factors.insert(-x/i) }
-    }
-    return factors
 }
 
 func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
