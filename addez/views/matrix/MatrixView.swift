@@ -21,7 +21,7 @@ struct MatrixView: View {
                 HStack {
                     ForEach(0..<matrix[row].count, id: \.self) { col in
                         Text("\(matrix[row][col], specifier: "%.2f")")
-                            .celled()
+                            .celled(matrix[row][col] == 0 ? .red.opacity(0.2) : .none)
                     }
                 }
             }

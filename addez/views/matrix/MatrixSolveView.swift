@@ -36,6 +36,7 @@ struct MatrixSolveView: View {
             }
             .softButtonStyle(RoundedRectangle(cornerRadius: 20), pressedEffect: .hard)
             .fontWeight(.bold)
+            .disabled(!matrixFunction.canCompute(matrix: model.matrix))
         }
         .navigationTitle("Matrix Solver")
     }

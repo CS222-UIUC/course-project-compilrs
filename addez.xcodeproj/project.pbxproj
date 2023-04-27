@@ -17,6 +17,7 @@
 		C94A68DA29A6C2F000F04851 /* MatrixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68D929A6C2F000F04851 /* MatrixView.swift */; };
 		C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */; };
 		C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = C94A68E129A6CEBC00F04851 /* Neumorphic */; };
+		C9686DF429F1B0E500E88E3B /* NeumorphicTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9686DF329F1B0E500E88E3B /* NeumorphicTile.swift */; };
 		C96D403A29CB90360063C243 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403929CB90360063C243 /* Collections */; };
 		C96D403C29CB90360063C243 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403B29CB90360063C243 /* DequeModule */; };
 		C96D403E29CB90360063C243 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = C96D403D29CB90360063C243 /* OrderedCollections */; };
@@ -62,6 +63,7 @@
 		C94A68D529A6C17000F04851 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		C94A68D929A6C2F000F04851 /* MatrixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixView.swift; sourceTree = "<group>"; };
 		C94A68DB29A6C3D600F04851 /* MatrixSolveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixSolveView.swift; sourceTree = "<group>"; };
+		C9686DF329F1B0E500E88E3B /* NeumorphicTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeumorphicTile.swift; sourceTree = "<group>"; };
 		C96F044829CA50F200130272 /* CalculusModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculusModel.swift; sourceTree = "<group>"; };
 		C96F044B29CA6D3900130272 /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
 		C96F045229CAD9CD00130272 /* IntegralSolveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegralSolveView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			children = (
 				C944C21529BA542A009050EB /* CardView.swift */,
 				C944C21B29BA55CA009050EB /* UITools.swift */,
+				C9686DF329F1B0E500E88E3B /* NeumorphicTile.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				C973A22C298AF56000E26513 /* ContentView.swift in Sources */,
 				C94A68DC29A6C3D600F04851 /* MatrixSolveView.swift in Sources */,
 				C943F9AF29A7237000155AB6 /* SolutionView.swift in Sources */,
+				C9686DF429F1B0E500E88E3B /* NeumorphicTile.swift in Sources */,
 				C96F044C29CA6D3900130272 /* DataStructures.swift in Sources */,
 				C944C21C29BA55CA009050EB /* UITools.swift in Sources */,
 				C96F045329CAD9CD00130272 /* IntegralSolveView.swift in Sources */,
@@ -504,6 +508,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AddEZ;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -544,6 +549,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AddEZ;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

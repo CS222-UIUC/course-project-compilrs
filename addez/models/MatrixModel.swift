@@ -321,6 +321,13 @@ extension MatrixFunctions {
         }
     }
     
+    func canCompute(matrix: Matrix) -> Bool {
+        switch self {
+        case .eigenval, .eigenvec, .det, .inv, .ludecomp: return matrix.isSquare
+        default: return true
+        }
+    }
+    
     var maxDimensions: (rows: Double, cols: Double) {
         switch self {
         case .det: return (8, 8)
@@ -370,7 +377,7 @@ extension Matrix {
         return returny
     }
     
-    static let maxDimensions = (rows: 6, cols: 6)
+    static let maxDimensions = (rows: 5, cols: 5)
     
     static let validDimensions = (rows: 1...6, cols: 1...6)
     
