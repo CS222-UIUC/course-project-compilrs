@@ -61,6 +61,12 @@ func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
     return returny
 }
 
+func *(lhs: Matrix, rhs: Double) -> Matrix { lhs.map { $0 * rhs } }
+
+func *(lhs: Double, rhs: Matrix) -> Matrix { rhs.map { $0 * lhs } }
+
+func <->(lhs: Matrix, rhs: Matrix) -> Matrix { lhs.enumerated().map { i, row in row <-> rhs[i] } }
+
 struct Step: Identifiable {
     var id: UUID
     let matrix: Matrix
@@ -84,7 +90,7 @@ func typeParser(steps: [Step]?, solution: Any) -> ReturnType {
     } else if let solution = solution as? Double {
         return (steps, .double(solution))
     } else if let solution = solution as? (lower: Matrix, upper: Matrix) {
-        return (steps, .matrixTuple(lower: solution.lower, upper: solution.upper))
+        return (steps, solution >>> SolutionType.matrixTuple)
     } else if let solution = solution as? Vector {
         return (steps, .vector(solution))
     } else if let solution = solution as? Dictionary<Complex, Int> {
@@ -116,7 +122,6 @@ typealias RootsSolution = (steps: Steps?, solution: Dictionary<Complex, Int>)
 enum MatrixFunctions: String, CaseIterable {
     case solve = "Solve"
     case rref = "Reduced Row Echelon"
-    case ludecomp = "LU Decomposition"
     case inv = "Inverse"
     case det = "Determinant"
     case eigenval = "Eigenvalues"
@@ -192,7 +197,7 @@ func rowEchelon(matrix: Matrix) -> Matrix {
     return returny
 }
 
-func reducedRowEchelon(matrix: Matrix) -> MatrixSolution? {
+func reducedRowEchelon(matrix: Matrix) -> MatrixSolution {
     var returny = rowEchelon(matrix: matrix)
     // divide each each row by its pivot value
     for row in 0..<returny.count {
@@ -281,6 +286,43 @@ func getCharacteristicPolynomial(matrix: [[[Double]]]) -> Vector {
     }
 }
 
+func makeIdentityMatrix(size: Int) -> Matrix {
+    var returny = getMatrix(cols: size, rows: size)
+    for i in 0..<size {
+        for j in 0..<size {
+            if i == j { returny[i][j] = 1 }
+        }
+    }
+    return returny
+}
+
+/// Returns the basis for the nullspace of `matrix`
+func getNullspace(_ matrix: Matrix) -> Matrix {
+    let rref = (matrix >>> reducedRowEchelon).solution
+    var isPivotCol = Array(repeating: false, count: rref.rows)
+    var j = 0
+    for i in 0..<rref.rows {
+        isPivotCol[i] = rref[i][j] == 1
+        if rref[i][j] == 1 { j += 1 }
+    }
+    let nullspace = matrix.map { row in
+        row.enumerated().filter { i, _ in !isPivotCol[i] }.map { _, element in element }
+    }
+    return []
+}
+
+func getEigenvectors(matrix: Matrix) -> MatrixSolution? {
+    guard let eigenvals = getEigenvalues(matrix: matrix)?.solution else { return .none }
+    let eigenvecs = eigenvals.keys
+        .filter { $0.imaginary.isZero }
+        .map { $0.real }
+        .flatMap { eigenval in
+            let entry = matrix <-> (makeIdentityMatrix(size: matrix.count) * eigenval)
+            return entry >>> getNullspace
+        }
+    return (.none, eigenvecs)
+}
+
 extension MatrixFunctions {
     var compute: (Matrix) -> ReturnType? { { $0 !>>> functionMapper !>>> typeParser } }
     
@@ -291,7 +333,7 @@ extension MatrixFunctions {
         case .rref: return reducedRowEchelon
         case .inv: return inverseMatrix
         case .eigenval: return getEigenvalues
-        default: return solveMatrix
+        case .eigenvec: return getEigenvectors
         }
     }
     

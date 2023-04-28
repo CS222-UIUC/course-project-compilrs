@@ -49,3 +49,8 @@ extension Formatter {
         return numberFormatter
     }()
 }
+
+func viewLet<T>(_ obj: T?, to viewBuilder: (T) -> some View) -> AnyView {
+    guard let obj = obj else { return EmptyView().format() }
+    return viewBuilder(obj).format()
+}

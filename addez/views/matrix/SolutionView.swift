@@ -10,9 +10,7 @@ import LaTeXSwiftUI
 
 struct SolutionView: View {
     var solution: SolutionType
-    init(_ solution: SolutionType) {
-        self.solution = solution
-    }
+    init(_ solution: SolutionType) { self.solution = solution }
     var body: some View {
         switch solution {
         case .matrix(let matrix): return MatrixView(matrix).cardView()
@@ -28,17 +26,20 @@ struct SolutionView: View {
         case .ntuple(let ntuple):
             return VStack {
                 ForEach(ntuple, id: \.self) { arg in
-                    LaTeX(arg)
-                        .celled()
+                    LaTeX(arg).celled()
                 }
             }
             .cardView()
-        case .vector(let vec): return Text("[\(vec.reduce("") { "\($0), \($1)" })]").cardView()
+        case .vector(let vec):
+            return Text("[\(vec.reduce(into: "") { $0.append("\($1), ") }.dropLast(2) >>> String.init)]").cardView()
         case .roots(let roots):
             return VStack {
                 ForEach(roots.keys.map(identity), id: \.self) { root in
                     HStack {
                         Text(root.toString())
+                        Text("Multiplicity: \(roots[root]!)")
+                            .foregroundColor(.matrixCell)
+                            .font(.footnote)
                     }
                 }
             }

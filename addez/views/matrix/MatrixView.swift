@@ -16,7 +16,7 @@ struct MatrixView: View {
     }
     var body: some View {
         VStack {
-            Text(title ?? "")
+            viewLet(title, to: Text.init)
             ForEach(0..<matrix.count, id: \.self) { row in
                 HStack {
                     ForEach(0..<matrix[row].count, id: \.self) { col in

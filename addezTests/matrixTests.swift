@@ -11,20 +11,20 @@ final class matrixTests: XCTestCase {
     func testReducedRowEchelon2x2() {
         let matrix = [[1.0, 3.0], [4.0, 9.0]]
         let expected = [[1.0, 0.0], [0.0, 1.0]]
-        guard let returny = reducedRowEchelon(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        let returny = reducedRowEchelon(matrix: matrix).solution
         XCTAssertEqual(returny, expected)
     }
     
     func testReducedRowEchelon3x3() {
         let matrix = [[1.0, 2.0, 6.0], [4.0, 10.0, 6.0], [5.0, 8.0, 12.0]]
         let expected = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-        guard let returny = reducedRowEchelon(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        let returny = reducedRowEchelon(matrix: matrix).solution
         XCTAssertEqual(returny, expected)
     }
     
     func testReducedRowEchelon3x4() {
         let matrix = [[1.0, 2.0, 6.0, 4.0], [4.0, 10.0, 6.0, 7.0], [5.0, 8.0, 12.0, 6.0]]
-        guard var returny = reducedRowEchelon(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        var returny = reducedRowEchelon(matrix: matrix).solution
         var expected = [[1.0, 0.0, 0.0, -7.0/3.0], [0.0, 1.0, 0.0, 5.0/4.0], [0.0, 0.0, 1.0, 23.0/36.0]]
         // round everything in expected and returny to 7 decimal places
         for i in 0..<expected.count {
@@ -38,7 +38,7 @@ final class matrixTests: XCTestCase {
     
     func testReducedRowEchelon4x3() {
         let matrix = [[1.0, 2.0, 6.0], [4.0, 10.0, 6.0], [5.0, 8.0, 12.0], [3.0, 2.0, 9.0]]
-        guard var returny = reducedRowEchelon(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        var returny = reducedRowEchelon(matrix: matrix).solution
         var expected = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0, 0.0]]
         // round everything in expected and returny to 7 decimal places
         for i in 0..<expected.count {
@@ -227,6 +227,32 @@ final class matrixTests: XCTestCase {
                 if within(expectedValue.real, eigenvalue.real) && within(expectedValue.imaginary, eigenvalue.imaginary) {
                     found = true
                 }
+            }
+            XCTAssert(found)
+        }
+    }
+    
+    func testEigenvectors() {
+        let matrix = [
+            [3.0, 2.0, -2.0],
+            [3.0, 5.0, 1.0],
+            [-2.0, 1.0, 2.0]
+        ]
+        let expected = [
+            [0.944, -0.687, 1],
+            [-0.596, 0.727, 1],
+            [-21.348, -38.039, 1]
+        ]
+        guard let eigenvectors = getEigenvectors(matrix: matrix)?.solution else { XCTAssertNotNil(nil); return }
+        XCTAssertEqual(eigenvectors.count, expected.count)
+        for eigenvector in eigenvectors {
+            var found = false
+            for expectedVector in expected {
+                guard eigenvector.count == expectedVector.count else { continue }
+                let miniFound = expectedVector.enumerated()
+                    .map { i, curr in within(curr, eigenvector.at(i)) }
+                    .reduce(true) { $0 && $1 }
+                if miniFound { found = true }
             }
             XCTAssert(found)
         }

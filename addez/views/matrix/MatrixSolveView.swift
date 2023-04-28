@@ -24,11 +24,8 @@ struct MatrixSolveView: View {
             MatrixEditor()
                 .environmentObject(model)
             Text("Show Steps")
-                .navLink {
-                    guard let steps = steps else { return .none }
-                    return StepsList(steps).format()
-                }
-            solView().format()
+                .navLink(viewLet(steps, to: StepsList.init))
+            viewLet(solution, to: SolutionView.init)
             Button("Solve") {
                 let sol = matrixFunction.compute(model.matrix)
                 steps = sol?.steps
@@ -38,11 +35,6 @@ struct MatrixSolveView: View {
             .fontWeight(.bold)
         }
         .navigationTitle("Matrix Solver")
-    }
-    
-    func solView() -> any View {
-        guard let sol = solution else { return EmptyView() }
-        return SolutionView(sol)
     }
 }
 
