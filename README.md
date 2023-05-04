@@ -33,7 +33,7 @@ We intend to put a more finalized version of the app on Apple's App Store. Then,
 
 ## (d) Group members and their roles
 
-Ayush Raman - Full Stack Developer
-Sanjay Manoj - Backend Developer
-Spencer Sadler - Backend Developer
+Ayush Raman - Full Stack Developer\
+Sanjay Manoj - Backend Developer\
+Spencer Sadler - Backend Developer\
 Anish Cherukuthota - Testing
