@@ -13,7 +13,7 @@ Calculus Features
 - Reimann Sum
 - Differentiation
 
-AddEZ is an alternative to existing software such as Symbolab and PrairieLearn. AddEZ is better than these in a few key ways. Firstly, our tool provides all the steps to solving the specified input problem for free, which Symbolab does not do. Moreover, our tool has a far more flexible parser than PrairieLearn (ex. AddEZ allows for coefficients while PrairieLearn does not).
+AddEZ is an alternative to existing software such as Symbolab. AddEZ is better than these in a few key ways. Firstly, our tool provides all the steps to solving the specified input problem for free, which Symbolab does not do. Moreover, our tool has a far more flexible parser than PrairieLearn (ex. AddEZ allows for coefficients while PrairieLearn does not).
 
 ## (b) Describes technical architecture
 
