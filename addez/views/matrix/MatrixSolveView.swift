@@ -10,7 +10,7 @@ import Neumorphic
 
 struct MatrixSolveView: View {
     @ObservedObject var model = MatrixObject(getMatrix(cols: 2, rows: 2))
-    @State var matrixFunction = MatrixFunctions.solve
+    @State var matrixFunction = MatrixFunctions.rref
     @State var steps: [Step]?
     @State var solution: SolutionType?
     var body: some View {

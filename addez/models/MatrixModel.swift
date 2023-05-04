@@ -114,13 +114,10 @@ typealias RootsSolution = (steps: Steps?, solution: Dictionary<Complex, Int>)
 
 
 enum MatrixFunctions: String, CaseIterable {
-    case solve = "Solve"
     case rref = "Reduced Row Echelon"
-    case ludecomp = "LU Decomposition"
     case inv = "Inverse"
     case det = "Determinant"
     case eigenval = "Eigenvalues"
-    case eigenvec = "Eigenvectors"
 }
 
 enum ComputationErrors: Error {
@@ -312,7 +309,6 @@ extension MatrixFunctions {
     
     private var functionMapper: (Matrix) -> (Steps?, Any)? {
         switch self {
-        case .solve: return solveMatrix
         case .det: return getDeterminant
         case .rref: return reducedRowEchelon
         case .inv: return inverseMatrix
@@ -323,7 +319,7 @@ extension MatrixFunctions {
     
     func canCompute(matrix: Matrix) -> Bool {
         switch self {
-        case .eigenval, .eigenvec, .det, .inv, .ludecomp: return matrix.isSquare
+        case .eigenval, .det, .inv: return matrix.isSquare
         default: return true
         }
     }
