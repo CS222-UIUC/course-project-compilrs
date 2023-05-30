@@ -42,13 +42,14 @@ struct IntegralSolveView: View {
             TextField("f(x)", text: $userInput)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
+//                .textInputAutocapitalization(.never)
             Slider(value: $x, in: Double(xRange.lowerBound)...Double(xRange.upperBound)) {
                 Text("x")
             }
             TextField("x", value: $x, formatter: .numberFormatter)
                 .textFieldStyle(.roundedBorder)
-                .keyboardType(.numberPad)
+//                .keyboardType(.numberPad)
             Button("Evaluate") {
                 f = parseExpression(userInput)
                 guard let f = f else { points = []; return }

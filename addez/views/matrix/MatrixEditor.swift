@@ -48,7 +48,7 @@ struct MatrixEditor: View {
                                     formatter: .numberFormatter
                                 )
                                 .celled(model.matrix[row][col] == 0 ? .red.opacity(0.2) : .none)
-                                .keyboardType(.asciiCapableNumberPad)
+//                                .keyboardType(.asciiCapableNumberPad)
                                 .textFieldStyle(.roundedBorder)
                                 .multilineTextAlignment(.center)
                             }

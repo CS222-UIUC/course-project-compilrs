@@ -25,7 +25,6 @@
 		C96F044A29CA50F200130272 /* CalculusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044829CA50F200130272 /* CalculusModel.swift */; };
 		C96F044C29CA6D3900130272 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044B29CA6D3900130272 /* DataStructures.swift */; };
 		C96F044D29CA6D3900130272 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F044B29CA6D3900130272 /* DataStructures.swift */; };
-		C96F045029CAD99900130272 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = C96F044F29CAD99900130272 /* SwiftUICharts */; };
 		C96F045329CAD9CD00130272 /* IntegralSolveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F045229CAD9CD00130272 /* IntegralSolveView.swift */; };
 		C973A22A298AF56000E26513 /* addezApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A229298AF56000E26513 /* addezApp.swift */; };
 		C973A22C298AF56000E26513 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973A22B298AF56000E26513 /* ContentView.swift */; };
@@ -88,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C96F045029CAD99900130272 /* SwiftUICharts in Frameworks */,
 				C94A68E229A6CEBC00F04851 /* Neumorphic in Frameworks */,
 				C96D403E29CB90360063C243 /* OrderedCollections in Frameworks */,
 				C96D403C29CB90360063C243 /* DequeModule in Frameworks */,
@@ -241,7 +239,6 @@
 			packageProductDependencies = (
 				C94A68E129A6CEBC00F04851 /* Neumorphic */,
 				C9CD668929B91DC40040848A /* LaTeXSwiftUI */,
-				C96F044F29CAD99900130272 /* SwiftUICharts */,
 				C96D403929CB90360063C243 /* Collections */,
 				C96D403B29CB90360063C243 /* DequeModule */,
 				C96D403D29CB90360063C243 /* OrderedCollections */,
@@ -498,8 +495,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = addez/addez.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -509,6 +508,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = AddEZ;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -519,7 +519,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
@@ -539,8 +539,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = addez/addez.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -550,6 +552,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = AddEZ;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -560,7 +563,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
@@ -585,7 +588,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezTests;
@@ -609,7 +612,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = YGQCW3LZRM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.compilrs.addezTests;
@@ -710,11 +713,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C96D403829CB90360063C243 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
-		};
-		C96F044F29CAD99900130272 /* SwiftUICharts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C96F044E29CAD99900130272 /* XCRemoteSwiftPackageReference "SwiftUICharts" */;
-			productName = SwiftUICharts;
 		};
 		C9CD668929B91DC40040848A /* LaTeXSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

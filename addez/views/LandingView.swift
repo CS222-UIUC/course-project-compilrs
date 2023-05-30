@@ -10,18 +10,16 @@ import SwiftUI
 struct LandingView: View {
     var body: some View {
         NavigationView {
-            ScrollView {
+            List {
                 Text("Matrices")
-                    .tiled()
                     .navLink(MatrixSolveView())
                     .padding(15)
                 Text("Integrals")
-                    .tiled()
                     .navLink(IntegralSolveView())
                     .padding(15)
             }
         }
-        .navigationBarTitle("Home")
+        .navigationTitle("Home")
     }
 }
 
