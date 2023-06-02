@@ -79,6 +79,6 @@ struct VectorSolutionPreview: PreviewProvider {
 
 struct RootsSolutionPreview: PreviewProvider {
     static var previews: some View {
-        SolutionView(.roots([Complex(real: 2, imaginary: 0) : 1, Complex(real: 4, imaginary: 2) : 2]))
+        SolutionView(.roots([Complex(real: convertToFraction(2.0), imaginary: convertToFraction(0.0)) : 1, Complex(real: convertToFraction(4.0), imaginary: convertToFraction(2.0)) : 2]))
     }
 }

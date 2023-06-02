@@ -10,15 +10,268 @@ import Foundation
 typealias Function = (Double) -> Double
 typealias Operation = (Double, Double) -> Double
 
-struct Complex: Hashable {
-    var real: Double
-    var imaginary: Double = 0
+struct Fraction : Hashable {
+    var numerator: Int
+    var denominator: Int
+    
+    func hash(into hasher : inout Hasher) {
+        hasher.combine(numerator)
+        hasher.combine(denominator)
+    }
+
+    // when a fraction is constructed, simplify it
+    init(numerator: Int, denominator: Int) {
+        var numerator = numerator, denominator = denominator
+        if (denominator < 0) {
+            numerator *= -1
+            denominator *= -1
+        }
+        let gcd = greatestCommonDivisor(numerator, denominator)
+        self.numerator = numerator / gcd
+        self.denominator = denominator / gcd
+    }
 }
 
+struct Complex : Hashable {
+    var real: Fraction
+    var imaginary: Fraction = convertToFraction(0.0)
+    
+    func hash(into hasher : inout Hasher) {
+        hasher.combine(real)
+        hasher.combine(imaginary)
+    }
+}
+
+func convertToFraction(_ arg: Double) -> Fraction {
+    if (arg == 0) { return convertToFraction(0.0) }
+    if (arg == Double(Int(arg))) { return Fraction(numerator: Int(arg), denominator: 1) }
+    // run a binary search to find the closest fraction within an error of 1e-10
+    var low = Fraction(numerator: 0, denominator: 1), high = Fraction(numerator: 1, denominator: 1)
+    let error = 1e-10
+
+    // subtract the floor of the double from the double to get the decimal part
+    let decimal = arg - Double(Int(arg))
+
+    while true {
+        let mid = (low + high) / 2
+        if (mid - decimal < error) { return mid + Double(Int(arg)) }
+        else if (!(mid - decimal < error)) { high = mid }
+        else { low = mid }
+    }
+}
+
+func greatestCommonDivisor(_ a: Int, _ b: Int) -> Int {
+    var a = a, b = b
+    while b != 0 {
+        let t = b
+        b = a % b
+        a = t
+    }
+    return a
+}
+
+// @Override Fraction Addition
+func + (lhs: Fraction, rhs: Fraction) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+
+    // compute the fraction addition
+    var result = Fraction(numerator: a * d + b * c, denominator: b * d)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction Subtraction
+func - (lhs: Fraction, rhs: Fraction) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+
+    // compute the fraction subtraction
+    var result = Fraction(numerator: a * d - b * c, denominator: b * d)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction Multiplication
+func * (lhs: Fraction, rhs: Fraction) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+
+    // compute the fraction multiplication
+    var result = Fraction(numerator: a * c, denominator: b * d)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction Division
+func / (lhs: Fraction, rhs: Fraction) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+
+    // compute the fraction division
+    var result = Fraction(numerator: a * d, denominator: b * c)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction Addition with a scalar
+func + (lhs : Fraction, rhs : Double) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(Double(rhs))
+
+    // compute the fraction addition
+    var result = Fraction(numerator: a + b * c.numerator, denominator: b * c.denominator)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction Subtraction with a scalar
+func - (lhs : Fraction, rhs : Double) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(Double(rhs))
+
+    // compute the fraction subtraction
+    var result = Fraction(numerator: a - b * c.numerator, denominator: b * c.denominator)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction multiplication with a scalar
+func * (lhs: Fraction, rhs: Double) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(rhs)
+
+    // compute the fraction multiplication
+    var result = Fraction(numerator: a * c.numerator, denominator: b * c.denominator)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override Fraction division with a scalar
+func / (lhs: Fraction, rhs: Double) -> Fraction {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(rhs)
+
+    // compute the fraction division
+    var result = Fraction(numerator: a * c.denominator, denominator: b * c.numerator)
+
+    // simplify the fraction
+    let gcd = greatestCommonDivisor(result.numerator, result.denominator)
+    result.numerator /= gcd
+    result.denominator /= gcd
+
+    return result
+}
+
+// @Override < operator for fractions
+func < (lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d < b * c
+}
+
+// @Override < operator for fractions and doubles
+func < (lhs: Fraction, rhs: Double) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(rhs)
+    return a * c.denominator < b * c.numerator
+}
+
+// @Override > operator for fractions
+func > (lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d > b * c
+}
+
+// @Override > operator for fractions and doubles
+func > (lhs: Fraction, rhs: Double) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(rhs)
+    return a * c.denominator > b * c.numerator
+}
+
+// @Override == operator for fractions
+func == (lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d == b * c
+}
+
+// @Override == operator for fractions and doubles
+func == (lhs: Fraction, rhs: Double) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = convertToFraction(rhs)
+    return a * c.denominator == b * c.numerator
+}
+
+// @Override != operator for fractions
+func !=(lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d != b * c
+}
+
+// @Override <= operator for fractions
+func <= (lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d <= b * c
+}
+
+// @Override >= operator for fractions
+func >= (lhs: Fraction, rhs: Fraction) -> Bool {
+    let a = lhs.numerator, b = lhs.denominator
+    let c = rhs.numerator, d = rhs.denominator
+    return a * d >= b * c
+}
+
+// @Override Complex Multiplication
 func *(lhs: Complex, rhs: Complex) -> Complex {
     let a = lhs.real, b = lhs.imaginary
     let c = rhs.real, d = rhs.imaginary
     return Complex(real: a * c - b * d, imaginary: a * d + b * c)
+}
+
+// @Override abs for Fractions
+func abs(_ arg: Fraction) -> Fraction {
+    let a = arg.numerator, b = arg.denominator
+    return Fraction(numerator: abs(a), denominator: abs(b))
 }
 
 private func orderOfOps(_ arg: Character) -> Int {
@@ -274,44 +527,45 @@ func derivative(_ f: @escaping Function) -> Function {
 
 func summation(in range: ClosedRange<Int>, _ f: Function) -> Double { range.map(Double.init).compactMap(f).reduce(0, +) }
 
-// overload the *= operator for complex numbers
+// @Override the *= operator for complex numbers
 func *= (lhs: inout Complex, rhs: Complex) {
     lhs = Complex(real: lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, imaginary: lhs.real * rhs.imaginary + lhs.imaginary * rhs.real)
 }
 
-// overload the - operator for complex numbers
+// @Override the - operator for complex numbers
 func - (lhs: Complex, rhs: Complex) -> Complex {
     return Complex(real: lhs.real - rhs.real, imaginary: lhs.imaginary - rhs.imaginary)
 }
 
-//overload the / operator for complex numbers
+// @Override the / operator for complex numbers
 func / (lhs: Complex, rhs: Complex) -> Complex {
     let denominator = rhs.real * rhs.real + rhs.imaginary * rhs.imaginary
     return Complex(real: (lhs.real * rhs.real + lhs.imaginary * rhs.imaginary) / denominator, imaginary: (lhs.imaginary * rhs.real - lhs.real * rhs.imaginary) / denominator)
 }
 
-// overload multiplication for a complex number and a scalar
+// @Override multiplication for a complex number and a scalar
 func * (lhs: Complex, rhs: Double) -> Complex {
     return Complex(real: lhs.real * rhs, imaginary: lhs.imaginary * rhs)
 }
 
-// overload the += operator for complex numbers
+// @Override the += operator for complex numbers
 func += (lhs: inout Complex, rhs: Complex) {
     lhs = Complex(real: lhs.real + rhs.real, imaginary: lhs.imaginary + rhs.imaginary)
 }
 
+// @Override the == operator for complex numbers
 func == (lhs: Complex, rhs: Complex) -> Bool {
     return lhs.real == rhs.real && lhs.imaginary == rhs.imaginary
 }
 
-// overload the approx operator for complex numbers
+// @Override the approx operator for complex numbers
 func ≈≈ (lhs: Complex, rhs: Complex) -> Bool {
     let tolerance = 1e-8
     return abs(lhs.real - rhs.real) < tolerance && abs(lhs.imaginary - rhs.imaginary) < tolerance
 }
 
 func complexPow(_ number: Complex, _ power: Int) -> Complex {
-    if (power == 0) { return Complex(real: 1, imaginary: 0) }
+    if (power == 0) { return Complex(real: Fraction(numerator: 1, denominator: 1), imaginary: Fraction(numerator: 0, denominator: 1)) }
     if (power == 1) { return number }
     
     var result = number
@@ -320,7 +574,7 @@ func complexPow(_ number: Complex, _ power: Int) -> Complex {
 }
 
 func evaluate(polynomial: Vector, value: Complex) -> Complex {
-    var result = Complex(real: 0, imaginary: 0)
+    var result = Complex(real: Fraction(numerator: 0, denominator: 1), imaginary: Fraction(numerator: 0, denominator: 1))
     for i in 0..<polynomial.count {
         result += complexPow(value, i) * polynomial[i]
     }
@@ -346,7 +600,7 @@ func rootFinding(polynom: Vector) -> [Complex] {
     }
     
     // create an array of complex numbers to represent initial root guesses
-    var roots = (0..<degree).map { complexPow(Complex(real: 0.4, imaginary: 0.9), $0) }
+    var roots = (0..<degree).map { complexPow(Complex(real: Fraction(numerator: 2, denominator: 5), imaginary: Fraction(numerator: 9, denominator: 10)), $0) }
 
     // iterate the Durand Kerner method 100 times
     let iterations = 100
@@ -357,7 +611,7 @@ func rootFinding(polynom: Vector) -> [Complex] {
             let otherRoots = roots.filter { $0 != currentRoot }
             
             let numerator = evaluate(polynomial: polynomial, value: currentRoot)
-            var denominator = Complex(real: 1, imaginary: 0)
+            var denominator = Complex(real: Fraction(numerator: 1, denominator: 1), imaginary: Fraction(numerator: 0, denominator: 1))
             for root in otherRoots { denominator *= (currentRoot - root) }
             
             let newRoot = currentRoot - (numerator / denominator)
@@ -367,10 +621,10 @@ func rootFinding(polynom: Vector) -> [Complex] {
     // for each root in the roots array, if the real of imaginary component is less than 1e-10, set it to 0
     // if the real/imaginary component is close to an integer, set it to that integer
     for i in 0..<roots.count {
-        if abs(roots[i].real) < 1e-8 { roots[i].real = 0 }
-        if abs(roots[i].imaginary) < 1e-8 { roots[i].imaginary = 0 }
-        let nearestInteger = round(roots[i].real)
-        if abs(nearestInteger - roots[i].real) < 1e-8 { roots[i].real = nearestInteger }
+        if abs(roots[i].real) < 1e-8 { roots[i].real = Fraction(numerator: 0, denominator: 1) }
+        if abs(roots[i].imaginary) < 1e-8 { roots[i].imaginary = Fraction(numerator: 0, denominator: 1) }
+        let nearestInteger = round(Double(roots[i].real.numerator / roots[i].real.denominator))
+        if abs(roots[i].real - nearestInteger) < 1e-8 { roots[i].real = convertToFraction(Double(nearestInteger)) }
     }
     return roots
 }
