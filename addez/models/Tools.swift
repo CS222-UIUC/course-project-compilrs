@@ -17,10 +17,15 @@ extension Double {
 
 extension Complex {
     func toString() -> String {
-        guard imaginary == 0 else { return "\(real) + \(imaginary)i" }
-        return "\(real)"
+        if (real == 0 && imaginary == 0) { return "0" }
+        if (real == 0) { return imaginary.toString() + "i" }
+        if (imaginary == 0) { return real.toString() }
+        if (imaginary < 0) { return real.toString() + " - " + abs(imaginary).toString() + "i" }
+        return real.toString() + " + " + imaginary.toString() + "i"
     }
 }
+
+
 
 extension String {
     func latexify() -> String {

@@ -36,10 +36,9 @@ struct SolutionView: View {
         case .vector(let vec): return Text("[\(vec.reduce("") { "\($0), \($1)" })]").cardView()
         case .roots(let roots):
             return VStack {
-                ForEach(roots.keys.map(identity), id: \.self) { root in
-                    HStack {
-                        Text(root.toString())
-                    }
+                // print out the roots using the toString method
+                ForEach(roots.keys.sorted(by: { $0.real < $1.real }), id: \.self) { root in
+                    Text("\(root.toString()) : \(roots[root]!)")
                 }
             }
             .cardView()

@@ -102,7 +102,7 @@ enum SolutionType {
     case matrix(Matrix)
     case double(Double)
     case vector(Vector)
-   case roots(Dictionary<Complex, Int>)
+    case roots(Dictionary<Complex, Int>)
 }
 
 typealias MatrixSolution = (steps: Steps?, solution: Matrix)

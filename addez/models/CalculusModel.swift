@@ -30,6 +30,13 @@ struct Fraction : Hashable {
         self.numerator = numerator / gcd
         self.denominator = denominator / gcd
     }
+
+    // make a toString method for fractions
+    func toString() -> String {
+        if (numerator == 0) { return "0" }
+        if (denominator == 1) { return String(numerator) }
+        return String(numerator) + "/" + String(denominator)
+    }
 }
 
 struct Complex : Hashable {
